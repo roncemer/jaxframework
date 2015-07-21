@@ -9,11 +9,8 @@
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
 
-// Include the Spreadsheet_Excel_Writer PEAR class, if installed.
-@include 'Spreadsheet/Excel/Writer.php';
-
-// Include the PDF PEAR class, if installed.
 require_once dirname(__FILE__).'/fpdf/fpdf.php';
+require_once dirname(__FILE__).'/PHPExcel/Classes/PHPExcel.php';
 
 class ReportColumn {
 	public $name;
@@ -319,23 +316,6 @@ class Report {
 	public $pdfTotalsFontSize = 8;
 	public $pdfTotalsTextRGB = '0.25,0.25,0.25';			// comma-separated r,g,b [0.0...1.0]
 
-	protected $worksheetHeadingFmt = null;
-	protected $worksheetColFmt = array();
-	protected $worksheetTotalColFmt = array();
-	protected $worksheetTotalDescFmt = array();
-
-	protected $worksheetHeadingLeftFmt = null;
-	protected $worksheetHeadingCenterFmt = null;
-	protected $worksheetHeadingRightFmt = null;
-
-	protected $worksheetDetailLeftFmt = null;
-	protected $worksheetDetailCenterFmt = null;
-	protected $worksheetDetailRightFmt = null;
-
-	protected $worksheetTotalsLeftFmt = null;
-	protected $worksheetTotalsCenterFmt = null;
-	protected $worksheetTotalsRightFmt = null;
-
 	// Construct a Report instance.
 	// Parameters:
 	// $columns: An array of ReportColumn instances which describe the columns.
@@ -365,49 +345,11 @@ class Report {
 	public function reset() {
 		$this->softReset();
 
-		$this->worksheetHeadingFmt = null;
-		$this->worksheetColFmt = array();
-		$this->worksheetTotalColFmt = array();
-		$this->worksheetTotalDescFmt = array();
-
-		$this->worksheetHeadingLeftFmt = null;
-		$this->worksheetHeadingCenterFmt = null;
-		$this->worksheetHeadingRightFmt = null;
-
-		$this->worksheetDetailLeftFmt = null;
-		$this->worksheetDetailCenterFmt = null;
-		$this->worksheetDetailRightFmt = null;
-
-		$this->worksheetTotalsLeftFmt = null;
-		$this->worksheetTotalsCenterFmt = null;
-		$this->worksheetTotalsRightFmt = null;
-
 		$this->outputter->reset();
 	}
 
 	public function forceNewHeadings() {
 		$this->headingOutput = false;
-	}
-
-	protected function &createWorksheetHeadingFmt($align = 'left') {
-		$fmt = $this->outputter->workbook->addFormat();
-		$fmt->setHAlign($align);
-		$fmt->setBold(1);
-		return $fmt;
-	}
-
-	protected function &createWorksheetDetailFmt($align = 'left') {
-		$fmt = $this->outputter->workbook->addFormat();
-		$fmt->setHAlign($align);
-		$fmt->setBold(0);
-		return $fmt;
-	}
-
-	protected function &createWorksheetTotalsFmt($align = 'left') {
-		$fmt = $this->outputter->workbook->addFormat();
-		$fmt->setHAlign($align);
-		$fmt->setBold(1);
-		return $fmt;
 	}
 
 	public function findLevelIdxByName($levelName) {
@@ -423,9 +365,6 @@ class Report {
 		switch ($this->outputter->outputFormat) {
 		case 'xls':
 			if ($this->outputter->workbook === null) $this->outputter->createWorkbook();
-			if ($this->worksheetHeadingFmt === null) {
-				$this->worksheetHeadingFmt = $this->createWorksheetHeadingFmt('center');
-			}
 			break;
 		case 'pdf':
 			$newPage = false;
@@ -554,12 +493,11 @@ class Report {
 				if ($sep == '') $sep = "\t";
 				break;
 			case 'xls':
-				$this->outputter->worksheet->write(
-					$this->outputter->worksheetRowNum,
-					$colNum,
-					$col->heading,
-					$this->worksheetHeadingFmt
-				);
+				$cell = $this->outputter->worksheet->getCellByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+				$cell->setValueExplicit($col->heading, PHPExcel_Cell_DataType::TYPE_STRING);
+				$style = $this->outputter->worksheet->getStyleByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+				$style->getAlignment()->setHorizontal('center');
+				$style->getFont()->setBold(true);
 				break;
 			case 'pdf':
 				$colWidth = (int)
@@ -838,15 +776,10 @@ class Report {
 				if ($sep == '') $sep = "\t";
 				break;
 			case 'xls':
-				if (!isset($this->worksheetColFmt[$colNum])) {
-					$this->worksheetColFmt[$colNum] = $this->createWorksheetDetailFmt($col->align);
-				}
-				$this->outputter->worksheet->write(
-					$this->outputter->worksheetRowNum,
-					$colNum,
-					$dispval,
-					$this->worksheetColFmt[$colNum]
-				);
+				$cell = $this->outputter->worksheet->getCellByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+				$cell->setValueExplicit($dispval, PHPExcel_Cell_DataType::TYPE_STRING);
+				$style = $this->outputter->worksheet->getStyleByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+				$style->getAlignment()->setHorizontal($col->align);
 				break;
 			case 'pdf':
 				$colWidth = (int)
@@ -1045,91 +978,19 @@ class Report {
 				for ($cs = 0; $cs < $columnSpan; $cs++) $rowData .= $sep;
 				break;
 			case 'xls':
-				switch ($appearance) {
-				case 'heading':
-					switch ($align) {
-					case 'left':
-					default:
-						if ($this->worksheetHeadingLeftFmt === null) {
-							$this->worksheetHeadingLeftFmt = $this->createWorksheetHeadingFmt('left');
-						}
-						$fmt = &$this->worksheetHeadingLeftFmt;
-						break;
-					case 'center':
-						if ($this->worksheetHeadingCenterFmt === null) {
-							$this->worksheetHeadingCenterFmt = $this->createWorksheetHeadingFmt('center');
-						}
-						$fmt = &$this->worksheetHeadingCenterFmt;
-						break;
-					case 'right':
-						if ($this->worksheetHeadingRightFmt === null) {
-							$this->worksheetHeadingRightFmt = $this->createWorksheetHeadingFmt('right');
-						}
-						$fmt = &$this->worksheetHeadingRightFmt;
-						break;
-					}
-					break;
-				case 'detail':
-				default:
-					switch ($align) {
-					case 'left':
-					default:
-						if ($this->worksheetDetailLeftFmt === null) {
-							$this->worksheetDetailLeftFmt = $this->createWorksheetDetailFmt('left');
-						}
-						$fmt = &$this->worksheetDetailLeftFmt;
-						break;
-					case 'center':
-						if ($this->worksheetDetailCenterFmt === null) {
-							$this->worksheetDetailCenterFmt = $this->createWorksheetDetailFmt('center');
-						}
-						$fmt = &$this->worksheetDetailCenterFmt;
-						break;
-					case 'right':
-						if ($this->worksheetDetailRightFmt === null) {
-							$this->worksheetDetailRightFmt = $this->createWorksheetDetailFmt('right');
-						}
-						$fmt = &$this->worksheetDetailRightFmt;
-						break;
-					}
-					break;
-				case 'totals':
-					switch ($align) {
-					case 'left':
-					default:
-						if ($this->worksheetTotalsLeftFmt === null) {
-							$this->worksheetTotalsLeftFmt = $this->createWorksheetTotalsFmt('left');
-						}
-						$fmt = &$this->worksheetTotalsLeftFmt;
-						break;
-					case 'center':
-						if ($this->worksheetTotalsCenterFmt === null) {
-							$this->worksheetTotalsCenterFmt = $this->createWorksheetTotalsFmt('center');
-						}
-						$fmt = &$this->worksheetTotalsCenterFmt;
-						break;
-					case 'right':
-						if ($this->worksheetTotalsRightFmt === null) {
-							$this->worksheetTotalsRightFmt = $this->createWorksheetTotalsFmt('right');
-						}
-						$fmt = &$this->worksheetTotalsRightFmt;
-						break;
-					}
-					break;
+				$cell = $this->outputter->worksheet->getCellByColumnAndRow($ci, $this->outputter->worksheetRowNum);
+				$cell->setValueExplicit($text, PHPExcel_Cell_DataType::TYPE_STRING);
+				$style = $this->outputter->worksheet->getStyleByColumnAndRow($ci, $this->outputter->worksheetRowNum);
+				$style->getAlignment()->setHorizontal($align);
+				if (($appearance == 'heading') || ($appearance == 'totals')) {
+					$style->getFont()->setBold(true);
 				}
-
-				$this->outputter->worksheet->write(
-					$this->outputter->worksheetRowNum,
-					$ci,
-					$text,
-					$fmt
-				);
 				if ($columnSpan > 0) {
-					$this->outputter->worksheet->setMerge(
-						$this->outputter->worksheetRowNum,
+					$this->outputter->worksheet->mergeCellsByColumnAndRow(
 						$ci,
 						$this->outputter->worksheetRowNum,
-						$ci+($columnSpan-1)
+						$ci+($columnSpan-1),
+						$this->outputter->worksheetRowNum
 					);
 				}
 				break;
@@ -1313,22 +1174,17 @@ class Report {
 					for ($i = 1; $i < $nTotDescCols; $i++) $rowData .= $sep;
 					break;
 				case 'xls':
-					if (!isset($this->worksheetTotalDescFmt[$levelIdx])) {
-						$this->worksheetTotalDescFmt[$levelIdx] =
-							$this->createWorksheetTotalsFmt($level->totalsDescriptionAlign);
-					}
-					$this->outputter->worksheet->write(
-						$this->outputter->worksheetRowNum,
-						$colNum,
-						$level->totalsDescription.':',
-						$this->worksheetTotalDescFmt[$levelIdx]
-					);
+					$cell = $this->outputter->worksheet->getCellByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+					$cell->setValueExplicit($level->totalsDescription.':', PHPExcel_Cell_DataType::TYPE_STRING);
+					$style = $this->outputter->worksheet->getStyleByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+					$style->getAlignment()->setHorizontal($level->totalsDescriptionAlign);
+					$style->getFont()->setBold(true);
 					if ($nTotDescCols > 1) {
-						$this->outputter->worksheet->setMerge(
-							$this->outputter->worksheetRowNum,
+						$this->outputter->worksheet->mergeCellsByColumnAndRow(
 							$colNum,
 							$this->outputter->worksheetRowNum,
-							$colNum+($nTotDescCols-1)
+							$colNum+($nTotDescCols-1),
+							$this->outputter->worksheetRowNum
 						);
 					}
 					break;
@@ -1423,16 +1279,11 @@ class Report {
 					break;
 				case 'xls':
 					if (!$isTotCol) break;
-					if (!isset($this->worksheetTotalColFmt[$colNum])) {
-						$this->worksheetTotalColFmt[$colNum] =
-							$this->createWorksheetTotalsFmt($col->align);
-					}
-					$this->outputter->worksheet->write(
-						$this->outputter->worksheetRowNum,
-						$colNum,
-						$dispval,
-						$this->worksheetTotalColFmt[$colNum]
-					);
+					$cell = $this->outputter->worksheet->getCellByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+					$cell->setValueExplicit($dispval, PHPExcel_Cell_DataType::TYPE_STRING);
+					$style = $this->outputter->worksheet->getStyleByColumnAndRow($colNum, $this->outputter->worksheetRowNum);
+					$style->getAlignment()->setHorizontal($col->align);
+					$style->getFont()->setBold(true);
 					break;
 				case 'pdf':
 					$colWidth = (int)
@@ -1639,7 +1490,7 @@ class ReportOutputter {
 	protected $workbookUseTempFileForOutput = true;
 	public $workbook = null;
 	public $worksheet = null;
-	public $worksheetRowNum = 0;
+	public $worksheetRowNum = 1;
 
 	protected $pdfFilename = null;
 	protected $pdfUseTempFileForOutput = true;
@@ -1775,16 +1626,16 @@ class ReportOutputter {
 		$this->outputStream = false;
 		$this->output = '';
 
-		if ( ($this->workbookFilename !== null) && ($this->workbookUseTempFileForOutput) ){
+		if (($this->workbookFilename !== null) && ($this->workbookUseTempFileForOutput)) {
 			@unlink($this->workbookFilename);
 		}
 		$this->workbookFilename = null;
 		$this->workbookUseTempFileForOutput = true;
 		$this->workbook = null;
 		$this->worksheet = null;
-		$this->worksheetRowNum = 0;
+		$this->worksheetRowNum = 1;
 
-		if ( ($this->pdfFilename !== null) && ($this->pdfUseTempFileForOutput) ){
+		if (($this->pdfFilename !== null) && ($this->pdfUseTempFileForOutput)) {
 			@unlink($this->pdfFilename);
 		}
 		$this->pdfFilename = null;
@@ -1795,12 +1646,13 @@ class ReportOutputter {
 	}
 
 	public function createWorkbook() {
-		if ( ($this->workbook === null) && ($this->outputFormat == 'xls') ) {
+		if (($this->workbook === null) && ($this->outputFormat == 'xls')) {
 			if ($this->workbookUseTempFileForOutput) {
 				$this->workbookFilename = tempnam('/tmp', 'rpt');
 			}
-			$this->workbook = new Spreadsheet_Excel_Writer($this->workbookFilename);
-			$this->worksheet = $this->workbook->addWorksheet('Sheet1');
+			$this->workbook = new PHPExcel();
+			$this->workbook->setActiveSheetIndex(0);
+			$this->worksheet = $this->workbook->getActiveSheet();
 		}
 	}
 
@@ -1844,9 +1696,8 @@ class ReportOutputter {
 	public function finish() {
 		switch ($this->outputFormat) {
 		case 'xls':
-			if ($this->workbook !== null) {
-				$this->workbook->close();
-			}
+			$xlswriter = new PHPExcel_Writer_Excel5($this->workbook);
+			$xlswriter->save($this->workbookFilename);
 			if ($this->workbookUseTempFileForOutput) {
 				$this->output = file_get_contents($this->workbookFilename);
 				@unlink($this->workbookFilename);
@@ -1892,13 +1743,9 @@ ReportOutputter::$OUTPUT_FORMATS = array(
 	(object)array('format'=>'html', 'mimeType'=>'application/octet-stream', 'extension'=>'.html', 'description'=>'HTML'),
 	(object)array('format'=>'csv', 'mimeType'=>'text/csv', 'extension'=>'.csv', 'description'=>'Comma-Separated Values'),
 	(object)array('format'=>'tsv', 'mimeType'=>'text/tab-separated-values', 'extension'=>'.tsv', 'description'=>'Tab-Separated Values'),
+	(object)array('format'=>'xls', 'mimeType'=>'application/vnd.ms-excel', 'extension'=>'.xls', 'description'=>'XLS Spreadsheet'),
+	(object)array('format'=>'pdf', 'mimeType'=>'application/pdf', 'extension'=>'.pdf', 'description'=>'Portable Document Format (PDF)'),
 );
-if (class_exists('Spreadsheet_Excel_Writer', false)) {
-	ReportOutputter::$OUTPUT_FORMATS[] = (object)array('format'=>'xls', 'mimeType'=>'application/vnd.ms-excel', 'extension'=>'.xls', 'description'=>'XLS Spreadsheet');
-}
-if (class_exists('FPDF', false)) {
-	ReportOutputter::$OUTPUT_FORMATS[] = (object)array('format'=>'pdf', 'mimeType'=>'application/pdf', 'extension'=>'.pdf', 'description'=>'Portable Document Format (PDF)');
-}
 
 ReportOutputter::$PDF_PAGE_FORMATS = array(
 	(object)array('format'=>'a3', 'description'=>'A3'),
