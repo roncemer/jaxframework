@@ -1534,7 +1534,7 @@ class ReportOutputter {
 	// Do not change the output format when a report is in progress.  Instead, wait
 	// until after finish() has been called.
 	// Parameters:
-	// $outputFormat: The formatName attribute of one of the ReportOutputter::$OUTPUT_FORMATS output formats.
+	// $outputFormat: The format attribute of one of the ReportOutputter::$OUTPUT_FORMATS output formats.
 	public function setOutputFormat($outputFormat) {
 		if (ReportOutputter::getOutputFormatForFormatName($outputFormat) === null) {
 			$outputFormat = ReportOutputter::$OUTPUT_FORMATS[0]->format;
