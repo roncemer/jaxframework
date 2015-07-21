@@ -1,0 +1,5 @@
+loginForm.loginRequired = Login Required
+loginForm.loginUserName.label = Username
+loginForm.loginPassword.label = Password
+loginForm.keepMeLoggedIn.label = Keep me logged in
+loginForm.loginSubmit.label = Log In

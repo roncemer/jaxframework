@@ -1,0 +1,3 @@
+This file must exist in the HTML root directory of the application.
+The framework uses this file to automatically determine the application's HTML root directory,
+regardless of the server's document root.

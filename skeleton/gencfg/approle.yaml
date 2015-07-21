@@ -1,0 +1,114 @@
+tableDescription: Role
+tableDescriptions: Roles
+loggedInId: $loggedInUser->id
+
+
+searches:
+  approle:
+    searchableColumns:
+      id: { sqlType: integer, queryOperator: =, unsignedSearch: No }
+      role_name: { sqlType: varchar, queryOperator: contains }
+      description: { sqlType: varchar, queryOperator: contains }
+
+
+popupSearches:
+  approlePopupSearch:
+    searchCommand: searchApproles
+    searchPresentation: AJAXSearchGrid
+    defaultSorts:
+      - { attr: 'description', dir: 1 }
+    idColumn: id
+    rowSelectJavaScriptCallbackFunction: approleSelected
+    columns:
+      id: { heading: Id, displayType: numeric, columnCSSClass: right, sortable: Yes }
+      role_name: { heading: Role Name, displayType: string, columnCSSClass: left, sortable: Yes }
+      description: { heading: Description, displayType: string, columnCSSClass: left, sortable: Yes }
+      when_added: { heading: Added, displayType: date, columnCSSClass: left, sortable: Yes }
+
+
+loaders:
+  approle:
+    relations:
+      perms:
+        table: appperm
+        relationType: many
+        sqlQuery: "select distinct p.* from approleperm r_p inner join appperm p on p.perm_name = r_p.perm_name where r_p.role_name = ? order by p.perm_name"
+        sqlQueryAssignments:
+          0: { expression: "$row->role_name", psType: string }
+        offset: 0
+        limit: 0
+
+
+cruds:
+  approle:
+    postInitPHPIncludes:
+      include/search/approle_search.include.php
+      include/search/approle_load.include.php
+    javaScriptFiles: ~
+    cssFiles: ~
+
+    allowAddSimilar: No
+
+    crudSearch:
+      likePopupSearch: approlePopupSearch
+
+    crudLoad:
+      loadCommand: loadApprole
+
+    formFields:
+      id: { title: Id, inputType: text, size: 11, maxlength: 11, readonly: Yes, cssClass: right numeric-scale0 }
+      when_added: { title: Added, inputType: text, size: 30, maxlength: 30, readonly: Yes, disabled: Yes, cssClass: datetime }
+      role_name: { title: Role Name, inputType: text, size: 40, maxlength: 40 }
+      description: { title: Description, inputType: text, size: 40, maxlength: 40 }
+      rolePermissions:
+        inputType: htmlfragment
+        html: <?php emitPermissionsTable(); ?>
+
+
+    filters:
+      role_name:
+        trim:
+          class: TrimFilter
+          params: { }
+      description:
+        trim:
+          class: TrimFilter
+          params: { }
+
+
+    validators:
+      role_name:
+        notempty:
+          class: NotEmptyValidator
+          params: { }
+        length:
+          class: LengthValidator
+          params: { maxLength: 40 }
+        noduplicates:
+          class: NoDuplicatesValidator
+          params:
+            table: approle
+            fields:
+              role_name: { field: role_name, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Role Name is already in use.
+      description:
+        notempty:
+          class: NotEmptyValidator
+          params: { }
+        length:
+          class: LengthValidator
+          params: { maxLength: 40 }
+        noduplicates:
+          class: NoDuplicatesValidator
+          params:
+            table: approle
+            fields:
+              description: { field: description, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Description is already in use.
+
+
+    addFocusField: role_name
+    editFocusField: description
+    neverUpdateColumns: [ id, when_added ]

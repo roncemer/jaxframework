@@ -1,0 +1,90 @@
+tableDescription: Page URI
+tableDescriptions: Page URIs
+loggedInId: $loggedInUser->id
+
+
+searches:
+  apppageuri:
+    searchableFields:
+      id: { sqlType: integer, queryOperator: =, unsignedSearch: No }
+      page_uri: { sqlType: varchar, queryOperator: contains }
+
+
+loaders:
+  apppageuri:
+    phpClasses:
+      ApppageuriDAO: { path: classes/dao/ApppageuriDAO.class.php }
+      ApppermDAO: { path: classes/dao/ApppermDAO.class.php }
+      ApppageuripermDAO: { path: classes/dao/ApppageuripermDAO.class.php }
+    relations:
+      perms:
+        table: appperm
+        relationType: many
+        sqlQuery: "select distinct p.* from apppageuriperm p_p inner join appperm p on p.perm_name = p_p.perm_name where p_p.page_uri = ? order by p.perm_name"
+        sqlQueryAssignments:
+          0: { expression: "$row->page_uri", psType: string }
+        offset: 0
+        limit: 0
+
+
+cruds:
+  apppageuri:
+    phpClasses:
+      ApppageuriDAO: { path: classes/dao/ApppageuriDAO.class.php }
+      ApppermDAO: { path: classes/dao/ApppermDAO.class.php }
+      ApppageuripermDAO: { path: classes/dao/ApppageuripermDAO.class.php }
+    postInitPHPIncludes:
+      include/search/apppageuri_search.include.php
+      include/search/apppageuri_load.include.php
+    crudSearch:
+      command: searchApppageuris
+      fields:
+        id: { heading: Id, displayType: numeric, columnCSSClass: right, sortable: Yes }
+        page_uri: { heading: Page URI, displayType: string, columnCSSClass: left, sortable: Yes }
+        when_added: { heading: Added, displayType: date, columnCSSClass: left, sortable: Yes }
+    crudLoad:
+      command: loadApppageuri
+    javaScriptFiles: ~
+    cssFiles: ~
+
+    formFields:
+      id: { title: Id, inputType: text, size: 11, maxlength: 11, readonly: Yes, cssClass: right numeric-scale0 }
+      when_added: { title: Added, inputType: text, size: 30, maxlength: 30, readonly: Yes, disabled: Yes, cssClass: datetime }
+      page_uri: { title: Page URI, inputType: text, size: 40, maxlength: 40 }
+      permissions:
+        inputType: htmlfragment
+        html: <?php emitPermissionsTable(); ?>
+
+
+    filters:
+      page_uri:
+        trim:
+          class: TrimFilter
+          include: jax/classes/crud/filter/TrimFilter.class.php
+          params: { }
+
+
+    validators:
+      page_uri:
+        notempty:
+          class: NotEmptyValidator
+          include: jax/classes/crud/validator/NotEmptyValidator.class.php
+          params: { }
+        length:
+          class: LengthValidator
+          include: jax/classes/crud/validator/LengthValidator.class.php
+          params: { maxLength: 2048 }
+        noduplicates:
+          class: NoDuplicatesValidator
+          include: jax/classes/crud/validator/NoDuplicatesValidator.class.php
+          params:
+            table: apppageuri
+            fields:
+              page_uri: { field: page_uri, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Page URI is already in use.
+
+
+    addFocusField: page_uri
+    editFocusField: page_uri
+    neverUpdateColumns: [ id, when_added ]

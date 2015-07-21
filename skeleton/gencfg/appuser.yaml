@@ -1,0 +1,204 @@
+tableDescription: User
+tableDescriptions: Users
+loggedInId: $loggedInUser->id
+
+
+searches:
+  appuser:
+    searchableColumns:
+      id: { sqlType: integer, queryOperator: =, unsignedSearch: No }
+      user_name: { sqlType: varchar, queryOperator: beginsWith }
+      email_addr: { sqlType: varchar, queryOperator: beginsWith }
+      first_name: { sqlType: varchar, queryOperator: fulltext }
+      last_name: { sqlType: varchar, queryOperator: fulltext }
+    forbiddenColumns: [ password_hash ]
+
+
+autocompleteSearches:
+  appuser:
+    searchableColumns:
+      user_name: { sqlType: varchar, queryOperator: contains }
+      first_name: { sqlType: varchar, queryOperator: fulltext }
+      last_name: { sqlType: varchar, queryOperator: fulltext }
+    searchResultLabelExpression: "$row->id.': '.trim($row->first_name.' '.$row->last_name)"
+
+
+popupSearches:
+  appuserPopupSearch:
+    searchCommand: searchAppusers
+    searchPresentation: AJAXSearchGrid
+    defaultSorts:
+      - { attr: 'last_name', dir: 1 }
+      - { attr: 'first_name', dir: 1 }
+    idColumn: id
+    rowSelectJavaScriptCallbackFunction: appuserSelected
+    columns:
+      id: { heading: Id, displayType: numeric, columnCSSClass: right, sortable: Yes }
+      user_name: { heading: Username, displayType: string, columnCSSClass: left, sortable: Yes }
+      email_addr: { heading: Email Address, displayType: string, columnCSSClass: left, sortable: Yes }
+      first_name: { heading: First Name, displayType: string, columnCSSClass: left, sortable: Yes }
+      last_name: { heading: Last Name, displayType: string, columnCSSClass: left, sortable: Yes }
+      when_added: { heading: Added, displayType: date, columnCSSClass: left, sortable: Yes }
+
+
+loaders:
+  appuser:
+    relations:
+      roles:
+        table: approle
+        relationType: many
+        sqlQuery: "select distinct r.* from appuserrole u_r inner join approle r on r.role_name = u_r.role_name where u_r.user_id = ? order by r.sort_order, r.role_name"
+        sqlQueryAssignments:
+          0: { expression: "$row->id", psType: int }
+        offset: 0
+        limit: 0
+
+
+cruds:
+  appuser:
+    postInitPHPIncludes:
+      include/search/appuser_search.include.php
+      include/search/appuser_load.include.php
+    javaScriptFiles: ~
+    cssFiles: ~
+
+    allowAddSimilar: No
+
+    crudSearch:
+      likePopupSearch: appuserPopupSearch
+    crudLoad:
+      loadCommand: loadAppuser
+
+    formFields:
+      id: { title: Id, inputType: text, size: 11, maxlength: 11, readonly: Yes, cssClass: right numeric-scale0 }
+      when_added: { title: Added, inputType: text, size: 30, maxlength: 30, readonly: Yes, disabled: Yes, cssClass: datetime }
+      added_by_user_id:
+        title: Added by User Id
+        inputType: text
+        size: 10
+        maxlength: 20
+        readonly: Yes
+        disabled: Yes
+        cssClass: right numeric-scale0
+        descriptionField: added_by_user_full_name
+        descriptionFieldSize: 40
+        descriptionFieldMaxLength: 40
+      last_updated: { title: Last Updated, inputType: text, size: 24, maxlength: 24, disabled: Yes, cssClass: datetime }
+      last_updated_by_user_id:
+        title: Last Updated By User Id
+        inputType: text
+        size: 10
+        maxlength: 20
+        disabled: Yes
+        cssClass: right numeric-scale0
+        descriptionField: last_updated_by_user_full_name
+        descriptionFieldSize: 40
+        descriptionFieldMaxLength: 40
+      user_name: { title: Username, inputType: text, size: 32, maxlength: 32 }
+      email_addr: { title: Email Address, inputType: text, size: 40, maxlength: 255 }
+      first_name: { title: First Name, inputType: text, size: 30, maxlength: 30 }
+      last_name: { title: Last Name, inputType: text, size: 30, maxlength: 30 }
+      is_active: { title: User is Active, inputType: checkbox }
+      password: { title: New Password, inputType: password, size: 30, maxlength: 30 }
+      reEnterPassword: { title: Re-Enter New Password, inputType: password, size: 30, maxlength: 30 }
+
+      userRoles:
+        inputType: htmlfragment
+        html: <?php emitRolesTable(); ?>
+
+    filters:
+      id:
+        trim:
+          class: TrimFilter
+          params: { }
+        int:
+          class: IntFilter
+          params: { }
+      user_name:
+        trim:
+          class: TrimFilter
+          params: { }
+        lower:
+          class: LowerFilter
+          params: { }
+      email_addr:
+        trim:
+          class: TrimFilter
+          params: { }
+        lower:
+          class: LowerFilter
+          params: { }
+      first_name:
+        trim:
+          class: TrimFilter
+          params: { }
+      last_name:
+        trim:
+          class: TrimFilter
+          params: { }
+      is_active:
+        trim:
+          class: TrimFilter
+          params: { }
+        int:
+          class: IntFilter
+          params: { }
+
+    validators:
+      id: ~
+      user_name:
+        notempty:
+          class: NotEmptyValidator
+          params: { }
+        length:
+          class: LengthValidator
+          params: { maxLength: 32 }
+        noduplicates:
+          class: NoDuplicatesValidator
+          params:
+            table: appuser
+            fields:
+              user_name: { field: user_name, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Username is already in use.
+      email_addr:
+        length:
+          class: LengthValidator
+          params: { maxLength: 255 }
+        email:
+          phpCondition: "$row->email_addr != ''''"
+          class: EmailAddressValidator
+          params: { }
+        noduplicates:
+          phpCondition: "$row->email_addr != ''''"
+          class: NoDuplicatesValidator
+          params:
+            table: appuser
+            fields:
+              email_addr: { field: email_addr, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Email Address is already in use.
+      first_name:
+        length:
+          class: LengthValidator
+          params: { maxLength: 30 }
+      last_name:
+        length:
+          class: LengthValidator
+          params: { maxLength: 30 }
+      is_active:
+        range:
+          class: RangeValidator
+          params: { type: int, min: 0, max: 1 }
+      password:
+        length:
+          class: LengthValidator
+          params: { maxLength: 30 }
+      reEnterPassword:
+        length:
+          class: LengthValidator
+          params: { maxLength: 30 }
+
+    addFocusField: user_name
+    editFocusField: user_name
+    neverUpdateColumns: [ id, when_added, added_by_user_id, last_updated, last_updated_by_user_id, login_failures ]

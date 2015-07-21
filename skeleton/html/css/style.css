@@ -1,0 +1,85 @@
+/* Add your custom CSS rules to this file. */
+#hotKeyHelp {
+	min-height: 24px;
+	height: 24px;
+	margin-left: 2px;
+}
+
+.bodyLRLayoutTable {
+	display: table;
+	width: 100%;
+}
+.bodyLRLayoutTR {
+	display: table-row;
+}
+.bodyLRLayoutTD {
+	display: table-cell;
+	vertical-align: top;
+	text-align: left;
+}
+.bodyLRLayoutTD-leftNav {
+	width: 200px;
+}
+.bodyLRLayoutTD-content {
+	width: 100%;
+}
+
+#leftNavCont {
+	font: 0.9em Sans-Serif;
+	font-weight: bold;
+	line-height: 2.0em;
+	margin: 0px;
+	/* Cancel out left and top padding on the content div. */
+	margin-left: 0px;
+	margin-top: 0px;
+	padding: 4px;
+	border: 1px solid lightgray;
+/*	border-radius: 6px;*/
+	background: -moz-linear-gradient(top, #f0f0f0 0%, #e0e0e0);
+	background: -webkit-linear-gradient(top, #f0f0f0 0%, #e0e0e0);
+	background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+	width: auto;
+	display: inline-block;
+	width: 200px;
+	min-height: 300px;
+}
+
+#leftNavCont h1 {
+	font-family:arial, sans-serif;
+	font-size:12pt;
+	font-weight:bold;
+	white-space:normal;
+	margin:2px;
+	padding-top:2px;
+	padding-bottom:0px;
+}
+#leftNavCont h2 {
+	font-family:arial, sans-serif;
+	font-size:10pt;
+	font-weight:bold;
+	white-space:normal;
+	margin:2px;
+	padding-top:2px;
+	padding-bottom:0px;
+}
+
+#leftNavCont a, #leftNavCont a:link, #leftNavCont a:visited, #leftNavCont a:hover, #leftNavCont a:active {
+	text-decoration:none;
+	color:#404040;
+}
+
+#leftNavCont ul {
+	padding-left: 10px;
+}
+
+#leftNavCont li {
+	list-style-type: none;
+}
+
+.leftNavGroup {
+	font-size: 15px;
+	font-weight: bold;
+	padding-top:10px;
+}
+
+

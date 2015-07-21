@@ -1,0 +1,298 @@
+tables:
+# This table contains all of the users who can log into the system.
+  appuser:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
+      added_by_user_id: { type: integer, null: No, default: 0 }
+      last_updated: { type: datetime, useTimeZone: Yes, null: No }
+      last_updated_by_user_id: { type: integer, null: No, default: 0 }
+      user_name: { type: varchar, size: 32, null: No, default: "" }
+      email_addr: { type: varchar, size: 255, null: No, default: "" }
+      password_hash: { type: varchar, size: 512, null: No, default: "" }
+      first_name: { type: varchar, size: 30, null: No, default: "" }
+      last_name: { type: varchar, size: 30, null: No, default: "" }
+      is_active: { type: smallint, null: No, default: 1 }
+      login_failures: { type: smallint, null: No, default: 0 }
+      last_login_failure: { type: datetime, useTimeZone: Yes, null: No, default: '0001-01-01 00:00:00' }
+      last_login: { type: datetime, useTimeZone: Yes, null: No, default: '0001-01-01 00:00:00' }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      username:
+        unique: Yes
+        columns: [ user_name ]
+      emailaddr:
+        unique: No
+        columns: [ email_addr ]
+      lastfirstname:
+        columns: [ last_name, first_name ]
+      ft_firstname:
+        fulltext: Yes
+        columns: [ first_name ]
+      ft_lastname:
+        fulltext: Yes
+        columns: [ last_name ]
+    foreignKeys: ~
+    inserts:
+      -
+        keyColumnNames: [ id ]
+        updateIfExists: No
+        id: { value: 1 }
+        added_by_user_id: { value: 1 }
+        last_updated: { value: "0001-01-01 00:00:00", quoted: Yes }
+        last_updated_by_user_id: { value: 1 }
+        user_name: { value: "admin", quoted: Yes }
+        email_addr: { value: "a@b.com", quoted: Yes }
+        password_hash: { value: "00fe87e1690ed3f5395e63636415afb5de32799bc110288557e4fa8f938090e8f24b167a2b4174a72f2cc6eb33bd70fc7a7f098e3477980eadc25a1031d2811d{9pjflg9aw19gaseur7kc5sl8ba2y6p0}", quoted: Yes }
+        first_name: { value: "Administrator", quoted: Yes }
+        last_name: { value: "", quoted: Yes }
+
+
+# This table contains the list of all available permissions in the system.
+# Rows would be inserted into this table by the system at development and deployment time.
+# No CRUD should exist for this table on a live system, since permissions are tied to specific
+# pages and actions and therefore maintaining the list of all available permissions is a
+# development task, not a configuration or CRUD task.
+  appperm:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
+      perm_name: { type: varchar, size: 40, null: No, default: "" }
+      description: { type: varchar, size: 60, null: No, default: "" }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      permname:
+        unique: Yes
+        columns: [ perm_name ]
+      descr:
+        unique: Yes
+        columns: [ description ]
+# NOTE: If you add permissions here which you don't want to allow to be edited or deleted,
+# you MUST add their perm_name values to the $RESERVED_PERM_NAMES array in
+# appperm_hooks.include.php.
+    inserts:
+      -
+        keyColumnNames: [ perm_name ]
+        updateIfExists: Yes
+        perm_name: { value: "all", quoted: Yes }
+        description: { value: "All Permissions", quoted: Yes }
+      -
+        keyColumnNames: [ perm_name ]
+        updateIfExists: Yes
+        perm_name: { value: "appuser", quoted: Yes }
+        description: { value: "Administer Users", quoted: Yes }
+      -
+        keyColumnNames: [ perm_name ]
+        updateIfExists: Yes
+        perm_name: { value: "approle", quoted: Yes }
+        description: { value: "Administer Roles", quoted: Yes }
+
+
+# This table contains the list of all roles.  A role can be assigned one or more permissions.
+# The "super" role must always exist.
+# A CRUD page for this table would allow administrators to define new roles and assign
+# permissions to those roles, so that users can be assigned to those roles and take on their
+# permissions.
+  approle:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
+      role_name: { type: varchar, size: 40, null: No, default: "" }
+      description: { type: varchar, size: 40, null: No, default: "" }
+      sort_order: { type: integer, null: No, default: 1 }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      rolename:
+        unique: Yes
+        columns: [ role_name ]
+      descr:
+        unique: Yes
+        columns: [ description ]
+      sortorder:
+        columns: [ sort_order ]
+# NOTE: If you add roles here which you don't want to allow to be edited or deleted,
+# you MUST add their perm_name values to the $RESERVED_ROLE_NAMES array in
+# approle_hooks.include.php.
+    inserts:
+      -
+        keyColumnNames: [ role_name ]
+        updateIfExists: Yes
+        role_name: { value: "super", quoted: Yes }
+        description: { value: "Superuser", quoted: Yes }
+        sort_order: { value: 1 }
+      -
+        keyColumnNames: [ role_name ]
+        updateIfExists: Yes
+        role_name: { value: "security_admin", quoted: Yes }
+        description: { value: "Security Administrator", quoted: Yes }
+        sort_order: { value: 2 }
+
+
+# This table associates roles to permissions.
+  approleperm:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      role_name: { type: varchar, size: 40, null: No }
+      perm_name: { type: varchar, size: 40, null: No }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      roleperm:
+        unique: Yes
+        columns: [ role_name, perm_name ]
+    foreignKeys:
+      fk_approleperm_rolename:
+        foreignTable: approle
+        columns:
+          role_name: { local: role_name, foreign: role_name }
+      fk_approleperm_permname:
+        foreignTable: appperm
+        columns:
+          per_name: { local: perm_name, foreign: perm_name }
+    inserts:
+      -
+        keyColumnNames: [ role_name, perm_name ]
+        updateIfExists: No
+        role_name: { value: "super", quoted: Yes }
+        perm_name: { value: "all", quoted: Yes }
+      -
+        keyColumnNames: [ role_name, perm_name ]
+        updateIfExists: No
+        role_name: { value: "security_admin", quoted: Yes }
+        perm_name: { value: "appuser", quoted: Yes }
+      -
+        keyColumnNames: [ role_name, perm_name ]
+        updateIfExists: No
+        role_name: { value: "security_admin", quoted: Yes }
+        perm_name: { value: "approle", quoted: Yes }
+
+
+# This table assigns users to roles.
+  appuserrole:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      user_id: { type: integer, null: No }
+      role_name: { type: varchar, size: 40, null: No }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      userrole:
+        unique: Yes
+        columns: [ user_id, role_name ]
+    foreignKeys:
+      fk_appuserrole_userid:
+        foreignTable: appuser
+        columns:
+          user_id: { local: user_id, foreign: id }
+      fk_appuserrole_rolename:
+        foreignTable: approle
+        columns:
+          role_name: { local: role_name, foreign: role_name }
+    inserts:
+      -
+        keyColumnNames: [ user_id, role_name ]
+        updateIfExists: No
+        user_id: { value: 1 }
+        role_name: { value: "super", quoted: Yes }
+
+
+# This table contains unique session keys for all sessions where the user selected
+# "keep me logged in" when logging in.  Each user may have multiple of these.
+  appuserpersistentlogin:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      last_used: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
+      user_id: { type: integer, null: No }
+      keep_me_logged_in_uniqid: { type: varchar, size: 32, null: No, default: "" }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      userid:
+        columns: [ user_id ]
+      uniqid:
+        unique: Yes
+        columns: [ keep_me_logged_in_uniqid ]
+    foreignKeys:
+      fk_appuserpersistentlogin_userid:
+        foreignTable: appuser
+        columns:
+          user_id: { local: user_id, foreign: id }
+
+
+# This table contains the list of URIs for all PHP pages which require permissions in order to
+# execute.
+# A page URI can be assigned one or more permissions.
+# A CRUD page for this table would allow administrators to define new page URIs and assign
+# permissions to those page URIs, so in order to access any PHP page with permissions set on it,
+# a user must have all of the permissions listed for that page.
+# In order to actually enforce the permissions, the PHP page must execute this function call
+# immediately after including its PHP classes, BEFORE executing any page logic:
+#     Permissions::inScriptPermissionsCheck($loggedInUser->id, true);
+  apppageuri:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
+      page_uri: { type: varchar, size: 250, null: No, default: "" }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      pageuri:
+        unique: Yes
+        columns: [ page_uri ]
+# NOTE: If you add page URIs here which you don't want to allow to be edited or deleted,
+# you MUST add their page_uri values to the $RESERVED_PAGE_URIS array in
+# apppageuri_hooks.include.php.
+    inserts:
+      -
+        keyColumnNames: [ page_uri ]
+        updateIfExists: No
+        page_uri: { value: "appuser.php", quoted: Yes }
+      -
+        keyColumnNames: [ page_uri ]
+        updateIfExists: No
+        page_uri: { value: "approle.php", quoted: Yes }
+      -
+        keyColumnNames: [ page_uri ]
+        updateIfExists: No
+        page_uri: { value: "appperm.php", quoted: Yes }
+      -
+        keyColumnNames: [ page_uri ]
+        updateIfExists: No
+        page_uri: { value: "apppageuri.php", quoted: Yes }
+
+
+# This table associates each page URI to the permissions required to access that page.
+  apppageuriperm:
+    columns:
+      id: { type: integer, null: No, autoIncrement: Yes }
+      page_uri: { type: varchar, size: 250, null: No, default: "" }
+      perm_name: { type: varchar, size: 40, null: No }
+    primaryKey:
+      columns: [ id ]
+    indexes:
+      pageperm:
+        unique: Yes
+        columns: [ page_uri, perm_name ]
+    foreignKeys:
+      fk_apppageperm_pageid:
+        foreignTable: apppageuri
+        columns:
+          page_uri: { local: page_uri, foreign: page_uri }
+      fk_apppageperm_permname:
+        foreignTable: appperm
+        columns:
+          perm_name: { local: perm_name, foreign: perm_name }
+    inserts:
+      -
+        keyColumnNames: [ page_uri, perm_name ]
+        updateIfExists: No
+        page_uri: { value: "appuser.php", quoted: Yes }
+        perm_name: { value: "appuser", quoted: Yes }
+      -
+        keyColumnNames: [ page_uri, perm_name ]
+        updateIfExists: No
+        page_uri: { value: "approle.php", quoted: Yes }
+        perm_name: { value: "approle", quoted: Yes }

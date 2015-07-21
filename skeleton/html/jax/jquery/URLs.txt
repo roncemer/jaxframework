@@ -1,0 +1,10 @@
+jQuery and jQuery UI were downloaded as a bundle from:
+    http://jqueryui.com/download
+jquery.field.min.js plugin was downloaded from:
+    http://www.pengoworks.com/workshop/jquery/field/field.plugin.htm
+jquery.colorbox-min.js, colorbox.css, and accompanying images were downloaded as a bundle from:
+    http://colorpowered.com/colorbox/
+    NOTE: The colorbox.css file and corresponding images are from the example4 subdirectory.
+jquery.dataTables.min.js, datatables.css and corresponding images were downloaded as a bundle from:
+    http://www.datatables.net/
+    NOTE: The datatables.css file is a renamed copy of demo_table.css, with some changes.

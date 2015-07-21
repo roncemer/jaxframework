@@ -1,0 +1,39 @@
+ErrorDocument 404 /error_404.php
+
+RewriteEngine On
+
+# ----------------------------------------------------------------------------------------
+#  **** THE NEXT RULE IS FOR REDIRECTING NON-WWW URLS TO WWW.
+#  **** IF YOU WANT TO DO THIS, UCOMMENT IT AND REPLACE JAXFRAMEWORK.ORG WITH YOUR DOMAIN.
+# ----------------------------------------------------------------------------------------
+## Redirect all links from the jaxframework.org base domain to www.jaxframework.org.
+## There are separate but identical (except for protocol) conditions and rules here.
+#RewriteCond %{HTTPS} !on
+#RewriteCond %{REQUEST_METHOD} !POST
+#RewriteCond %{HTTP_HOST} ^jaxframework\.org$ [NC]
+#RewriteRule ^(.*)$ http://www.jaxframework.org/$1 [QSA,R=301,L]
+#RewriteCond %{HTTPS} on
+#RewriteCond %{REQUEST_METHOD} !POST
+#RewriteCond %{HTTP_HOST} ^jaxframework\.org$ [NC]
+#RewriteRule ^(.*)$ https://www.jaxframework.org/$1 [QSA,R=301,L]
+
+# If the client requests a PHP page, redirect to the same URL without the .php extension,
+# keeping the query string.  The front controller (rewrite rule for it is below) will
+# handle all of the logic.
+# There are separate but identical (except for protocol) conditions and rules here.
+RewriteCond %{HTTPS} !on
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !\/frontcontroller\.php$
+RewriteCond %{REQUEST_URI} !\/frontcontroller\.php\/
+RewriteCond %{REQUEST_URI} ^(.*)\.php(([/?#](.*)$)|$)
+RewriteRule ^(.*)$ http://%{HTTP_HOST}%1%2 [R=301,L]
+RewriteCond %{HTTPS} on
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !\/frontcontroller\.php$
+RewriteCond %{REQUEST_URI} !\/frontcontroller\.php\/
+RewriteCond %{REQUEST_URI} ^(.*)\.php(([/?#](.*)$)|$)
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%1%2 [R=301,L]
+
+# Let the front controller handle any unhandled requests.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ frontcontroller.php [QSA,L]

@@ -1,0 +1,118 @@
+[ng-app='JaxGridApp'] {
+	display: inline-block;
+	clear: right;
+	width: auto;
+}
+
+[ng-app='JaxGridApp'] table {
+	width: 100%;
+}
+
+[ng-app='JaxGridApp'] table th {
+	font-weight: bold;
+	padding: 8px 2px;
+}
+
+.jax-grid-sortable-heading .jax-grid-sort-icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background-image: url('jax-grid-icons.png');
+	background-repeat: no-repeat;
+	margin: auto auto auto 8px;
+	padding: 0px;
+}
+
+.jax-grid-sortable-heading.jax-grid-sort-none .jax-grid-sort-icon {
+	background-position: 0px -96px;
+}
+
+.jax-grid-sortable-heading.jax-grid-sort-asc .jax-grid-sort-icon {
+	background-position: 0px -112px;
+}
+
+.jax-grid-sortable-heading.jax-grid-sort-desc .jax-grid-sort-icon {
+	background-position: 0px -128px;
+}
+
+.jax-grid-sort-0 .jax-grid-sort-icon { opacity: 1.0; }
+.jax-grid-sort-1 .jax-grid-sort-icon { opacity: 0.75; }
+.jax-grid-sort-2 .jax-grid-sort-icon { opacity: 0.5; }
+.jax-grid-sort-3 .jax-grid-sort-icon { opacity: 0.25; }
+
+.jax-grid-pager {
+	width: 100%;
+	display: inline-block;
+	clear: right;
+}
+
+.jax-grid-pager input, .jax-grid-pager select {
+	margin: 2px;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.jax-grid-pager-page-number-rows-per-page, .jax-grid-pager-search-box, .jax-grid-pager-pager {
+	display: inline-block;
+	text-align: left;
+	margin: 2px auto 0px auto;
+}
+
+.jax-grid-pager-page-number-rows-per-page {
+	float: left;
+}
+
+.jax-grid-pager-pager {
+	float: right;
+	text-align: right;
+	margin-left: 16px;
+}
+
+.jax-grid-pager-rows-per-page-label {
+	margin-left: 16px;
+	text-align: left;
+}
+
+.jax-grid-pager-search-text-input-label {
+	margin-left: 16px;
+}
+
+.jax-grid-pager-search-by-label {
+	margin-left: 4px;
+}
+
+.jax-grid-pager-pager .pagination {
+	margin: 0px;
+}
+
+.jax-grid-pager-pager .pagination ul li {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.jax-grid-pager-pager .pagination a, .jax-grid-pager-pager .pagination span {
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+.jax-grid-table tr.odd {
+	background-color: #E2E4FF;
+}
+
+.jax-grid-table tr.even {
+	background-color: white;
+}
+
+.jax-grid-table tr.highlighted {
+	background-color: #c0c0c0;
+}
+
+.jax-grid-table th {
+	padding: 3px 3px;
+}
+
+.jax-grid-table td {
+	padding: 3px 3px;
+}

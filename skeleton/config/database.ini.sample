@@ -1,0 +1,16 @@
+; This configuration file controls the database connection type
+; (which in turn controls the database vendor), and connection parameters.
+; If you're using MySQL on the local machine with the default user and password,
+; there will be no need to edit this file.
+
+; This controls which connection class to use.
+; The connection class must match the database type (vendor) you're running.
+; Uncomment only one connectionClass value.
+connectionClass=MySQLiConnection
+;connectionClass=PostgreSQLConnection
+
+; Connection parameters.
+server=localhost
+username=jax
+password=123jAx321
+database=jax

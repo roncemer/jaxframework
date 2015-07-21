@@ -1,0 +1,146 @@
+#!/bin/bash
+
+# Figure out where the current script lives.  Run from that directory.
+scriptDir="`dirname \"$0\"`"
+[ "$scriptDir" != "" ] && cd "$scriptDir"
+scriptDir="`pwd`"
+
+phpdaogenDir="`dirname \"$scriptDir\"`/phpdaogen"
+ddltosql="$phpdaogenDir/ddltosql.php"
+
+. "$scriptDir/connection.include.sh"
+allConnectionNames=",$ini_secondaryConnectionNames"
+
+connectionNames=""
+haveAllConnections=n
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	'-all')
+		if [ "$connectionNames" != "" ]; then
+			echo "Cannot use -all when connection names have already been specified." >&2
+			exit 99;
+		fi
+		haveAllConnections=y
+		connectionNames="$allConnectionNames"
+		;;
+	*)
+		if [ "$haveAllConnections" = "y" ]; then
+			echo "Invalid option: $1" >&2
+			exit 99;
+		else
+			if [ "$connectionNames" = "" ]; then
+				connectionNames="$1"
+			else
+				connectionNames="$connectionNames,$1"
+			fi
+		fi
+		;;
+	esac
+	shift
+done
+
+if [ "$connectionNames" = "" ]; then
+	connectionNames=","
+fi
+
+OIFS="$IFS"
+for pass in 1 2; do
+	IFS=","
+	for connectionName in $connectionNames; do
+		IFS="$OIFS"
+
+		. "$scriptDir/connection.include.sh"
+
+		okToProcess=y
+		case $pass in
+		'1')
+			# First pass is connections without tableToDatabaseMap mappings.
+			[ "$ini_tableToDatabaseMap" != "" ] && okToProcess=n
+			;;
+		'2')
+			# Second pass is connections with tableToDatabaseMap mappings.
+			[ "$ini_tableToDatabaseMap" = "" ] && okToProcess=n
+			;;
+		esac
+
+		if [ "$okToProcess" = "y" ]; then
+
+			if [ "$connectionName" = "" ]; then
+				cndisp="[default]"
+			else
+				cndisp="$connectionName"
+			fi
+
+			echo ""
+			echo "Processing connection $cndisp database $ini_database."
+			echo ""
+
+			echo "Are you SURE you want to wipe out your database and re-initialize it?"
+			echo "All data related to this application will be LOST!!!"
+			echo "Enter yes if you really want to do this."
+			read a
+			if [ "$a" = "yes" ]; then
+
+				case "$dialect" in
+				mysql)
+					echo "
+-- -----------------------------------------------
+-- Drop and re-create the database.
+-- -----------------------------------------------
+
+set foreign_key_checks = 0;
+drop database if exists $ini_database;
+set foreign_key_checks = 1;
+create database $ini_database default character set utf8 default collate utf8_general_ci;
+
+-- -----------------------------------------------
+-- Create user; grant permissions.
+-- -----------------------------------------------
+
+grant all privileges on *.* to '$ini_username'@'%' identified by '$ini_password';
+grant all privileges on *.* to $ini_username@localhost identified by '$ini_password';
+" | mysql -h "$ini_server" -u root --verbose
+					;;
+				pgsql)
+					echo "
+-- -----------------------------------------------
+-- Drop schema and user.
+-- -----------------------------------------------
+
+drop schema if exists $ini_database;
+drop user if exists $ini_username;
+
+-- -----------------------------------------------
+-- Create user and database.
+-- -----------------------------------------------
+
+create user $ini_username with createdb encrypted password '$ini_password';
+create schema $ini_database;
+" | psql -h "$ini_server" -U postgres
+					;;
+				*)
+					echo "Unsupported dialect: $dialect" >&2
+					exit 1;
+					;;
+				esac
+
+				php "$ddltosql" "$scriptDir/../config/database.ini" "$scriptDir" "$connectionName" | sh -c "$pipecmd"
+
+			else
+
+				echo ""
+				echo "Skipped connection $cndisp database $ini_database."
+				echo ""
+
+			fi
+
+		fi # if [ "okToProcess" = "y" ]; then
+
+		IFS=","
+	done # for connectionName in $connectionNames; do
+	IFS="$OIFS"
+done # for pass in 1 2; do
+OIFS=
+
+exit 0

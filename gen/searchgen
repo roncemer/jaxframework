@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Figure out where the current script lives.  Run from that directory.
+scriptdir="`dirname \"$0\"`"
+[ "$scriptdir" != "" ] && cd "$scriptdir"
+scriptdir="`pwd`"
+
+php searchgen.php "$@"
+retval="$?"
+exit "$retval"

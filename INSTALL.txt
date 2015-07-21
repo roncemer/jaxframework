@@ -1,0 +1,48 @@
+Jax Framework -- General installation instructions.
+
+This document assumes you're running Linux (Fedora 12, Ubuntu 11.04) or similar.
+Adjust accordingly to your distro.
+
+If you're going to use the MySQL database, read the MYSQL.txt document and follow its instructions to do any required special MySQL initial configuration.
+
+If you're going to use the PostgreSQL database, read the PGSQL.txt document and follow its instructions to do any required special PostgreSQL initial configuration.
+
+This package should be installed on a server machine, and accessed using a browser.
+
+Copy the initial framework skeleton into place:
+    cp -rp skeleton/* .
+
+Configure the database connection:
+    cp -p config/database.ini.sample config/database.ini
+Edit config/database.ini.  Make any changes to the database connection parameters.
+Keep in mind that whatever you specify for the user, password and database in this file, that
+is how these entities will be created in the next step.  In most cases, if you're using MySQL,
+you can probably leave this file as-is for a starting point.
+
+Initialize the database.  This will create the user you specified in config/database.ini, assign
+the password you specified, and create and initialize the database name you specified:
+    ddl/initdb
+
+Generate the initial DAO classes for the framework tables:
+    ddl/regenDAO
+
+Create the search, loader and CRUD scripts for the framework tables:
+    gen/searchgen ; gen/crudgen
+
+For Red Hat derivative Linux distributions, copy jax.conf.sample to /etc/httpd/conf.d/jax.conf and then edit the file at /etc/httpd/conf.d/jax.conf.  Adjust the path to point to where you installed jaxframework directory.  For Debian derivative linux distributions, this copy the file into /etc/apache2/sites-available, customize it there, then use "a2ensite jax.conf" to enable the site.
+
+When you're done, be sure to restart (or reload) apache.
+
+Edit /etc/hosts.  Find the localhost entry (127.0.0.1), and add "jax" (no quotes) to the end of the line, separated from the rest of the line by a tab character.
+
+Point a browser to http://jax and login using username admin password admin.
+
+To familiarize yourself with Jax Framework, point your browser to file://path/jaxframework/doc/guide/html/index.html (replace path with the path to the parent directory of jaxframework).
+
+NOTE: To improve the speed of your project, turn on GZIP compression of output for browsers which
+support it.
+Edit /etc/php.ini.  Set zlib.output_compression = On.
+Optionally set zlib.output_compression_level to a number between 1 and 9, inclusive.
+1 = fastest but worst compression; 9 = slowest but best compression.
+Or, you can leave zlib.output_compression_level at its default of -1 to let the server figure out
+the best compression level.

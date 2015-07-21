@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Figure out where the current script lives.  Run from that directory.
+scriptDir="`dirname \"$0\"`"
+[ "$scriptDir" != "" ] && cd "$scriptDir"
+scriptDir="`pwd`"
+
+phpdaogenDir="`dirname \"$scriptDir\"`/phpdaogen"
+ddldbdiff="$phpdaogenDir/ddldbdiff.php"
+ddltosql="$phpdaogenDir/ddltosql.php"
+
+. "$scriptDir/connection.include.sh"
+allConnectionNames=",$ini_secondaryConnectionNames"
+
+connectionNames=""
+haveAllConnections=n
+
+doddl="y"
+doinserts="y"
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	'-ddl-only')
+		doddl="y"
+		doinserts="n"
+		;;
+	'-inserts-only')
+		doddl="n"
+		doinserts="y"
+		;;
+	'-all')
+		if [ "$connectionNames" != "" ]; then
+			echo "Cannot use -all when connection names have already been specified." >&2
+			exit 99;
+		fi
+		haveAllConnections=y
+		connectionNames="$allConnectionNames"
+		;;
+	*)
+		if [ "$haveAllConnections" = "y" ]; then
+			echo "Invalid option: $1" >&2
+			exit 99;
+		else
+			if [ "$connectionNames" = "" ]; then
+				connectionNames="$1"
+			else
+				connectionNames="$connectionNames,$1"
+			fi
+		fi
+		;;
+	esac
+	shift
+done
+
+if [ "$connectionNames" = "" ]; then
+	connectionNames=","
+fi
+
+OIFS="$IFS"
+for pass in 1 2; do
+	IFS=","
+	for connectionName in $connectionNames
+	do
+		IFS="$OIFS"
+
+		. "$scriptDir/connection.include.sh"
+
+		okToProcess=y
+		case $pass in
+		'1')
+			# First pass is connections without tableToDatabaseMap mappings.
+			[ "$ini_tableToDatabaseMap" != "" ] && okToProcess=n
+			;;
+		'2')
+			# Second pass is connections with tableToDatabaseMap mappings.
+			[ "$ini_tableToDatabaseMap" = "" ] && okToProcess=n
+			;;
+		esac
+
+		if [ "$okToProcess" = "y" ]; then
+
+			if [ "$connectionName" = "" ]; then
+				cndisp="[default]"
+			else
+				cndisp="$connectionName"
+			fi
+
+			echo ""
+			echo "Processing connection $cndisp database $ini_database."
+			echo ""
+
+			if [ "$doddl" = "y" ]; then
+				php "$ddldbdiff" -allow-drop-column -allow-drop-index -allow-drop-table "$scriptDir/../config/database.ini" "$scriptDir" "$connectionName" | sh -c "$pipecmd"
+			fi
+
+			if [ "$doinserts" = "y" ]; then
+				php "$ddltosql" -inserts-with-keycols-only "$scriptDir/../config/database.ini" "$scriptDir" "$connectionName" | sh -c "$pipecmd"
+			fi
+
+		fi # if [ "okToProcess" = "y" ]; then
+
+		IFS=","
+	done
+	IFS="$OIFS"
+done # for pass in 1 2; do
+OIFS=
+
+exit 0

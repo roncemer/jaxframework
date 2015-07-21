@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Figure out where the current script lives.  Run from that directory.
+scriptdir="`dirname \"$0\"`"
+oldcwd="`pwd`"
+[ "$scriptdir" != "" ] && cd "$scriptdir"
+scriptdir="`pwd`"
+cd "$oldcwd"
+
+php "$scriptdir/findmissingres.php" "$@"
+retval="$?"
+exit "$retval"

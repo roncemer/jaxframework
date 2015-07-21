@@ -1,0 +1,90 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}Revision History}{3}{chapter.1}
+\contentsline {chapter}{\numberline {2}Introduction}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Why was this document written?}{5}{section.2.1}
+\contentsline {section}{\numberline {2.2}Audience}{5}{section.2.2}
+\contentsline {section}{\numberline {2.3}New versions of this document}{5}{section.2.3}
+\contentsline {section}{\numberline {2.4}Contributions}{5}{section.2.4}
+\contentsline {section}{\numberline {2.5}Feedback}{6}{section.2.5}
+\contentsline {section}{\numberline {2.6}Copyright information}{6}{section.2.6}
+\contentsline {section}{\numberline {2.7}What do you need?}{6}{section.2.7}
+\contentsline {chapter}{\numberline {3}Jax Framework \IeC {\texttrademark } Subsystems Overview}{7}{chapter.3}
+\contentsline {section}{\numberline {3.1}Data Access Objects with phpdaogen}{7}{section.3.1}
+\contentsline {section}{\numberline {3.2}AngularJS}{8}{section.3.2}
+\contentsline {section}{\numberline {3.3}Twitter Bootstrap}{8}{section.3.3}
+\contentsline {section}{\numberline {3.4}jQuery and jQuery-UI Components}{8}{section.3.4}
+\contentsline {section}{\numberline {3.5}Search and CRUD Generators}{9}{section.3.5}
+\contentsline {section}{\numberline {3.6}Search and Loader Includes}{9}{section.3.6}
+\contentsline {section}{\numberline {3.7}Filters and Validators}{9}{section.3.7}
+\contentsline {section}{\numberline {3.8}Reporting with phpreportgen}{10}{section.3.8}
+\contentsline {section}{\numberline {3.9}Other Classes and Includes}{10}{section.3.9}
+\contentsline {section}{\numberline {3.10}Model-View-Controller}{10}{section.3.10}
+\contentsline {section}{\numberline {3.11}CRUD Callbacks}{11}{section.3.11}
+\contentsline {section}{\numberline {3.12}Page Layout and Templates}{11}{section.3.12}
+\contentsline {chapter}{\numberline {4}Phpdaogen}{13}{chapter.4}
+\contentsline {section}{\numberline {4.1}Connection and PreparedStatement}{13}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Introduction}{13}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Connection}{13}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}PreparedStatement}{15}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}How it All Works Together}{15}{subsection.4.1.4}
+\contentsline {section}{\numberline {4.2}Database Schema}{16}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Introduction}{16}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}YAML DDL File Format}{17}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}XML DDL File Format}{20}{subsection.4.2.3}
+\contentsline {section}{\numberline {4.3}Data Access Objects}{20}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Introduction}{20}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}The insert(), update(), delete() and load() Functions}{24}{subsection.4.3.2}
+\contentsline {subsubsection}{insert()}{24}{subsubsection*.3}
+\contentsline {subsubsection}{update()}{24}{subsubsection*.4}
+\contentsline {subsubsection}{delete()}{24}{subsubsection*.5}
+\contentsline {subsubsection}{load()}{25}{subsubsection*.6}
+\contentsline {subsection}{\numberline {4.3.3}The Finder Functions}{25}{subsection.4.3.3}
+\contentsline {chapter}{\numberline {5}Search and CRUD Generators}{27}{chapter.5}
+\contentsline {section}{\numberline {5.1}Introduction}{27}{section.5.1}
+\contentsline {section}{\numberline {5.2}Generator Configuration YAML File Format}{27}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Top-Level Entries}{27}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Searches}{28}{subsection.5.2.2}
+\contentsline {subsection}{\numberline {5.2.3}Autocomplete Searches}{30}{subsection.5.2.3}
+\contentsline {subsection}{\numberline {5.2.4}Popup Searches}{31}{subsection.5.2.4}
+\contentsline {subsection}{\numberline {5.2.5}Loaders}{32}{subsection.5.2.5}
+\contentsline {subsection}{\numberline {5.2.6}CRUDs}{34}{subsection.5.2.6}
+\contentsline {subsubsection}{Tabs and Accordions}{37}{subsubsection*.7}
+\contentsline {paragraph}{Tabs}{37}{paragraph*.8}
+\contentsline {paragraph}{Accordions}{37}{paragraph*.9}
+\contentsline {section}{\numberline {5.3}Default Generator Configuration File}{38}{section.5.3}
+\contentsline {section}{\numberline {5.4}Search Generator}{38}{section.5.4}
+\contentsline {section}{\numberline {5.5}CRUD Generator}{39}{section.5.5}
+\contentsline {section}{\numberline {5.6}CRUD Callbacks}{39}{section.5.6}
+\contentsline {subsection}{\numberline {5.6.1}Introduction}{39}{subsection.5.6.1}
+\contentsline {subsection}{\numberline {5.6.2}Model Callbacks}{39}{subsection.5.6.2}
+\contentsline {subsection}{\numberline {5.6.3}View Callbacks}{41}{subsection.5.6.3}
+\contentsline {subsection}{\numberline {5.6.4}Controller Callbacks}{42}{subsection.5.6.4}
+\contentsline {chapter}{\numberline {6}Filters and Validators for Forms}{45}{chapter.6}
+\contentsline {section}{\numberline {6.1}Introduction}{45}{section.6.1}
+\contentsline {section}{\numberline {6.2}Filters}{45}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}The Filter Abstract Class}{45}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Filters and their Parameters}{46}{subsection.6.2.2}
+\contentsline {subsubsection}{Class: IntFilter}{46}{subsubsection*.10}
+\contentsline {subsubsection}{Class: DecimalFilter}{46}{subsubsection*.11}
+\contentsline {subsubsection}{Class: LowerFilter}{46}{subsubsection*.12}
+\contentsline {subsubsection}{Class: UpperFilter}{47}{subsubsection*.13}
+\contentsline {subsubsection}{Class: TrimFilter}{47}{subsubsection*.14}
+\contentsline {section}{\numberline {6.3}Validators}{47}{section.6.3}
+\contentsline {subsection}{\numberline {6.3.1}The Validator Abstract Class}{47}{subsection.6.3.1}
+\contentsline {subsection}{\numberline {6.3.2}Validators and their Parameters}{48}{subsection.6.3.2}
+\contentsline {subsubsection}{Class: NotZeroValidator}{48}{subsubsection*.15}
+\contentsline {subsubsection}{Class: RangeValidator}{48}{subsubsection*.16}
+\contentsline {subsubsection}{Class: ListValidator}{49}{subsubsection*.17}
+\contentsline {subsubsection}{Class: NotEmptyValidator}{49}{subsubsection*.18}
+\contentsline {subsubsection}{Class: LengthValidator}{50}{subsubsection*.19}
+\contentsline {subsubsection}{Class: EmailAddressValidator}{50}{subsubsection*.20}
+\contentsline {subsubsection}{Class: NoDuplicatesValidator}{50}{subsubsection*.21}
+\contentsline {subsubsection}{Class: ForeignKeyValidator}{50}{subsubsection*.22}
+\contentsline {chapter}{\numberline {7}Permission System}{53}{chapter.7}
+\contentsline {section}{\numberline {7.1}Introduction}{53}{section.7.1}
+\contentsline {section}{\numberline {7.2}Sessions and the Login/Logout Process}{53}{section.7.2}
+\contentsline {section}{\numberline {7.3}The Permissions Class}{54}{section.7.3}
+\contentsline {section}{\numberline {7.4}Other Files in the Permission System}{55}{section.7.4}
+\contentsline {subsection}{\numberline {7.4.1}The requireLogin.include.php and loginForm.include.php Include Files}{55}{subsection.7.4.1}
+\contentsline {subsection}{\numberline {7.4.2}The logout.php Page}{55}{subsection.7.4.2}
+\contentsline {section}{\numberline {7.5}Highly Customizable}{55}{section.7.5}

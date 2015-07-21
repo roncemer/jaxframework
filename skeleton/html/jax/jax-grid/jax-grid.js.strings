@@ -1,0 +1,6 @@
+jax.grid.pager.page_number_rows_per_page.page.label = Page
+jax.grid.pager.page_number_rows_per_page.num_pages.label = of
+jax.grid.pager.page_number_rows_per_page.rows_per_page.label = rows/page
+jax.grid.pager.search_text_input.label = Search
+jax.grid.pager.search_by_select.label = by
+jax.grid.pager.search_by_select.any_option.label = (any)

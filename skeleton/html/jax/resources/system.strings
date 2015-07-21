@@ -1,0 +1,9 @@
+# Jax Framework System Strings
+
+popupSearch.actions = Actions
+popupSearch.titleFmt = Searching %s
+popupSearch.filterCol.title = by
+popupSearch.filterCol.option.any.title = (any)
+
+system.yes = Yes
+system.no = No

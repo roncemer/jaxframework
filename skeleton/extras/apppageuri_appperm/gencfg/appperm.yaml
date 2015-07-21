@@ -1,0 +1,100 @@
+tableDescription: Permission
+tableDescriptions: Permissions
+loggedInId: $loggedInUser->id
+
+
+searches:
+  appperm:
+    searchableFields:
+      id: { sqlType: integer, queryOperator: =, unsignedSearch: No }
+      perm_name: { sqlType: varchar, queryOperator: contains }
+      description: { sqlType: varchar, queryOperator: contains }
+
+
+loaders:
+  appperm:
+    phpClasses:
+      ApppermDAO: { path: classes/dao/ApppermDAO.class.php }
+
+
+cruds:
+  appperm:
+    phpClasses:
+      ApppermDAO: { path: classes/dao/ApppermDAO.class.php }
+    postInitPHPIncludes:
+      include/search/appperm_search.include.php
+      include/search/appperm_load.include.php
+    crudSearch:
+      command: searchAppperms
+      fields:
+        id: { heading: Id, displayType: numeric, columnCSSClass: right, sortable: Yes }
+        perm_name: { heading: Permission Name, displayType: string, columnCSSClass: left, sortable: Yes }
+        description: { heading: Description, displayType: string, columnCSSClass: left, sortable: Yes }
+        when_added: { heading: Added, displayType: date, columnCSSClass: left, sortable: Yes }
+    crudLoad:
+      command: loadAppperm
+    javaScriptFiles: ~
+    cssFiles: ~
+
+    formFields:
+      id: { title: Id, inputType: text, size: 11, maxlength: 11, readonly: Yes, cssClass: right numeric-scale0 }
+      when_added: { title: Added, inputType: text, size: 30, maxlength: 30, readonly: Yes, disabled: Yes, cssClass: datetime }
+      perm_name: { title: Permissions Name, inputType: text, size: 40, maxlength: 40 }
+      description: { title: Description, inputType: text, size: 60, maxlength: 60 }
+
+
+    filters:
+      perm_name:
+        trim:
+          class: TrimFilter
+          include: jax/classes/crud/filter/TrimFilter.class.php
+          params: { }
+      description:
+        trim:
+          class: TrimFilter
+          include: jax/classes/crud/filter/TrimFilter.class.php
+          params: { }
+
+
+    validators:
+      perm_name:
+        notempty:
+          class: NotEmptyValidator
+          include: jax/classes/crud/validator/NotEmptyValidator.class.php
+          params: { }
+        length:
+          class: LengthValidator
+          include: jax/classes/crud/validator/LengthValidator.class.php
+          params: { maxLength: 40 }
+        noduplicates:
+          class: NoDuplicatesValidator
+          include: jax/classes/crud/validator/NoDuplicatesValidator.class.php
+          params:
+            table: appperm
+            fields:
+              perm_name: { field: perm_name, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Permission Name is already in use.
+      description:
+        notempty:
+          class: NotEmptyValidator
+          include: jax/classes/crud/validator/NotEmptyValidator.class.php
+          params: { }
+        length:
+          class: LengthValidator
+          include: jax/classes/crud/validator/LengthValidator.class.php
+          params: { maxLength: 60 }
+        noduplicates:
+          class: NoDuplicatesValidator
+          include: jax/classes/crud/validator/NoDuplicatesValidator.class.php
+          params:
+            table: appperm
+            fields:
+              description: { field: description, type: string, queryOperator: = }
+              id: { field: id, type: int, queryOperator: <> }
+            errorMsg: The selected Description is already in use.
+
+
+    addFocusField: perm_name
+    editFocusField: description
+    neverUpdateColumns: [ id, when_added ]

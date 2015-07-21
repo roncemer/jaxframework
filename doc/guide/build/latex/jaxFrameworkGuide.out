@@ -1,0 +1,43 @@
+\BOOKMARK [0][-]{chapter.1}{Revision History}{}% 1
+\BOOKMARK [0][-]{chapter.2}{Introduction}{}% 2
+\BOOKMARK [1][-]{section.2.1}{Why was this document written?}{chapter.2}% 3
+\BOOKMARK [1][-]{section.2.2}{Audience}{chapter.2}% 4
+\BOOKMARK [1][-]{section.2.3}{New versions of this document}{chapter.2}% 5
+\BOOKMARK [1][-]{section.2.4}{Contributions}{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.5}{Feedback}{chapter.2}% 7
+\BOOKMARK [1][-]{section.2.6}{Copyright information}{chapter.2}% 8
+\BOOKMARK [1][-]{section.2.7}{What do you need?}{chapter.2}% 9
+\BOOKMARK [0][-]{chapter.3}{Jax Framework \222 Subsystems Overview}{}% 10
+\BOOKMARK [1][-]{section.3.1}{Data Access Objects with phpdaogen}{chapter.3}% 11
+\BOOKMARK [1][-]{section.3.2}{AngularJS}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.3}{Twitter Bootstrap}{chapter.3}% 13
+\BOOKMARK [1][-]{section.3.4}{jQuery and jQuery-UI Components}{chapter.3}% 14
+\BOOKMARK [1][-]{section.3.5}{Search and CRUD Generators}{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.6}{Search and Loader Includes}{chapter.3}% 16
+\BOOKMARK [1][-]{section.3.7}{Filters and Validators}{chapter.3}% 17
+\BOOKMARK [1][-]{section.3.8}{Reporting with phpreportgen}{chapter.3}% 18
+\BOOKMARK [1][-]{section.3.9}{Other Classes and Includes}{chapter.3}% 19
+\BOOKMARK [1][-]{section.3.10}{Model-View-Controller}{chapter.3}% 20
+\BOOKMARK [1][-]{section.3.11}{CRUD Callbacks}{chapter.3}% 21
+\BOOKMARK [1][-]{section.3.12}{Page Layout and Templates}{chapter.3}% 22
+\BOOKMARK [0][-]{chapter.4}{Phpdaogen}{}% 23
+\BOOKMARK [1][-]{section.4.1}{Connection and PreparedStatement}{chapter.4}% 24
+\BOOKMARK [1][-]{section.4.2}{Database Schema}{chapter.4}% 25
+\BOOKMARK [1][-]{section.4.3}{Data Access Objects}{chapter.4}% 26
+\BOOKMARK [0][-]{chapter.5}{Search and CRUD Generators}{}% 27
+\BOOKMARK [1][-]{section.5.1}{Introduction}{chapter.5}% 28
+\BOOKMARK [1][-]{section.5.2}{Generator Configuration YAML File Format}{chapter.5}% 29
+\BOOKMARK [1][-]{section.5.3}{Default Generator Configuration File}{chapter.5}% 30
+\BOOKMARK [1][-]{section.5.4}{Search Generator}{chapter.5}% 31
+\BOOKMARK [1][-]{section.5.5}{CRUD Generator}{chapter.5}% 32
+\BOOKMARK [1][-]{section.5.6}{CRUD Callbacks}{chapter.5}% 33
+\BOOKMARK [0][-]{chapter.6}{Filters and Validators for Forms}{}% 34
+\BOOKMARK [1][-]{section.6.1}{Introduction}{chapter.6}% 35
+\BOOKMARK [1][-]{section.6.2}{Filters}{chapter.6}% 36
+\BOOKMARK [1][-]{section.6.3}{Validators}{chapter.6}% 37
+\BOOKMARK [0][-]{chapter.7}{Permission System}{}% 38
+\BOOKMARK [1][-]{section.7.1}{Introduction}{chapter.7}% 39
+\BOOKMARK [1][-]{section.7.2}{Sessions and the Login/Logout Process}{chapter.7}% 40
+\BOOKMARK [1][-]{section.7.3}{The Permissions Class}{chapter.7}% 41
+\BOOKMARK [1][-]{section.7.4}{Other Files in the Permission System}{chapter.7}% 42
+\BOOKMARK [1][-]{section.7.5}{Highly Customizable}{chapter.7}% 43

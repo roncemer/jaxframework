@@ -1,0 +1,5 @@
+reportbase.form.input.outputFormat.label = Output Format
+reportbase.form.input.displayHTMLReportInline.label = Display In Page (uncheck to download)
+reportbase.form.input.pdfPageFormat.label = PDF Page Format
+reportbase.form.input.pdfPageOrientation.label = PDF Page Orientation
+reportbase.form.input.generateReportButton.label = Generate Report

@@ -1,0 +1,19 @@
+Edit /etc/postgresql/8.4/main/postgresql.conf.  Find and uncomment the following line:
+    listen_addresses = 'localhost'
+
+Edit /etc/postgresql/8.4/pg_hba.conf.  Change these lines:
+    local   all         postgres                          ident
+        ...
+    local   all         all                               ident
+To these:
+    local   all         postgres                          md5
+        ...
+    local   all         all                               md5
+
+Restart postgresql:
+    sudo /etc/init.d/postgresql restart
+
+Go into psql and make a few changes (substitute your own postgresql user password, keeping in mind that the postgres user is the superuser for PostgreSQL):
+    sudo -u postgres psql template1
+    ALTER USER postgres with encrypted password 'your_password';
+Exit psql by pressing Ctrl-D.

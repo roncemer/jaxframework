@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Figure out where the current script lives.  Run from that directory.
+scriptDir="`dirname \"$0\"`"
+[ "$scriptDir" != "" ] && cd "$scriptDir"
+scriptDir="`pwd`"
+
+phpdaogenDir="`dirname \"$scriptDir\"`/phpdaogen"
+daogen="$phpdaogenDir/daogen.php"
+daoClassesDir="`dirname \"$scriptDir\"`/html/classes/dao"
+
+php "$daogen" -o "$daoClassesDir" -ddl-dir "$scriptDir" "$@"
+retval="$?"
+[ "$retval" -ne "0" ] && exit "$retval"
+exit 0

@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+    ServerName jax
+    ServerAlias *.jax
+    DocumentRoot /home/rcemer/projects/jaxframework/html
+
+# To access your web application from sub-URIs (which could potentially map to diffferent
+# backend databases), use aliases like those shown below.  You can also tweak or remove
+# ServerName above, and tweak ServerAlias.  For example, if you're not on shared hosting,
+# You could remove ServerName and change ServerAlias to "*" (no quotes).
+# You can also modify the ConnectionFactory class to look at the URI and determine which
+# database connection config file to use, falling back to database.ini for the default.
+# Keep in mind, if you use the optional front controller, your web application MUST be
+# located at the root of the domain, so aliases cannot be used with the front controller.
+#    Alias /alias1 /home/rcemer/projects/jaxframework/html
+#    Alias /alias2 /home/rcemer/projects/jaxframework/html
+</VirtualHost>
+<Directory /home/rcemer/projects/jaxframework>
+    Options FollowSymLinks
+    AllowOverride All
+    Allow from All
+</Directory>

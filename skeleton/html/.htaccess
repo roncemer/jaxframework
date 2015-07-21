@@ -1,0 +1,15 @@
+ErrorDocument 404 /error_404.php
+
+RewriteEngine On
+RewriteBase /
+
+# If the requested file doesn't exist, but a file of the same name exists
+# with .php appended to it, serve the .php file.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L,QSA]
+
+# If the user requests a .php file directly, issue a 404 error.
+RewriteCond %{THE_REQUEST} "^[^ ]* .*?\.php[? ].*$"
+RewriteRule .* - [L,R=404]
