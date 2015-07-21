@@ -1534,8 +1534,7 @@ class ReportOutputter {
 	// Do not change the output format when a report is in progress.  Instead, wait
 	// until after finish() has been called.
 	// Parameters:
-	// $outputFormat: One of 'html', 'csv', 'tsv' or 'xls'.  The 'xls' format requires that the
-	//     Spreadsheet_Excel_Writer PEAR extension be installed.
+	// $outputFormat: The formatName attribute of one of the ReportOutputter::$OUTPUT_FORMATS output formats.
 	public function setOutputFormat($outputFormat) {
 		if (ReportOutputter::getOutputFormatForFormatName($outputFormat) === null) {
 			$outputFormat = ReportOutputter::$OUTPUT_FORMATS[0]->format;
