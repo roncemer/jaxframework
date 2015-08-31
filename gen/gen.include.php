@@ -1184,3 +1184,11 @@ function filterSearchPresentation($template, $crudSearchPresentation) {
 	$template = preg_replace('/\{\{\\/if_searchPresentation_.*?\}\}/', '', $template);
 	return $template;
 }
+
+function var_export_normal_precision($var, $return = false) {
+	$orig_serialize_precision = ini_get('serialize_precision');
+	ini_set('serialize_precision', ini_get('precision'));
+	$result = var_export($var, $return);
+	ini_set('serialize_precision', $orig_serialize_precision);
+	return $result;
+} // var_export_normal_precision()

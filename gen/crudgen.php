@@ -240,7 +240,7 @@ EOF;
 			$repl = array();
 			foreach ($langKeys as $langKey=>$text) {
 				$srch[] = '<<langkey>>'.$langKey.'<</langkey>>';
-				$repl[] = '<?php _e('.var_export($langKey, true).', '.var_export($text, true).'); ?'.'>';
+				$repl[] = '<?php _e('.var_export_normal_precision($langKey, true).', '.var_export_normal_precision($text, true).'); ?'.'>';
 			}
 
 			$crudSearchGridHeaderColumnsHTML = str_replace($srch, $repl, $crudSearchGridHeaderColumnsHTML);
@@ -275,12 +275,12 @@ EOF;
 			$title = isset($field['title']) ? $field['title'] : ucwords(str_replace('_', ' ', $fieldName));
 			$langKeys[$titleLangKey] = $title;
 
-			$titleExpr = "_t('".$titleLangKey."', ".var_export($title, true).")";
+			$titleExpr = "_t('".$titleLangKey."', ".var_export_normal_precision($title, true).")";
 
 			if (($placeholder = isset($field['placeholder']) ? $field['placeholder'] : '') != '') {
 				$placeholderLangKey = 'crud.'.$crudName.'.form.input.'.$fieldName.'.placeholder';
 				$langKeys[$placeholderLangKey] = $placeholder;
-				$placeholderExpr = "<?php _e('".$placeholderLangKey."', ".var_export($placeholder, true)."); ?>";
+				$placeholderExpr = "<?php _e('".$placeholderLangKey."', ".var_export_normal_precision($placeholder, true)."); ?>";
 			} else {
 				$placeholderLangKey = '';
 				$placeholderExpr = '';
@@ -423,7 +423,7 @@ EOF;
 						$title = isset($optionParams['title']) ? $optionParams['title'] : $option;
 						$langKeys[$optionTitleLangKey] = $title;
 
-						$optionTitleExpr = "_t('".$optionTitleLangKey."', ".var_export($title, true).")";
+						$optionTitleExpr = "_t('".$optionTitleLangKey."', ".var_export_normal_precision($title, true).")";
 						$formFields .=
 							'     <option value="'.htmlspecialchars($option).'">'.
 							'<?php echo '.$optionTitleExpr.'; ?>'.
@@ -495,7 +495,7 @@ EOF;
 						$title = isset($optionParams['title']) ? $optionParams['title'] : $option;
 						$langKeys[$optionTitleLangKey] = $title;
 
-						$optionTitleExpr = "_t(".$optionTitleLangKey."', ".var_export($title, true).")";
+						$optionTitleExpr = "_t(".$optionTitleLangKey."', ".var_export_normal_precision($title, true).")";
 						$formFields .=
 							'<div><input type="radio" name="'.
 							$fieldName.'" id="'.$fieldName.'__'.$__i.'" value="'.
@@ -762,7 +762,7 @@ EOF
 					}
 				}
 
-				$paramsEnc = var_export($filterParams, true);
+				$paramsEnc = var_export_normal_precision($filterParams, true);
 				$filterCode .= "\t\t\$__filter = new $filterClass($paramsEnc);\n\t\t\$__filter->filter(\$db, \$row);\n\n";
 			}
 		}
@@ -779,7 +779,7 @@ EOF
 		if ((!isset($crud['validators'])) || (!is_array($crud['validators']))) $crud['validators'] = array();
 		foreach ($crud['validators'] as $fieldName=>$validatorGroup) {
 			if (!is_array($validatorGroup)) continue;
-			$fieldNameEnc = var_export($fieldName, true);
+			$fieldNameEnc = var_export_normal_precision($fieldName, true);
 			$validatorNameCounts = array();
 			foreach ($validatorGroup as $validator) {
 				if ((!isset($validator['class'])) || (!is_string($validator['class']))) continue;
@@ -814,7 +814,7 @@ EOF
 				if (isset($validatorParams['errorMsg'])) {
 					$errorMsg = $validatorParams['errorMsg'];
 					unset($validatorParams['errorMsg']);
-					$paramsEnc = var_export($validatorParams, true);
+					$paramsEnc = var_export_normal_precision($validatorParams, true);
 					if (substr($paramsEnc, -1) == ')') {
 						$validatorErrorMsgLangKey =
 							"crud.$crudName.validator.$fieldName.$validatorClass".
@@ -825,10 +825,10 @@ EOF
 						$paramsEnc =
 							rtrim(substr($paramsEnc, 0, strlen($paramsEnc)-1), ", \t\n\r\0\x0b").
 							",\n  'errorMsg'=>_t('$validatorErrorMsgLangKey', ".
-							var_export($errorMsg, true)."),\n )\n";
+							var_export_normal_precision($errorMsg, true)."),\n )\n";
 					}
 				} else {
-					$paramsEnc = var_export($validatorParams, true);
+					$paramsEnc = var_export_normal_precision($validatorParams, true);
 				}
 
 				$validationCode .=
