@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2014 Ronald B. Cemer
+// Copyright (c) 2011-2015 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -271,14 +271,23 @@ EOF;
 		$formFields = '';
 		if ((!isset($crud['formFields'])) || (!is_array($crud['formFields']))) $crud['formFields'] = array();
 		foreach ($crud['formFields'] as $fieldName=>$field) {
-			$titleLangKey = 'crud.'.$crudName.'.form.input.'.$fieldName.'.label';
-			$title = isset($field['title']) ? $field['title'] : ucwords(str_replace('_', ' ', $fieldName));
+			$thisFormField = '';
+
+			$inputType = isset($field['inputType']) ? $field['inputType'] : 'text';
+			if (($inputType == 'select') && isset($field['multiple']) && ($field['multiple']) && (substr($fieldName, -2) != '[]')) {
+				fprintf(STDERR, "WARNING: For inputType: select, multiple: Yes, input name must end with '[]' in input \"%s\" in formFields section.\n", $fieldName);
+			}
+			$id = isset($field['id']) ? $field['id'] : $fieldName;
+			if (substr($id, -2) == '[]') $id = trim(substr($id, 0, strlen($id)-2));
+
+			$titleLangKey = 'crud.'.$crudName.'.form.input.'.$id.'.label';
+			$title = isset($field['title']) ? $field['title'] : ucwords(str_replace('_', ' ', $id));
 			$langKeys[$titleLangKey] = $title;
 
 			$titleExpr = "_t('".$titleLangKey."', ".var_export_normal_precision($title, true).")";
 
 			if (($placeholder = isset($field['placeholder']) ? $field['placeholder'] : '') != '') {
-				$placeholderLangKey = 'crud.'.$crudName.'.form.input.'.$fieldName.'.placeholder';
+				$placeholderLangKey = 'crud.'.$crudName.'.form.input.'.$id.'.placeholder';
 				$langKeys[$placeholderLangKey] = $placeholder;
 				$placeholderExpr = "<?php _e('".$placeholderLangKey."', ".var_export_normal_precision($placeholder, true)."); ?>";
 			} else {
@@ -286,7 +295,6 @@ EOF;
 				$placeholderExpr = '';
 			}
 
-			$inputType = isset($field['inputType']) ? $field['inputType'] : 'text';
 			$onclickTag = (isset($field['onclick']) && ($field['onclick'] != '')) ?
 				' onclick="'.$field['onclick'].'"' : '';
 			$onchangeTag = (isset($field['onchange']) && ($field['onchange'] != '')) ?
@@ -334,26 +342,26 @@ EOF;
 			case 'select':
 			case 'file':
 			case 'radio':
-				$formFields .=
-					'<div class="form-group" id="'.$fieldName.'TR">'.
-					'<label for="'.$fieldName.'" class="col-sm-2 control-label"><?php echo '.$titleExpr.'; ?>:</label>'.
+				$thisFormField .=
+					'<div class="form-group" id="'.$id.'TR">'.
+					'<label for="'.$id.'" class="col-sm-2 control-label"><?php echo '.$titleExpr.'; ?>:</label>'.
 					'<div class="col-sm-10">'.
-					'<div id="fieldErrorMsg_'.$fieldName.'" class="fieldErrorMsg"></div>';
+					'<div id="fieldErrorMsg_'.$id.'" class="fieldErrorMsg"></div>';
 				break;
 			case 'checkbox':
-				$formFields .=
-					'<div class="form-group" id="'.$fieldName.'TR">'.
+				$thisFormField .=
+					'<div class="form-group" id="'.$id.'TR">'.
 					'<label class="col-sm-2 control-label"></label>'.
 					'<div class="col-sm-10">'.
-					'<div id="fieldErrorMsg_'.$fieldName.'" class="fieldErrorMsg"></div>'.
-					'<label for="'.$fieldName.'">';
+					'<div id="fieldErrorMsg_'.$id.'" class="fieldErrorMsg"></div>'.
+					'<label for="'.$id.'">';
 				break;
 			}
 
 			switch ($inputType) {
 			case 'hidden':
 				$hiddenFormFields .=
-					'<input type="hidden" name="'.$fieldName.'" id="'.$fieldName.'"/>'."\n";
+					'<input type="hidden" name="'.$fieldName.'" id="'.$id.'"/>'."\n";
 				break;
 			case 'text':
 			case 'password':
@@ -367,8 +375,8 @@ EOF;
 					' disabled="disabled"' : '';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
-				$formFields .=
-					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$fieldName.'"'.
+				$thisFormField .=
+					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$id.'"'.
 					(($size > 0) ? ' size="'.$size.'"' : '').
 					(($maxlength > 0) ? ' maxlength="'.$maxlength.'"' : '').
 					(($placeholderExpr != '') ? " placeholder=\"{$placeholderExpr}\"" : '').
@@ -387,8 +395,8 @@ EOF;
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
 
-				$formFields .=
-					'<textarea name="'.$fieldName.'" id="'.$fieldName.'" rows="'.$rows.'" cols="'.$cols.'"'.
+				$thisFormField .=
+					'<textarea name="'.$fieldName.'" id="'.$id.'" rows="'.$rows.'" cols="'.$cols.'"'.
 					(($placeholderExpr != '') ? " placeholder=\"{$placeholderExpr}\"" : '').
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
 					$readonlyTag.$disabledTag.$onclickTag.$onchangeTag.'></textarea>'.$searchDescHTML;
@@ -403,15 +411,15 @@ EOF;
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
 
-				$formFields .=
-					'<select'.$multipleTag.' name="'.$fieldName.'" id="'.$fieldName.'"'.
+				$thisFormField .=
+					'<select'.$multipleTag.' name="'.$fieldName.'" id="'.$id.'"'.
 					(($size > 0) ? ' size="'.$size.'"' : '').
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
 					$disabledTag.$onclickTag.$onchangeTag.">\n";
 				if (isset($field['optionsFromAssociativeArray']) &&
 					is_string($field['optionsFromAssociativeArray']) &&
 					($field['optionsFromAssociativeArray'] != '')) {
-					$formFields .=
+					$thisFormField .=
 						'<?php foreach ('.$field['optionsFromAssociativeArray'].' as $__val=>$__desc) { ?'.">\n".
 						' <option value="<?php echo htmlspecialchars($__val); ?'.'>">'.
 						'<?php echo htmlspecialchars($__desc); ?'.'>'."</option>\n".
@@ -419,18 +427,18 @@ EOF;
 				} else {
 					$options = (isset($field['options']) && is_array($field['options'])) ? $field['options'] : array();
 					foreach ($options as $option=>$optionParams) {
-						$optionTitleLangKey = 'crud.'.$crudName.'.form.input.'.$fieldName.'.option.'.optionToName($option).'.title';
+						$optionTitleLangKey = 'crud.'.$crudName.'.form.input.'.$id.'.option.'.optionToName($option).'.title';
 						$title = isset($optionParams['title']) ? $optionParams['title'] : $option;
 						$langKeys[$optionTitleLangKey] = $title;
 
 						$optionTitleExpr = "_t('".$optionTitleLangKey."', ".var_export_normal_precision($title, true).")";
-						$formFields .=
+						$thisFormField .=
 							'     <option value="'.htmlspecialchars($option).'">'.
 							'<?php echo '.$optionTitleExpr.'; ?>'.
 							"</option>\n";
 					}
 				}
-				$formFields .= '</select>'.$searchDescHTML;
+				$thisFormField .= '</select>'.$searchDescHTML;
 				break;
 			case 'file':
 				$cssClass = trim('form-control '.$cssClass);
@@ -444,8 +452,8 @@ EOF;
 				$acceptTag = isset($field['accept']) ? trim($field['accept']) : '';
 				if ($acceptTag != '') $acceptTag = " accept=\"{$acceptTag}\"";
 
-				$formFields .=
-					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$fieldName.'"'.
+				$thisFormField .=
+					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$id.'"'.
 					$acceptTag.
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
 					$readonlyTag.$disabledTag.$onclickTag.$onchangeTag.'/>'.$searchDescHTML;
@@ -456,8 +464,8 @@ EOF;
 				$value = isset($field['value']) ? $field['value'] : '1';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
-				$formFields .=
-					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$fieldName.'"'.
+				$thisFormField .=
+					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$id.'"'.
 					' value="'.$value.'"'.
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
 					$disabledTag.$onclickTag.$onchangeTag.'/>'.
@@ -473,16 +481,16 @@ EOF;
 				if (isset($field['optionsFromAssociativeArray']) &&
 					is_string($field['optionsFromAssociativeArray']) &&
 					($field['optionsFromAssociativeArray'] != '')) {
-					$formFields .=
+					$thisFormField .=
 						'<?php $__i = 0;'."\n".
 						'foreach ('.$field['optionsFromAssociativeArray'].
 						' as $__val=>$__desc) { ?'.">\n\t".'$__i++;'."\n".
 						'<div><input type="radio" name="'.
-						$fieldName.'" id="'.$fieldName.
+						$fieldName.'" id="'.$id.
 						'__<?php echo $__i; ?>" value="<?php echo htmlspecialchars($__val); ?'.'>"'.
 						(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
 						$disabledTag.'/>'.
-						'<label for="'.$fieldName.
+						'<label for="'.$id.
 						'__<?php echo $__i; ?>"><?php echo htmlspecialchars($__desc); ?'.'>'."</label></div>\n".
 						'<?php } ?'.">\n";
 				} else {
@@ -491,29 +499,28 @@ EOF;
 					foreach ($options as $option=>$optionParams) {
 						$__i++;
 
-						$optionTitleLangKey = 'crud.'.$crudName.'.form.input.'.$fieldName.'.option.'.optionToName($option).'.title';
+						$optionTitleLangKey = 'crud.'.$crudName.'.form.input.'.$id.'.option.'.optionToName($option).'.title';
 						$title = isset($optionParams['title']) ? $optionParams['title'] : $option;
 						$langKeys[$optionTitleLangKey] = $title;
 
 						$optionTitleExpr = "_t(".$optionTitleLangKey."', ".var_export_normal_precision($title, true).")";
-						$formFields .=
+						$thisFormField .=
 							'<div><input type="radio" name="'.
-							$fieldName.'" id="'.$fieldName.'__'.$__i.'" value="'.
+							$fieldName.'" id="'.$id.'__'.$__i.'" value="'.
 							htmlspecialchars($option).'"'.
 							(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
 							$disabledTag.'/>'.
-							'<label for="'.$fieldName.'__'.$__i.'">'.
+							'<label for="'.$id.'__'.$__i.'">'.
 							'<?php echo '.$optionTitleExpr.'; ?>'.
 							"</label></div>\n";
 					}
 				}
-				$formFields .= $searchDescHTML."\n";
+				$thisFormField .= $searchDescHTML."\n";
 				break;
 			case 'htmlfragment':
-				$formFields .= isset($field['html']) ? ($field['html']."\n") : '';
+				$thisFormField .= isset($field['html']) ? ($field['html']."\n") : '';
 				break;
 			case 'tabs':
-				$id = $fieldName;
 				$tabsPosition = isset($field['tabsPosition']) ? strtolower(trim($field['tabsPosition'])) : 'top';
 				switch ($tabsPosition) {
 				case 'top': $tabbableClasses = 'tabbable'; break;
@@ -528,14 +535,14 @@ EOF;
 				$ulOpenHTML = " <ul class=\"nav nav-tabs\">\n";
 				$ulCloseHTML = " </ul>";
 
-				$formFields .= "<div class=\"{$tabbableClasses}\">\n";
-				if ($tabsPosition != 'bottom') $formFields .= $ulOpenHTML;
+				$thisFormField .= "<div class=\"{$tabbableClasses}\">\n";
+				if ($tabsPosition != 'bottom') $thisFormField .= $ulOpenHTML;
 
 				$openContainers[] = (object)array(
 					'id'=>$id,
 					'type'=>'tabs',
 					'tabsPosition'=>$tabsPosition,
-					'tabInsertIdx'=>strlen($formFields),
+					'tabInsertIdx'=>strlen($thisFormField),
 					'openGroupId'=>null,
 					'numGroups'=>0,
 					'closingHTMLPart1'=>($tabsPosition == 'bottom') ? $ulOpenHTML : '',
@@ -543,8 +550,8 @@ EOF;
 					'closingHTMLPart3'=>(($tabsPosition == 'bottom') ? $ulCloseHTML : '')."\n</div> <!-- {$id} -->\n</div> <!-- class=\"tabbable\" -->\n",
 				);
 
-				if ($tabsPosition != 'bottom') $formFields .= $ulCloseHTML;
-				$formFields .= "\n <div id=\"{$id}\" class=\"tab-content\">\n";
+				if ($tabsPosition != 'bottom') $thisFormField .= $ulCloseHTML;
+				$thisFormField .= "\n <div id=\"{$id}\" class=\"tab-content\">\n";
 				break;
 			case 'tabsClose':
 				if (empty($openContainers)) {
@@ -558,16 +565,15 @@ EOF;
 				}
 				if ($tc->openGroupId !== null) {
 					// Close the last tab in this tabs container.
-					$formFields .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
+					$thisFormField .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
 				}
-				$formFields .= $tc->closingHTMLPart1 . $tc->closingHTMLPart2 . $tc->closingHTMLPart3;
+				$thisFormField .= $tc->closingHTMLPart1 . $tc->closingHTMLPart2 . $tc->closingHTMLPart3;
 				break;
 			case 'tab':
 				if (empty($openContainers)) {
 					fprintf(STDERR, "tab found outside of tabs ... tabsClose in formFields section.\n");
 					return false;
 				}
-				$id = $fieldName;
 				$tc = $openContainers[count($openContainers)-1];
 				if ($tc->type != 'tabs') {
 					fprintf(STDERR, "inputType:tab inside non-tabs container of type %s.\n", $tc->type);
@@ -576,7 +582,7 @@ EOF;
 				$tc->numGroups++;
 				if ($tc->openGroupId !== null) {
 					// Close the previous tab in this tabs container.
-					$formFields .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
+					$thisFormField .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
 				}
 				$tc->openGroupId = $id;
 
@@ -594,19 +600,17 @@ EOF;
 				if ($tc->tabsPosition == 'bottom') {
 					$tc->closingHTMLPart2 .= $tabLinkHTML;
 				} else {
-					$formFields =
-						substr($formFields, 0, $tc->tabInsertIdx).
+					$thisFormField =
+						substr($thisFormField, 0, $tc->tabInsertIdx).
 						$tabLinkHTML.
-						substr($formFields, $tc->tabInsertIdx);
+						substr($thisFormField, $tc->tabInsertIdx);
 				}
 
-				$formFields .= "\n  <div{$divClassTag} id=\"{$id}\">\n";
+				$thisFormField .= "\n  <div{$divClassTag} id=\"{$id}\">\n";
 				$tc->tabInsertIdx += strlen($tabLinkHTML);
 				break;
 
 			case 'accordion':
-				$id = $fieldName;
-
 				$openContainers[] = (object)array(
 					'id'=>$id,
 					'type'=>'accordion',
@@ -619,7 +623,7 @@ EOF;
 					'closingHTMLPart3'=>"\n</div> <!-- {$id} -->\n",
 				);
 
-				$formFields .= "<div class=\"accordion\" id=\"{$id}\">\n";
+				$thisFormField .= "<div class=\"accordion\" id=\"{$id}\">\n";
 
 				break;
 			case 'accordionClose':
@@ -634,7 +638,7 @@ EOF;
 				}
 				if ($tc->openGroupId !== null) {
 					// Close the last group in this accordion container.
-					$formFields .= <<<EOF
+					$thisFormField .= <<<EOF
    </div> <!-- class=\"accordion-inner\" -->
   </div> <!-- {$tc->openGroupId}-body -->
  </div> <!-- class=\"accordion-group\" -->
@@ -642,14 +646,13 @@ EOF;
 
 EOF;
 				}
-				$formFields .= $tc->closingHTMLPart1 . $tc->closingHTMLPart2 . $tc->closingHTMLPart3;
+				$thisFormField .= $tc->closingHTMLPart1 . $tc->closingHTMLPart2 . $tc->closingHTMLPart3;
 				break;
 			case 'accordionGroup':
 				if (empty($openContainers)) {
 					fprintf(STDERR, "accordionGroup found outside of accordion ... accordionClose in formFields section.\n");
 					return false;
 				}
-				$id = $fieldName;
 				$tc = $openContainers[count($openContainers)-1];
 				if ($tc->type != 'accordion') {
 					fprintf(STDERR, "inputType:accordionGroup inside non-accordion container of type %s.\n", $tc->type);
@@ -658,7 +661,7 @@ EOF;
 				$tc->numGroups++;
 				if ($tc->openGroupId !== null) {
 					// Close the previous group in this accordion container.
-					$formFields .= <<<EOF
+					$thisFormField .= <<<EOF
    </div> <!-- class=\"accordion-inner\" -->
   </div> <!-- {$tc->openGroupId}-body -->
  </div> <!-- class=\"accordion-group\" -->
@@ -672,7 +675,7 @@ EOF;
 				if ($tc->numGroups == 1) $accordionBodyClasses .= ' in';
 				$accordionBodyClassesTag = ($accordionBodyClasses != '') ? " class=\"{$accordionBodyClasses}\"" : '';
 
-				$formFields .= <<<EOF
+				$thisFormField .= <<<EOF
  <div class="accordion-group" id="{$id}">
   <div class="accordion-heading">
    <a class="accordion-toggle" data-toggle="collapse" data-parent="#{$tc->id}" href="#{$id}-body"><?php echo $titleExpr; ?></a>
@@ -685,6 +688,10 @@ EOF;
 				break;
 
 /// TODO: Add support for other input types.  Button may be the only remaining desirable type which is not supported.
+
+			default:
+				fprintf(STDERR, "Invalid inputType \"%s\" on input \"%s\" in formFields section.  Skipping this input.\n", $inputType, $fieldName);
+				continue;
 			}	// switch ($inputType)
 
 			// Close the layout cell and row.
@@ -696,7 +703,7 @@ EOF;
 			case 'file':
 			case 'radio':
 			case 'checkbox':
-				$formFields .= "</div></div>\n";
+				$thisFormField .= "</div></div>\n";
 				break;
 			}
 
@@ -728,11 +735,13 @@ EOF
 
 					$arr = $field['autocompleteSingleRowSelector'];
 					unset($arr['rowFetcher']);
-					$arr['inputElement'] = '#'.$fieldName;
+					$arr['inputElement'] = '#'.$id;
 
 					$hookAutocompleteSingleRowSelectorsToInputsJS .= "\thookAutocompleteSingleRowSelectorToInput(".json_encode($arr).");\n";
 				}
 			}	// if (($inputType == 'text') || ($inputType == 'textarea'))
+
+			$formFields .= $thisFormField;
 		}	// foreach ($crud['formFields'] as $fieldName=>$field)
 
 		if (!empty($openContainers)) {

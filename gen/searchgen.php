@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2014 Ronald B. Cemer
+// Copyright (c) 2011-2015 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -83,7 +83,7 @@ EOF
 			$joins = trim($search['joins']);
 		}
 
-		$arr = getWhereClauseParams($searchName, $search, 'search', $langKeys);
+		$arr = getWhereClauseParams($table, $searchName, $search, 'search', $langKeys);
 		$haveAnyFulltextQueryOperators = $arr['haveAnyFulltextQueryOperators'];
 		$searchWhereClausePHP = $arr['searchWhereClausePHP'];
 		$searchWhereAssignments = $arr['searchWhereAssignments'];
@@ -275,7 +275,7 @@ EOF
 		}
 
 		$dummyLangKeys = array();
-		$arr = getWhereClauseParams($searchName, $search, 'autocomplete', $dummyLangKeys);
+		$arr = getWhereClauseParams($table, $searchName, $search, 'autocomplete', $dummyLangKeys);
 		unset($dummyLangKeys);
 		$haveAnyFulltextQueryOperators = $arr['haveAnyFulltextQueryOperators'];
 		$searchWhereClausePHP = $arr['searchWhereClausePHP'];
@@ -968,7 +968,7 @@ EOF
 	return true;
 } // processTable()
 
-function getWhereClauseParams($searchName, $search, $searchType, &$langKeys) {
+function getWhereClauseParams($table, $searchName, $search, $searchType, &$langKeys) {
 	global $ALLOWED_NUMERIC_QUERY_OPERATORS, $ALLOWED_STRING_QUERY_OPERATORS;
 
 	$haveAnyFulltextQueryOperators = false;
@@ -1142,7 +1142,8 @@ EOF
 				);
 				if ($searchableColumnsPHPArraySep == '') $searchableColumnsPHPArraySep = "\n";
 				break;
-			// All other types are not searchable.
+			default:
+				fprintf(STDERR, "WARNING: Invalid sqlType \"%s\" in searchable column \"%s\" in \"%s\" %s in %s table YAML file.\n", $sqlType, $colName, $searchName, $searchType, $table->tableName);
 			}
 		}
 	}

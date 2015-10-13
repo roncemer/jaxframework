@@ -60,7 +60,7 @@ document.write(getDataTableHTML('{{tableName}}sTable', {{tableName}}sDataTable_a
     </tr>
    </thead>
    <tbody>
-     <tr ng-repeat="i in getRowIndexes()" ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{highlighted: i==highlightedRowIdx}">
+     <tr ng-repeat="i in getRowIndexes()" ng-class-odd="'odd'" ng-class-even="'even'">
 {{crudSearchGridBodyColumnsHTML}}
       <td ng-bind-html="toTrustedHTML(getSearchActionColumnHTML(rows[i]))"></td>
      </tr>
@@ -70,9 +70,9 @@ document.write(getDataTableHTML('{{tableName}}sTable', {{tableName}}sDataTable_a
  </div> <!-- {{tableName}}sSearchGridCont -->
 {{/if_searchPresentation_AJAXSearchGrid}}
 <?php if (function_exists('searchBlock4ViewHook')) searchBlock4ViewHook(); ?>
-</div>
+</div> <!-- existing{{uTableName}}sCont -->
 
-<div id="{{tableName}}FormCont"> <!-- existing{{uTableName}}sCont -->
+<div id="{{tableName}}FormCont">
 
 <?php if (function_exists('formBlock1ViewHook')) formBlock1ViewHook(); ?>
 
@@ -105,7 +105,7 @@ document.write(getDataTableHTML('{{tableName}}sTable', {{tableName}}sDataTable_a
 
 <?php if (function_exists('formBlock7ViewHook')) formBlock7ViewHook(); ?>
 
-</div>
+</div> <!-- {{tableName}}FormCont -->
 
 <iframe name="submitIframe" src="about:blank" style="display:none; width:0px; height:0px"></iframe>
 
