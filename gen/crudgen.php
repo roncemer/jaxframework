@@ -521,6 +521,7 @@ EOF;
 				$thisFormField .= isset($field['html']) ? ($field['html']."\n") : '';
 				break;
 			case 'tabs':
+				// *** WARNING: Tab-related elements manipulate $formFields directly instead of populating $thisFormField.
 				$tabsPosition = isset($field['tabsPosition']) ? strtolower(trim($field['tabsPosition'])) : 'top';
 				switch ($tabsPosition) {
 				case 'top': $tabbableClasses = 'tabbable'; break;
@@ -535,14 +536,14 @@ EOF;
 				$ulOpenHTML = " <ul class=\"nav nav-tabs\">\n";
 				$ulCloseHTML = " </ul>";
 
-				$thisFormField .= "<div class=\"{$tabbableClasses}\">\n";
-				if ($tabsPosition != 'bottom') $thisFormField .= $ulOpenHTML;
+				$formFields .= "<div class=\"{$tabbableClasses}\">\n";
+				if ($tabsPosition != 'bottom') $formFields .= $ulOpenHTML;
 
 				$openContainers[] = (object)array(
 					'id'=>$id,
 					'type'=>'tabs',
 					'tabsPosition'=>$tabsPosition,
-					'tabInsertIdx'=>strlen($thisFormField),
+					'tabInsertIdx'=>strlen($formFields),
 					'openGroupId'=>null,
 					'numGroups'=>0,
 					'closingHTMLPart1'=>($tabsPosition == 'bottom') ? $ulOpenHTML : '',
@@ -550,10 +551,11 @@ EOF;
 					'closingHTMLPart3'=>(($tabsPosition == 'bottom') ? $ulCloseHTML : '')."\n</div> <!-- {$id} -->\n</div> <!-- class=\"tabbable\" -->\n",
 				);
 
-				if ($tabsPosition != 'bottom') $thisFormField .= $ulCloseHTML;
-				$thisFormField .= "\n <div id=\"{$id}\" class=\"tab-content\">\n";
+				if ($tabsPosition != 'bottom') $formFields .= $ulCloseHTML;
+				$formFields .= "\n <div id=\"{$id}\" class=\"tab-content\">\n";
 				break;
 			case 'tabsClose':
+				// *** WARNING: Tab-related elements manipulate $formFields directly instead of populating $thisFormField.
 				if (empty($openContainers)) {
 					fprintf(STDERR, "inputType:tabsClose with no corresponding inputType:tabs in formFields section.\n");
 					return false;
@@ -565,11 +567,12 @@ EOF;
 				}
 				if ($tc->openGroupId !== null) {
 					// Close the last tab in this tabs container.
-					$thisFormField .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
+					$formFields .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
 				}
-				$thisFormField .= $tc->closingHTMLPart1 . $tc->closingHTMLPart2 . $tc->closingHTMLPart3;
+				$formFields .= $tc->closingHTMLPart1 . $tc->closingHTMLPart2 . $tc->closingHTMLPart3;
 				break;
 			case 'tab':
+				// *** WARNING: Tab-related elements manipulate $formFields directly instead of populating $thisFormField.
 				if (empty($openContainers)) {
 					fprintf(STDERR, "tab found outside of tabs ... tabsClose in formFields section.\n");
 					return false;
@@ -582,7 +585,7 @@ EOF;
 				$tc->numGroups++;
 				if ($tc->openGroupId !== null) {
 					// Close the previous tab in this tabs container.
-					$thisFormField .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
+					$formFields .= "  </div> <!-- {$tc->openGroupId} -->\n\n";
 				}
 				$tc->openGroupId = $id;
 
@@ -600,13 +603,13 @@ EOF;
 				if ($tc->tabsPosition == 'bottom') {
 					$tc->closingHTMLPart2 .= $tabLinkHTML;
 				} else {
-					$thisFormField =
-						substr($thisFormField, 0, $tc->tabInsertIdx).
+					$formFields =
+						substr($formFields, 0, $tc->tabInsertIdx).
 						$tabLinkHTML.
-						substr($thisFormField, $tc->tabInsertIdx);
+						substr($formFields, $tc->tabInsertIdx);
 				}
 
-				$thisFormField .= "\n  <div{$divClassTag} id=\"{$id}\">\n";
+				$formFields .= "\n  <div{$divClassTag} id=\"{$id}\">\n";
 				$tc->tabInsertIdx += strlen($tabLinkHTML);
 				break;
 
@@ -741,7 +744,7 @@ EOF
 				}
 			}	// if (($inputType == 'text') || ($inputType == 'textarea'))
 
-			$formFields .= $thisFormField;
+			if ($thisFormField != '') $formFields .= $thisFormField;
 		}	// foreach ($crud['formFields'] as $fieldName=>$field)
 
 		if (!empty($openContainers)) {
