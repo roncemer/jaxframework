@@ -103,6 +103,7 @@ var isDesktop = <?php echo $isDesktop ? 'true' : 'false'; ?>;
 			'jax/jquery/js/jquery-migrate-1.2.1.min.js',
 			'jax/angularjs/angular.min.js',
 			'jax/bootstrap/js/bootstrap.min.js',
+			'jax/bootbox/js/bootbox.min.js',
 			'jax/jquery/js/jquery-ui-1.10.4.custom.min.js',
 			'jax/jquery/js/jquery.field.min.js',
 			'jax/jquery/js/jquery.colorbox-min.js',

@@ -88,7 +88,7 @@ function __getSearchActionColumnHTML(row) {
 		if (postHTML != '') html += postHTML;
 	}
 	return html;
-}
+} // __getSearchActionColumnHTML()
 {{/if_searchPresentation_AJAXSearchGrid}}
 
 $(document).ready(function() {
@@ -201,14 +201,7 @@ $(document).ready(function() {
 		// If we're in any mode other than view or delete mode, confirm before abandoning.
 		case 27: // Esc
 			if (evt.altKey || evt.ctrlKey || evt.shiftKey || evt.metaKey) break;
-			if ((mode == VIEW_MODE) || (mode == DELETE_MODE)) {
-				abandon{{uTableName}}();
-			} else if ((mode == ADD_MODE) || (mode == EDIT_MODE)) {
-				if (confirm
-					(_t('crud.abandonConfirmMsgBase').replace('tableDescription', _t('tableDescription', '{{tableDescription}}')))) {
-					abandon{{uTableName}}();
-				}
-			}
+			abandon{{uTableName}}();
 			break;
 		}
 	});
@@ -319,7 +312,7 @@ function setMode(newMode) {
 	if (typeof postSetModeHook == 'function') {
 		postSetModeHook(newMode);
 	}
-}
+} // setMode()
 
 function {{tableName}}sUpdateTable() {
 {{if_searchPresentation_dataTables}}
@@ -328,17 +321,17 @@ function {{tableName}}sUpdateTable() {
 {{if_searchPresentation_AJAXSearchGrid}}
 	{{tableName}}sSearchGrid.$scope.triggerSearch({{tableName}}sSearchGrid.$scope.userGestureSearchTimeoutMS, false);
 {{/if_searchPresentation_AJAXSearchGrid}}
-}
+} // {{tableName}}sUpdateTable()
 
 function add{{uTableName}}() {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
 	if (load{{uTableName}}IntoForm(0, ADD_MODE)) setMode(ADD_MODE);
-}
+} // add{{uTableName}}()
 
 function edit{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudEditModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
 	if (load{{uTableName}}IntoForm(id, EDIT_MODE)) setMode(EDIT_MODE);
-}
+} // edit{{uTableName}}()
 
 function addSimilar{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
@@ -346,17 +339,17 @@ function addSimilar{{uTableName}}(id) {
 		$("#{{tableName}}Form [name='{{idCol}}']").setValue('0');
 		setMode(ADD_MODE);
 	}
-}
+} // addSimilar{{uTableName}}()
 
 function delete{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudDeleteModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
 	if (load{{uTableName}}IntoForm(id, DELETE_MODE)) setMode(DELETE_MODE);
-}
+} // delete{{uTableName}}()
 
 function view{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudViewModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
 	if (load{{uTableName}}IntoForm(id, VIEW_MODE)) setMode(VIEW_MODE);
-}
+} // view{{uTableName}}()
 
 function load{{uTableName}}IntoForm(id, newMode) {
 	var allowEditing = (newMode == ADD_MODE) || (newMode == EDIT_MODE);
@@ -407,7 +400,7 @@ function load{{uTableName}}IntoForm(id, newMode) {
 		// The id field is never editable.
 		$("#{{tableName}}Form input[name='{{idCol}}']").attr('readOnly', true);
 
-		// These id field and its prompt should not be visible in add mode.
+		// These id field and its label should not be visible in add mode.
 		if (newMode != ADD_MODE) $('#{{idCol}}TR').show(); else $('#{{idCol}}TR').hide();
 
 		setTimeout('scroll(0,0);', 10);
@@ -430,7 +423,7 @@ function load{{uTableName}}IntoForm(id, newMode) {
 		formLoading = formLoadingAddMode = formLoadingEditMode = formLoadingDeleteMode = formLoadingViewMode = false;
 		formLoadingMode = -1;
 	}
-}
+} // load{{uTableName}}IntoForm()
 
 function save{{uTableName}}() {
 	if (typeof preSaveHook == 'function') {
@@ -454,32 +447,46 @@ function save{{uTableName}}() {
 		}
 		break;
 	case DELETE_MODE:
-		if (confirm
-			(_t('crud.deleteConfirmMsgBase').replace('tableDescription', _t('tableDescription', '{{tableDescription}}')))) {
-			var url = getBaseURL();
-			if (typeof fixupAJAXURL == 'function') {
-				url = fixupAJAXURL(url);
-			}
-			var json = $.ajax({
-				type:'POST',
-				url:url,
-				async:false,
-				cache:false,
-				global:false,
-				processData:true,
-				data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").getValue()}
-			}).responseText;
-			if (json != '') {
-				parseMsgsFromJSON(json);
+		bootbox.confirm(
+			_t('crud.deleteConfirmMsgBase').replace('tableDescription', _t('tableDescription', '{{tableDescription}}')),
+			function(result) {
+				if (!result) return;
+				var url = getBaseURL();
+				if (typeof fixupAJAXURL == 'function') {
+					url = fixupAJAXURL(url);
+				}
+				var json = $.ajax({
+					type:'POST',
+					url:url,
+					async:false,
+						cache:false,
+					global:false,
+					processData:true,
+					data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").getValue()}
+				}).responseText;
+				if (json != '') {
+					parseMsgsFromJSON(json);
 				if ($('#errorMsg').text() == '') setMode(SEARCH_MODE, false);
+				}
 			}
-		}
+		);
 		break;
 	default:
 		setMode(SEARCH_MODE, false);
 	}
-}
+} // save{{uTableName}}()
 
 function abandon{{uTableName}}() {
-	setMode(SEARCH_MODE);
-}
+	if ((mode == ADD_MODE) || (mode == EDIT_MODE)) {
+		bootbox.confirm(
+			_t('crud.abandonConfirmMsgBase').replace('tableDescription', _t('tableDescription', '{{tableDescription}}')),
+			function(result) {
+				if (result) {
+					setMode(SEARCH_MODE);
+				}
+			}
+		);
+	} else {
+		setMode(SEARCH_MODE);
+	}
+} // abandon{{uTableName}}()
