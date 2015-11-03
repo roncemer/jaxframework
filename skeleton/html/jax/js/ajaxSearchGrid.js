@@ -278,8 +278,6 @@ function AJAXSearchGrid(container, params, tableHTML) {
 					}
 					evt.stopPropagation();
 					evt.preventDefault();
-					// Keep the focus on the search input.  Otherwise, arrow navigation may not work.
-					$('input.jax-grid-pager-search-text-input:first', cont).focus();
 				}
 			});
 			tds.dblclick(function(evt) {
@@ -301,8 +299,6 @@ function AJAXSearchGrid(container, params, tableHTML) {
 					}
 					evt.stopPropagation();
 					evt.preventDefault();
-					// Keep the focus on the search input.  Otherwise, arrow navigation may not work.
-					$('input.jax-grid-pager-search-text-input:first', cont).focus();
 				}
 			});
 		}
