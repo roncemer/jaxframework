@@ -259,6 +259,7 @@ $GENERATOR_CFG_VALIDATIONS = array(
 	new GenCfgValidation('cruds/*/formFields/*/size', 'integer'),
 	new GenCfgValidation('cruds/*/formFields/*/maxlength', 'integer'),
 	new GenCfgValidation('cruds/*/formFields/*/cssClass', 'string'),
+	new GenCfgValidation('cruds/*/formFields/*/helpTopic', 'string'),
 	new GenCfgValidation('cruds/*/formFields/*/readonly', 'boolean'),
 	new GenCfgValidation('cruds/*/formFields/*/disabled', 'boolean'),
 	new GenCfgValidation('cruds/*/formFields/*/rows', 'integer'),

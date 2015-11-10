@@ -301,6 +301,8 @@ EOF;
 				' onchange="'.$field['onchange'].'"' : '';
 			$cssClass = (isset($field['cssClass']) && ($field['cssClass'] != '')) ?
 				trim($field['cssClass']) : '';
+			$helpTopic = (isset($field['helpTopic']) && ($field['helpTopic'] != '')) ?
+				trim($field['helpTopic']) : '';
 
 			$onPopupSearch = isset($field['onPopupSearch']) ? trim($field['onPopupSearch']) : '';
 			$descriptionField = isset($field['descriptionField']) ? $field['descriptionField'] : '';
@@ -381,6 +383,7 @@ EOF;
 					(($maxlength > 0) ? ' maxlength="'.$maxlength.'"' : '').
 					(($placeholderExpr != '') ? " placeholder=\"{$placeholderExpr}\"" : '').
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+					(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 					$readonlyTag.$disabledTag.$onclickTag.$onchangeTag.'/>'.$searchDescHTML;
 				break;
 			case 'textarea':
@@ -399,6 +402,7 @@ EOF;
 					'<textarea name="'.$fieldName.'" id="'.$id.'" rows="'.$rows.'" cols="'.$cols.'"'.
 					(($placeholderExpr != '') ? " placeholder=\"{$placeholderExpr}\"" : '').
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+					(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 					$readonlyTag.$disabledTag.$onclickTag.$onchangeTag.'></textarea>'.$searchDescHTML;
 				break;
 			case 'select':
@@ -415,6 +419,7 @@ EOF;
 					'<select'.$multipleTag.' name="'.$fieldName.'" id="'.$id.'"'.
 					(($size > 0) ? ' size="'.$size.'"' : '').
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+					(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 					$disabledTag.$onclickTag.$onchangeTag.">\n";
 				if (isset($field['optionsFromAssociativeArray']) &&
 					is_string($field['optionsFromAssociativeArray']) &&
@@ -456,6 +461,7 @@ EOF;
 					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$id.'"'.
 					$acceptTag.
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+					(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 					$readonlyTag.$disabledTag.$onclickTag.$onchangeTag.'/>'.$searchDescHTML;
 				break;
 			case 'checkbox':
@@ -468,6 +474,7 @@ EOF;
 					'<input type="'.$inputType.'" name="'.$fieldName.'" id="'.$id.'"'.
 					' value="'.$value.'"'.
 					(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+					(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 					$disabledTag.$onclickTag.$onchangeTag.'/>'.
 					' <?php echo '.$titleExpr.'; ?></label>'.
 					$searchDescHTML;
@@ -489,6 +496,7 @@ EOF;
 						$fieldName.'" id="'.$id.
 						'__<?php echo $__i; ?>" value="<?php echo htmlspecialchars($__val); ?'.'>"'.
 						(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+						(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 						$disabledTag.'/>'.
 						'<label for="'.$id.
 						'__<?php echo $__i; ?>"><?php echo htmlspecialchars($__desc); ?'.'>'."</label></div>\n".
@@ -509,6 +517,7 @@ EOF;
 							$fieldName.'" id="'.$id.'__'.$__i.'" value="'.
 							htmlspecialchars($option).'"'.
 							(($cssClass != '') ? ' class="'.$cssClass.'"' : '').
+							(($helpTopic != '') ? ' data-help-topic="'.$helpTopic.'"' : '').
 							$disabledTag.'/>'.
 							'<label for="'.$id.'__'.$__i.'">'.
 							'<?php echo '.$optionTitleExpr.'; ?>'.
