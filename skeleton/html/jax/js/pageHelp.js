@@ -70,7 +70,7 @@ function installPageHelp(pageURL) {
 function installComponentHelp(selectorOrCollection, helpURI) {
 	if ((typeof(havePageHelp) == 'undefined') || (!havePageHelp)) return;
 
-	var html = '<a href="#" onclick="showHelp(\''+helpURI+'\'); return false;"><i class="glyphicon glyphicon-info-sign"/></a>';
+	var html = '<a href="#" tabindex="-1" onclick="showHelp(\''+helpURI+'\'); return false;"><i class="glyphicon glyphicon-info-sign"/></a>';
 	$(html).insertAfter($(selectorOrCollection));
 	$(selectorOrCollection).attr('data-has-help', '');
 } // installComponentHelp()
