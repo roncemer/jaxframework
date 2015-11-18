@@ -70,8 +70,11 @@ function installPageHelp(pageURL) {
 function installComponentHelp(selectorOrCollection, helpURI) {
 	if ((typeof(havePageHelp) == 'undefined') || (!havePageHelp)) return;
 
+	var elem = $(selectorOrCollection);
+	var p = elem.parent();
+	if ((p !== undefined) && (p !== null) && p.hasClass('combobox-wrapper')) elem = p;
 	var html = '<a href="#" tabindex="-1" onclick="showHelp(\''+helpURI+'\'); return false;"><i class="glyphicon glyphicon-info-sign"/></a>';
-	$(html).insertAfter($(selectorOrCollection));
+	$(html).insertAfter(elem);
 	$(selectorOrCollection).attr('data-has-help', '');
 } // installComponentHelp()
 
