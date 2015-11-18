@@ -314,7 +314,6 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 	// Required parameters.
 	if (typeof(options.inputElement) == 'undefined') return;
 	if (typeof(options.autocompleteCommand) == 'undefined') return;
-	var elem = $(options.inputElement);
 	var autocompleteCommand = options.autocompleteCommand;
 
 	// Optional parameters (defaulted if not specfied).
@@ -333,71 +332,277 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 	} else {
 		myRowFetcher = new RowFetcher();
 	}
+
 	var rowFetcherOptionalParameters = (typeof(options.rowFetcherOptionalParameters) != 'undefined') ?
 		options.rowFetcherOptionalParameters : null;
 
-	var placeholder = {value: '', label:selectPlaceholder};
+	if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__) {
 
-	elem.select2('destroy');
-	var params = {
-		allowClear: allowClear,
-		initSelection: function(elem, callback) {
-			var id = elem.val();
-			if (!idIsString) id = parseInt($.trim(id)) || 0;
-			if ((id == '') || ((!idIsString) && (id == 0))) {
-				callback(placeholder);
-				return;
-			}
-			var row = idIsString ?
-				myRowFetcher.getRowForIdString(
-					autocompleteCommand,
-					idColumn,
-					id,
-					rowFetcherOptionalParameters
-				) :
-				myRowFetcher.getRowForId(
-					autocompleteCommand,
-					idColumn,
-					id,
-					rowFetcherOptionalParameters
-				);
-			var data = (row !== null) ? row : {value: id, label: ''+id+': '+notFoundMessage};
-			callback(data);
+		// New combobox implementation.
+
+		var origInput = $(options.inputElement);
+		if (origInput.parent().hasClass('combobox-wrapper')) {
+			console.log('Attempt to re-install combobox on input.  Ignored.');
 			return;
-		},
-		minimumInputLength: minimumInputLength,
-		query: function(options) {
-			var results = myRowFetcher.getRowArrayForIdString(
-				autocompleteCommand,
-				'term',
-				options.term,
-				$.extend({}, rowFetcherOptionalParameters, {offset:(options.page-1)*maxRowsPerPage, limit:maxRowsPerPage})
-			);
-			options.callback({results:results, more: (results.length >= maxRowsPerPage) });
-		},
-		formatResult: function(item) {
-			return item.label;
-		},
-		formatSelection: function(item) {
-			return item.label;
-		},
-		id: function(item) {
-			return item.value;
 		}
-	};
-	if (selectPlaceholder != '') params.placeholder = placeholder.label;
-	// Create the select2 component; hook it to the input element.
-	elem.select2(params);
-	// Remove the bogus 'width:0px' CSS style which seems to be automatically added
-	// by select2 to its own containers.
-	elem.siblings('.select2-container').css('width', '');
+
+		var url = getBaseURL()+'?command='+encodeURIComponent(autocompleteCommand);
+		if (typeof fixupAJAXURL == 'function') {
+			url = fixupAJAXURL(url);
+		}
+		if (typeof(rowFetcherOptionalParameters) == 'object') {
+			for (var k in rowFetcherOptionalParameters) {
+				url += '&'+encodeURIComponent(k)+'='+encodeURIComponent(rowFetcherOptionalParameters[k]);
+			}
+		}
+
+		var wrapper = $('<div class="combobox-wrapper"></div>');
+		origInput.wrap(wrapper);
+		wrapper = origInput.parent();
+
+		if (window.__nextComboboxSearchId__ === undefined) window.__nextComboboxSearchId__ = 1;
+
+		var search = origInput.clone();
+		search.attr('id', '__combobox-search__'+new Date().getTime()+'-'+window.__nextComboboxSearchId__);
+		window.__nextComboboxSearchId__++;
+		search.removeAttr('name');
+		search.addClass('combobox-search');
+		search.appendTo(wrapper);
+		search.attr('tabindex', '-1');
+
+		// Make the original input of zero size so we won't see it, but it can still get the focus.
+		// If we hide it or put it inside an invisible container, it can't receive the focus programmatically.
+		// We hook its focus event below, and transfer the focus to the search component.
+		origInput.css('width', '0px');
+		origInput.css('height', '0px');
+		origInput.css('border', 'none');
+		origInput.css('margin', '0px');
+		origInput.css('padding', '0px');
+
+		var clearlink = null;
+		if (allowClear) {
+			clearlink = $('<a class="btn-default combobox-clear" href="#" onclick="return false;" tabindex="-1"><i class="glyphicon glyphicon-remove-circle"></i></a>');
+			clearlink.appendTo(wrapper);
+			clearlink.click(function(evt) {
+				origInput.val(idIsString ? '' : '0').trigger('change');
+				origInput.focus();
+			});
+		}
+
+		$('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>').appendTo(wrapper);
+
+		function getIdValue() {
+			var idval = origInput.val();
+			if (!idIsString) {
+				var idvalint = parseInt($.trim(idval)) || 0;
+				// Fix incorrectly formatted integer values.
+				var idvalstr = ''+idvalint;
+				if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
+				if (idvalint == 0) {
+					if (allowClear && (clearlink.is(':visible'))) clearlink.hide();
+					return null;
+				}
+			} else {
+				if (idval == '') {
+					if (allowClear && (clearlink.is(':visible'))) clearlink.hide();
+					return null;
+				}
+			}
+			if (allowClear && (!clearlink.is(':visible'))) clearlink.show();
+			return idval;
+		}
+
+		function setLabel(label) {
+       		search.val(label);
+			search.attr('data-current-label', label);
+			search.removeAttr('data-manually-entered');
+		}
+
+		function origInputChanged() {
+			var idval = getIdValue();
+			if (idval === null) {
+        		setLabel(selectPlaceholder);
+			} else {
+				var row = idIsString ?
+					myRowFetcher.getRowForIdString(
+						autocompleteCommand,
+						idColumn,
+						idval
+					) :
+					myRowFetcher.getRowForId(
+						autocompleteCommand,
+						idColumn,
+						idval
+					);
+				if (row !== null) {
+        			setLabel(row.label);
+				} else {
+        			setLabel(notFoundMessage);
+				}
+			}
+		}
+
+		function trackReadonlyDisabledState() {
+			var oreadonly = origInput.is('[readonly]');
+			var odisabled = origInput.is('[disabled]');
+			var sreadonly = search.is('[readonly]');
+			var sdisabled = search.is('[disabled]');
+
+			if (sreadonly != oreadonly) {
+				if (oreadonly) search.attr('readonly', true); else search.removeAttr('readonly');
+				if (odisabled) search.attr('disabled', true); else search.removeAttr('disabled');
+			}
+		}
+
+		origInput.focus(function(evt) {
+			wrapper.addClass('active');
+			trackReadonlyDisabledState();
+		});
+		origInput.blur(function(evt) {
+			if (typeof(origInput.attr('data-transferring-focus')) != 'undefined') {
+				origInput.removeAttr('data-transferring-focus');
+			}
+			if (!search.is(':focus')) wrapper.removeClass('active');
+			trackReadonlyDisabledState();
+		});
+		origInput.keypress(function(evt) {
+			origInput.attr('data-transferring-focus', true);
+			search.val(String.fromCharCode(evt.which));
+			search.attr('data-manually-entered', true);
+			search.focus();
+			evt.preventDefault();
+			trackReadonlyDisabledState();
+		});
+		origInput.change(function(evt) {
+			origInputChanged();
+			trackReadonlyDisabledState();
+		});
+
+		search.focus(function(evt) {
+			wrapper.addClass('active');
+			trackReadonlyDisabledState();
+		});
+		search.blur(function(evt) {
+			var oldval = search.val();
+			var isManuallyEntered = (typeof(search.attr('data-manually-entered')) != 'undefined');
+			if (isManuallyEntered) search.removeAttr('data-manually-entered');
+			if ((oldval != '') && isManuallyEntered) {
+				// If we lose focus on the search input when its value is not empty, plug that value into the original
+				// input and search for its label.
+				origInput.val(search.val()).trigger('change');
+			} else {
+				// If we lose focus on the search input when its value is empty, restore the current label as its value.
+				search.val((typeof(search.attr('data-current-label')) != 'undefined') ? search.attr('data-current-label') : '');
+			}
+			if (!origInput.is(':focus')) wrapper.removeClass('active');
+			trackReadonlyDisabledState();
+		});
+		search.keypress(function(evt) {
+			// As the value in the search box changes, show or hide the clear button.
+			setTimeout(getIdValue, 1);
+			search.attr('data-manually-entered', true);
+			trackReadonlyDisabledState();
+		});
+		wrapper.mousedown(function(evt) {
+			if (!search.is(':focus')) {
+				search.val('');
+				search.removeAttr('data-manually-entered');
+				search.focus();
+				evt.preventDefault();
+			}
+			trackReadonlyDisabledState();
+		});
+
+		search.autocomplete({
+			minLength:minimumInputLength,
+    		source:url,
+			autoFocus:false,
+    		select:function(event, ui) {
+				setLabel(ui.item.label);
+        		origInput.val(ui.item.value);
+				getIdValue();
+				origInput.focus();
+				trackReadonlyDisabledState();
+				return false;
+    		},
+			focus:function(event, ui) {
+				$(this).val(ui.item.value);
+				return false; 
+			}
+		});
+
+		// Set up the initial state for the value in the original input.
+		origInputChanged();
+
+	} else { // if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__)
+
+		// Old select2-based implementation.
+
+		var elem = $(options.inputElement);
+		var placeholder = {value: '', label:selectPlaceholder};
+
+		elem.select2('destroy');
+		var params = {
+			allowClear: allowClear,
+			initSelection: function(elem, callback) {
+				var id = elem.val();
+				if (!idIsString) id = parseInt($.trim(id)) || 0;
+				if ((id == '') || ((!idIsString) && (id == 0))) {
+					callback(placeholder);
+					return;
+				}
+				var row = idIsString ?
+					myRowFetcher.getRowForIdString(
+						autocompleteCommand,
+						idColumn,
+						id,
+						rowFetcherOptionalParameters
+					) :
+						myRowFetcher.getRowForId(
+						autocompleteCommand,
+						idColumn,
+						id,
+						rowFetcherOptionalParameters
+					);
+				var data = (row !== null) ? row : {value: id, label: ''+id+': '+notFoundMessage};
+				callback(data);
+				return;
+			},
+			minimumInputLength: minimumInputLength,
+			query: function(options) {
+				var results = myRowFetcher.getRowArrayForIdString(
+					autocompleteCommand,
+					'term',
+					options.term,
+					$.extend({}, rowFetcherOptionalParameters, {offset:(options.page-1)*maxRowsPerPage, limit:maxRowsPerPage})
+				);
+				options.callback({results:results, more: (results.length >= maxRowsPerPage) });
+			},
+			formatResult: function(item) {
+				return item.label;
+			},
+			formatSelection: function(item) {
+				return item.label;
+			},
+			id: function(item) {
+				return item.value;
+			}
+		};
+		if (selectPlaceholder != '') params.placeholder = placeholder.label;
+		// Create the select2 component; hook it to the input element.
+		elem.select2(params);
+		// Remove the bogus 'width:0px' CSS style which seems to be automatically added
+		// by select2 to its own containers.
+		elem.siblings('.select2-container').css('width', '');
 // select2 3.4.8 handles this automatically at creation time, and has support for both
 // readonly and disabled attributes on the original input element.
-//	// Disable the select2 if the input element is readonly or disabled.
-//	if ((typeof(elem.attr('readonly')) !== 'undefined') ||
-//		(typeof(elem.attr('disabled')) !== 'undefined')) {
-//		elem.select2('disable');
-//	}
+//		// Disable the select2 if the input element is readonly or disabled.
+//		if ((typeof(elem.attr('readonly')) !== 'undefined') ||
+//			(typeof(elem.attr('disabled')) !== 'undefined')) {
+//			elem.select2('disable');
+//		}
+
+	} // if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__) ... else
 }
 
 // Hook an autocomplete drop-down list for a related table to an input element.

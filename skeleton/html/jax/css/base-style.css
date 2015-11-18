@@ -297,3 +297,38 @@ Usage:
 	padding: 3px 6px;
 }
 }
+
+.combobox-wrapper {
+	border: 1px solid lightgray;
+	border-radius: 4px;
+	padding: 0px 4px;
+	margin: 2px 0px;
+	display: inline-block;
+	background-color: white;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	box-sizing: border-box;
+}
+.combobox-wrapper.active {
+	border: 1px solid #ccc;
+}
+.combobox-search {
+	border: none;
+	margin: 0px 0px;
+	padding: 0px 0px;
+}
+.combobox-search:focus {
+	outline: 0;
+}
+.combobox-chevron-down {
+	margin: 0 6px;
+	margin-right: 0px;
+	padding: 3px 6px;
+	border-left: 1px solid lightgray;
+	display: inline-block;
+}
+.combobox-wrapper .glyphicon {
+	opacity: 0.5;
+}
