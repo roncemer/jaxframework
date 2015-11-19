@@ -526,7 +526,6 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				return false;
     		},
 			focus:function(event, ui) {
-				$(this).val(ui.item.value);
 				return false; 
 			}
 		});
