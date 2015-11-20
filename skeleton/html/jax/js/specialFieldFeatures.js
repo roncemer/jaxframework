@@ -244,8 +244,8 @@ function filterFieldsWithSpecialFeatures() {
 function filterDateInput(jqFieldSet) {
 	$.each(jqFieldSet, function(index) {
 		var elem = $(this);
-		var dt = Date.parse(elem.getValue());
-		elem.setValue((dt != null) ? dt.toString('yyyy-MM-dd') : '');
+		var dt = Date.parse(elem.val());
+		elem.val((dt != null) ? dt.toString('yyyy-MM-dd') : '');
 	});
 }
 
@@ -254,8 +254,8 @@ function filterDateInput(jqFieldSet) {
 function filterDatetimeInput(jqFieldSet) {
 	$.each(jqFieldSet, function(index) {
 		var elem = $(this);
-		var dt = Date.parse(elem.getValue());
-		elem.setValue((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
+		var dt = Date.parse(elem.val());
+		elem.val((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
 	});
 }
 
@@ -265,10 +265,10 @@ function filterDatetimeInput(jqFieldSet) {
 function filterNumericInput(jqFieldSet, scale) {
 	$.each(jqFieldSet, function(index) {
 		var elem = $(this);
-		var val = Number($.trim(elem.getValue()));
+		var val = Number($.trim(elem.val()));
 		if (isNaN(val)) val = 0.0;
 		val = val.toFixed(scale);
-		elem.setValue(val);
+		elem.val(val);
 	});
 }
 
@@ -341,10 +341,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 		// New combobox implementation.
 
 		var origInput = $(options.inputElement);
-		if (origInput.parent().hasClass('combobox-wrapper')) {
-			console.log('Attempt to re-install combobox on input.  Ignored.');
-			return;
-		}
+		if (!origInput.parent().hasClass('combobox-wrapper')) origInput.wrap('<div class="combobox-wrapper"></div>');
 
 		var url = getBaseURL()+'?command='+encodeURIComponent(autocompleteCommand);
 		if (typeof fixupAJAXURL == 'function') {
@@ -356,19 +353,37 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			}
 		}
 
-		var wrapper = $('<div class="combobox-wrapper"></div>');
-		origInput.wrap(wrapper);
-		wrapper = origInput.parent();
+		var comboboxSeq = undefinedToEmpty(origInput.attr('data-combobox-seq'));
+		if (comboboxSeq == '') {
+			if (window.__nextComboboxSeq__ === undefined) window.__nextComboboxSeq__ = 0;
+			comboboxSeq = ++window.__nextComboboxSeq__;
+			origInput.attr('data-combobox-seq', comboboxSeq);
+		}
 
-		if (window.__nextComboboxSearchId__ === undefined) window.__nextComboboxSearchId__ = 1;
+		// Restore the original CSS settings for the original input, if we saved them before.
+		if (origInput.attr('data-combobox-orig-style') !== undefined) {
+			origInput.attr('style', undefinedToEmpty(origInput.attr('data-combobox-orig-style')));
+		}
 
+		// Remove any old components which were inserted after the original input.
+		origInput.nextAll("input.combobox-search[data-combobox-seq='"+comboboxSeq+"']").remove();
+		origInput.nextAll("a.combobox-clear[data-combobox-seq='"+comboboxSeq+"']").remove();
+		origInput.nextAll("div.combobox-chevron-down[data-combobox-seq='"+comboboxSeq+"']").remove();
+
+		// Create a search input after the original input.
 		var search = origInput.clone();
-		search.attr('id', '__combobox-search__'+new Date().getTime()+'-'+window.__nextComboboxSearchId__);
-		window.__nextComboboxSearchId__++;
+		search.removeAttr('data-combobox-orig-style');
+		search.attr('id', '__combobox-search__'+new Date().getTime()+'-'+comboboxSeq);
+		search.attr('data-combobox-seq', comboboxSeq);
 		search.removeAttr('name');
 		search.addClass('combobox-search');
-		search.appendTo(wrapper);
 		search.attr('tabindex', '-1');
+		search.insertAfter(origInput);
+
+		// Save the original CSS settings for the original input, if we haven't already.
+		if (origInput.attr('data-combobox-orig-style') === undefined) {
+			origInput.attr('data-combobox-orig-style', undefinedToEmpty(origInput.attr('style')));
+		}
 
 		// Make the original input of zero size so we won't see it, but it can still get the focus.
 		// If we hide it or put it inside an invisible container, it can't receive the focus programmatically.
@@ -379,17 +394,27 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 		origInput.css('margin', '0px');
 		origInput.css('padding', '0px');
 
-		var clearlink = null;
+		var clearLink = null;
 		if (allowClear) {
-			clearlink = $('<a class="btn-default combobox-clear" href="#" onclick="return false;" tabindex="-1"><i class="glyphicon glyphicon-remove-circle"></i></a>');
-			clearlink.appendTo(wrapper);
-			clearlink.click(function(evt) {
+			clearLink = $('<a class="btn-default combobox-clear" href="#" onclick="return false;" tabindex="-1"><i class="glyphicon glyphicon-remove-circle"></i></a>');
+			clearLink.attr('data-combobox-seq', comboboxSeq);
+			clearLink.insertAfter(search);
+			clearLink.click(function(evt) {
 				origInput.val(idIsString ? '' : '0').trigger('change');
 				origInput.focus();
 			});
+/*		} else {
+			search.removeClass('combobox-search-with-clear');*/
 		}
 
-		$('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>').appendTo(wrapper);
+		var chevronDown = $('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>');
+		chevronDown.insertAfter(allowClear ? clearLink : search);
+		chevronDown.attr('data-combobox-seq', comboboxSeq);
+
+		function undefinedToEmpty(val) {
+			if ((val === undefined) || (val === null)) return '';
+			return val;
+		}
 
 		function getIdValue() {
 			var idval = origInput.val();
@@ -399,21 +424,30 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				var idvalstr = ''+idvalint;
 				if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
 				if (idvalint == 0) {
-					if (allowClear && (clearlink.is(':visible'))) clearlink.hide();
+					if (allowClear && (clearLink.is(':visible'))) {
+						clearLink.hide();
+/*						search.removeClass('combobox-search-with-clear');*/
+					}
 					return null;
 				}
 			} else {
 				if (idval == '') {
-					if (allowClear && (clearlink.is(':visible'))) clearlink.hide();
+					if (allowClear && (clearLink.is(':visible'))) {
+						clearLink.hide();
+/*						search.removeClass('combobox-search-with-clear');*/
+					}
 					return null;
 				}
 			}
-			if (allowClear && (!clearlink.is(':visible'))) clearlink.show();
+			if (allowClear && (!clearLink.is(':visible'))) {
+				clearLink.show();
+/*				search.addClass('combobox-search-with-clear');*/
+			}
 			return idval;
 		}
 
 		function setLabel(label) {
-       		search.val(label);
+       		search.val(label).trigger('change');
 			search.attr('data-current-label', label);
 			search.removeAttr('data-manually-entered');
 		}
@@ -454,35 +488,69 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			}
 		}
 
+		function handleMouseDownFocus(evt) {
+			if (!search.is(':focus')) {
+				search.val('').trigger('change');
+				search.removeAttr('data-manually-entered');
+				search.focus();
+				evt.preventDefault();
+			}
+			trackReadonlyDisabledState();
+		}
+
 		origInput.focus(function(evt) {
-			wrapper.addClass('active');
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
+			search.addClass('active');
 			trackReadonlyDisabledState();
 		});
 		origInput.blur(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
 			if (typeof(origInput.attr('data-transferring-focus')) != 'undefined') {
 				origInput.removeAttr('data-transferring-focus');
 			}
-			if (!search.is(':focus')) wrapper.removeClass('active');
+			search.removeClass('active');
 			trackReadonlyDisabledState();
 		});
 		origInput.keypress(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
 			origInput.attr('data-transferring-focus', true);
-			search.val(String.fromCharCode(evt.which));
+			search.val(String.fromCharCode(evt.which)).trigger('change');
 			search.attr('data-manually-entered', true);
 			search.focus();
 			evt.preventDefault();
 			trackReadonlyDisabledState();
 		});
 		origInput.change(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
 			origInputChanged();
 			trackReadonlyDisabledState();
 		});
 
 		search.focus(function(evt) {
-			wrapper.addClass('active');
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
+			search.removeClass('active');
 			trackReadonlyDisabledState();
 		});
 		search.blur(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
 			var oldval = search.val();
 			var isManuallyEntered = (typeof(search.attr('data-manually-entered')) != 'undefined');
 			if (isManuallyEntered) search.removeAttr('data-manually-entered');
@@ -492,25 +560,34 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				origInput.val(search.val()).trigger('change');
 			} else {
 				// If we lose focus on the search input when its value is empty, restore the current label as its value.
-				search.val((typeof(search.attr('data-current-label')) != 'undefined') ? search.attr('data-current-label') : '');
+				search.val((typeof(search.attr('data-current-label')) != 'undefined') ? search.attr('data-current-label') : '').trigger('change');
 			}
-			if (!origInput.is(':focus')) wrapper.removeClass('active');
 			trackReadonlyDisabledState();
 		});
 		search.keypress(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
 			// As the value in the search box changes, show or hide the clear button.
 			setTimeout(getIdValue, 1);
 			search.attr('data-manually-entered', true);
 			trackReadonlyDisabledState();
 		});
-		wrapper.mousedown(function(evt) {
-			if (!search.is(':focus')) {
-				search.val('');
-				search.removeAttr('data-manually-entered');
-				search.focus();
-				evt.preventDefault();
+		search.mousedown(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
 			}
-			trackReadonlyDisabledState();
+			handleMouseDownFocus(evt);
+		});
+
+		chevronDown.mousedown(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
+			handleMouseDownFocus(evt);
 		});
 
 		search.autocomplete({
@@ -519,7 +596,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			autoFocus:false,
     		select:function(event, ui) {
 				setLabel(ui.item.label);
-        		origInput.val(ui.item.value);
+        		origInput.val(ui.item.value).trigger('change');
 				getIdValue();
 				origInput.focus();
 				trackReadonlyDisabledState();
@@ -636,7 +713,7 @@ function hookAutocompleteToInput(options) {
 			setTimeout('window.__lastAutocompleteField__.change().focus().select();', 1);
 		},
 		focus:function(event, ui) {
-			$(this).val(ui.item.value);
+			$(this).val(ui.item.value).trigger('change');
 			return false; 
 		}
 	});
