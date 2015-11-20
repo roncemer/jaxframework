@@ -303,14 +303,14 @@ Usage:
 	margin: 0;
 	padding: 0;
 }
-.combobox-search:focus {
+.combobox-search {
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 /* This simulates the default border styles from bootstrap for focused inputs which don't have the form-control class. */
 .combobox-search:not(.form-control).active {
 	border: 2px solid gray;
 	border-radius: 3px;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
@@ -328,7 +328,8 @@ Usage:
 	margin: 0;
 	padding: 2px 6px;
 	display: inline-block;
-	border: 1px solid lightgray;
+	border: 2px solid lightgray;
+	border-left: 1px solid lightgray;
 	border-radius: 3px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
