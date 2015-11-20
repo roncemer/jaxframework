@@ -303,14 +303,26 @@ Usage:
 	margin: 0;
 	padding: 0;
 }
-
 .combobox-search:focus {
 }
-.combobox-search.active {
+/* This simulates the default border styles from bootstrap for focused inputs which don't have the form-control class. */
+.combobox-search:not(.form-control).active {
 	border: 2px solid gray;
 	border-radius: 3px;
 	border-top-right-radius: 0px;
 	border-bottom-right-radius: 0px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	-webkit-appearance: textfield;
+}
+/* This simulates the default border styles from bootstrap for focused inputs which have the form-control class (.form-control:focus in bootstrap.css). */
+.combobox-search.form-control.active {
+	border-color: #66afe9;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 }
 .combobox-chevron-down {
 	margin: 0;
