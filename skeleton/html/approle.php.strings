@@ -1,0 +1,12 @@
+crud.approle.search.id.heading = Id
+crud.approle.search.role_name.heading = Role Name
+crud.approle.search.description.heading = Description
+crud.approle.search.when_added.heading = Added
+crud.approle.form.input.id.label = Id
+crud.approle.form.input.when_added.label = Added
+crud.approle.form.input.role_name.label = Role Name
+crud.approle.form.input.description.label = Description
+crud.approle.validator.role_name.NoDuplicatesValidator.errorMsg = The selected Role Name is already in use.
+crud.approle.validator.role_name.specialCharsNotAllowed.errorMsg = Role names can only contain letters, digits, minus (-) and underscore (_) characters.
+crud.approle.validator.description.NoDuplicatesValidator.errorMsg = The selected Description is already in use.
+crud.approle.form.input.rolePermissions.label = RolePermissions
