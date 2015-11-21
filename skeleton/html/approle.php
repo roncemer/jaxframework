@@ -30,6 +30,10 @@ function validationHook() {
 			return;
 		}
 	}
+
+	if (preg_match('/[^a-zA-Z0-9\-_]/', $row->role_name)) {
+		$result->fieldErrors['role_name'] = _t('crud.approle.validator.role_name.specialCharsNotAllowed.errorMsg')."\n";
+	}
 }
 
 function postUpdateHook() {
