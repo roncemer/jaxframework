@@ -416,6 +416,11 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			return val;
 		}
 
+		function isClearLinkVisible() {
+			var display = clearLink.css('display');
+			return ((display == undefined) || (display != 'none'));
+		}
+
 		function getIdValue() {
 			var idval = origInput.val();
 			if (!idIsString) {
@@ -424,23 +429,23 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				var idvalstr = ''+idvalint;
 				if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
 				if (idvalint == 0) {
-					if (allowClear && (clearLink.is(':visible'))) {
-						clearLink.hide();
+					if (allowClear) {
+						if (isClearLinkVisible()) clearLink.hide();
 					}
 					return null;
 				}
 			} else {
 				if (idval == '') {
-					if (allowClear && (clearLink.is(':visible'))) {
-						clearLink.hide();
+					if (allowClear) {
+						if (isClearLinkVisible()) clearLink.hide();
 					}
 					return null;
 				}
 			}
 			if (allowClear && (!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
-				if (!clearLink.is(':visible')) clearLink.show();
+				if (!isClearLinkVisible()) clearLink.show();
 			} else {
-				if (clearLink.is(':visible')) clearLink.hide();
+				if (isClearLinkVisible()) clearLink.hide();
 			}
 			return idval;
 		}
@@ -486,9 +491,6 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			}
 			if (sdisabled != odisabled) {
 				if (odisabled) search.attr('disabled', true); else search.removeAttr('disabled');
-			}
-			if (allowClear && (oreadonly || odisabled) && (clearLink.is(':visible'))) {
-				clearLink.hide();
 			}
 			getIdValue();
 		}
