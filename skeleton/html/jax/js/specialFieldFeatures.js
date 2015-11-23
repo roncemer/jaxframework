@@ -400,11 +400,11 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			clearLink.attr('data-combobox-seq', comboboxSeq);
 			clearLink.insertAfter(search);
 			clearLink.click(function(evt) {
-				origInput.val(idIsString ? '' : '0').trigger('change');
-				origInput.focus();
+				if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+					origInput.val(idIsString ? '' : '0').trigger('change');
+				}
+				if (!origInput.is('[disabled]')) origInput.focus();
 			});
-/*		} else {
-			search.removeClass('combobox-search-with-clear');*/
 		}
 
 		var chevronDown = $('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>');
@@ -426,7 +426,6 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				if (idvalint == 0) {
 					if (allowClear && (clearLink.is(':visible'))) {
 						clearLink.hide();
-/*						search.removeClass('combobox-search-with-clear');*/
 					}
 					return null;
 				}
@@ -434,14 +433,14 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				if (idval == '') {
 					if (allowClear && (clearLink.is(':visible'))) {
 						clearLink.hide();
-/*						search.removeClass('combobox-search-with-clear');*/
 					}
 					return null;
 				}
 			}
-			if (allowClear && (!clearLink.is(':visible'))) {
-				clearLink.show();
-/*				search.addClass('combobox-search-with-clear');*/
+			if (allowClear && (!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+				if (!clearLink.is(':visible')) clearLink.show();
+			} else {
+				if (clearLink.is(':visible')) clearLink.hide();
 			}
 			return idval;
 		}
@@ -484,19 +483,26 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 
 			if (sreadonly != oreadonly) {
 				if (oreadonly) search.attr('readonly', true); else search.removeAttr('readonly');
+			}
+			if (sdisabled != odisabled) {
 				if (odisabled) search.attr('disabled', true); else search.removeAttr('disabled');
 			}
+			if (allowClear && (oreadonly || odisabled) && (clearLink.is(':visible'))) {
+				clearLink.hide();
+			}
+			getIdValue();
 		}
 
-		function handleMouseDownFocus(evt) {
-			if (!search.is(':focus')) {
-				search.val('').trigger('change');
-				search.removeAttr('data-manually-entered');
-				search.focus();
-				evt.preventDefault();
-			}
-			trackReadonlyDisabledState();
-		}
+		try {
+			var mutationObserver = new MutationObserver(function(mutations) {
+				if (!$.contains(document, search[0])) {
+					mutationObserver.disconnect();
+					return;
+				}
+				trackReadonlyDisabledState();
+			});
+			mutationObserver.observe(origInput[0], { attributes: true, childList: false, characterData: false });
+		} catch (ex) {}
 
 		origInput.focus(function(evt) {
 			if (!$.contains(document, search[0])) {
@@ -522,12 +528,15 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				origInput.off(this);
 				return;
 			}
-			origInput.attr('data-transferring-focus', true);
-			search.val(String.fromCharCode(evt.which)).trigger('change');
-			search.attr('data-manually-entered', true);
-			search.focus();
+			if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+				origInput.attr('data-transferring-focus', true);
+				search.val(String.fromCharCode(evt.which)).trigger('change');
+				search.attr('data-manually-entered', true);
+				search.focus();
+			}
 			evt.preventDefault();
 			trackReadonlyDisabledState();
+			return false;
 		});
 		origInput.change(function(evt) {
 			if (!$.contains(document, search[0])) {
@@ -579,7 +588,9 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				origInput.off(this);
 				return;
 			}
-			handleMouseDownFocus(evt);
+			if (!origInput.is('[disabled]')) origInput.focus();
+			evt.stopPropagation();
+			return false;
 		});
 
 		chevronDown.mousedown(function(evt) {
@@ -587,7 +598,9 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				origInput.off(this);
 				return;
 			}
-			handleMouseDownFocus(evt);
+			if (!origInput.is('[disabled]')) origInput.focus();
+			evt.stopPropagation();
+			return false;
 		});
 
 		search.autocomplete({
@@ -598,7 +611,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				setLabel(ui.item.label);
         		origInput.val(ui.item.value).trigger('change');
 				getIdValue();
-				origInput.focus();
+				if (!origInput.is('[disabled]')) origInput.focus();
 				trackReadonlyDisabledState();
 				return false;
     		},
