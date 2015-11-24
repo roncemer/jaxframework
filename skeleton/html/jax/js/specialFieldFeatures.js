@@ -417,6 +417,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 		}
 
 		function isClearLinkVisible() {
+			if (!allowClear) return false;
 			var display = clearLink.css('display');
 			return ((display == undefined) || (display != 'none'));
 		}
@@ -429,23 +430,21 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				var idvalstr = ''+idvalint;
 				if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
 				if (idvalint == 0) {
-					if (allowClear) {
-						if (isClearLinkVisible()) clearLink.hide();
-					}
+					if (allowClear && isClearLinkVisible()) clearLink.hide();
 					return null;
 				}
 			} else {
 				if (idval == '') {
-					if (allowClear) {
-						if (isClearLinkVisible()) clearLink.hide();
-					}
+					if (allowClear && isClearLinkVisible()) clearLink.hide();
 					return null;
 				}
 			}
-			if (allowClear && (!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
-				if (!isClearLinkVisible()) clearLink.show();
-			} else {
-				if (isClearLinkVisible()) clearLink.hide();
+			if (allowClear) {
+				if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+					if (!isClearLinkVisible()) clearLink.show();
+				} else {
+					if (isClearLinkVisible()) clearLink.hide();
+				}
 			}
 			return idval;
 		}
