@@ -300,6 +300,7 @@ Usage:
 
 .combobox-wrapper {
 	display: inline-block;
+	white-space: nowrap;
 	margin: 0;
 	padding: 0;
 }
