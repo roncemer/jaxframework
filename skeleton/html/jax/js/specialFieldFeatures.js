@@ -340,6 +340,11 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 
 		// New combobox implementation.
 
+		function undefinedToEmpty(val) {
+			if ((val === undefined) || (val === null)) return '';
+			return val;
+		}
+
 		var origInput = $(options.inputElement);
 		if (!origInput.parent().hasClass('combobox-wrapper')) origInput.wrap('<div class="combobox-wrapper"></div>');
 
@@ -410,11 +415,6 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 		var chevronDown = $('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>');
 		chevronDown.insertAfter(allowClear ? clearLink : search);
 		chevronDown.attr('data-combobox-seq', comboboxSeq);
-
-		function undefinedToEmpty(val) {
-			if ((val === undefined) || (val === null)) return '';
-			return val;
-		}
 
 		function isClearLinkVisible() {
 			if (!allowClear) return false;
@@ -536,6 +536,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 				search.focus();
 			}
 			evt.preventDefault();
+			evt.defaultPrevented = true;
 			trackReadonlyDisabledState();
 			return false;
 		});
