@@ -196,13 +196,31 @@ $(document).ready(function() {
 	installPageHelp();
 
 	$('body').keydown(function(evt) {
-		switch (evt.which) {
-		// If the user presses Esc while a row is pulled up, abandon the row.
-		// If we're in any mode other than view or delete mode, confirm before abandoning.
-		case 27: // Esc
-			if (evt.altKey || evt.ctrlKey || evt.shiftKey || evt.metaKey) break;
-			abandon{{uTableName}}();
-			break;
+		if ((evt.keyCode == 27) && // Esc
+			(!(evt.altKey || evt.ctrlKey || evt.shiftKey || evt.metaKey))) {
+			var d = evt.srcElement || evt.target;
+			if ((d !== undefined) && (d !== null)) {
+				switch (d.tagName.toUpperCase()) {
+				case 'INPUT':
+					if ((d.type !== undefined) && (d.type !== null)) {
+						switch (d.type.toUpperCase()) {
+						case 'TEXT':
+						case 'PASSWORD':
+						case 'FILE':
+						case 'SEARCH':
+						case 'EMAIL':
+						case 'NUMBER':
+						case 'DATE':
+							abandon{{uTableName}}();
+							return;
+						}
+					}
+					break;
+				case 'TEXTAREA':
+					abandon{{uTableName}}();
+					return;
+				}
+			}
 		}
 	});
 
