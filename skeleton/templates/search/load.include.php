@@ -20,8 +20,7 @@ EOF
 		$rows = ${{tableName}}DAO->findWithPreparedStatement($ps);
 	}
 {{loadRelations}}
-{{rowProcessingPHPCode}}
-{{unsetForbiddenColumns}}
+{{rowProcessingPHPCode}}{{unsetForbiddenColumns}}
 	echo json_encode($rows);
 	$db->close();
 	exit();
