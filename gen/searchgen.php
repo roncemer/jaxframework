@@ -158,8 +158,8 @@ EOF
 			implode("\n", $searchWhereAssignments),
 			implode("\n", $andWhereAssignments),
 			$groupBy,
-			implode("\n", $unsetForbiddenColumns),
 			$rowProcessingPHPCode,
+			implode("\n", $unsetForbiddenColumns),
 		);
 		$content = str_replace(
 			$searchFor,
@@ -896,6 +896,22 @@ EOF
 			if (!empty($psInitCode)) $loadRelations = array_merge($psInitCode, $loadRelations);
 		}
 
+		$rowProcessingPHPCode = '';
+		if (isset($loader['rowProcessingPHPCode'])) {
+			$rowProcessingPHPCode = (string)$loader['rowProcessingPHPCode'];
+			if (trim($rowProcessingPHPCode) != '') {
+				$rowProcessingPHPCode = <<<EOF
+	foreach (\$rows as &\$row) {
+$rowProcessingPHPCode
+	}
+	unset(\$row); // release reference to last element
+
+EOF;
+			} else {
+				$rowProcessingPHPCode = '';
+			}
+		}
+
 		$unsetForbiddenColumns = array();
 		if (isset($loader['forbiddenColumns'])) {
 			foreach ($loader['forbiddenColumns'] as $colName) {
@@ -928,6 +944,7 @@ EOF
 			'{{andWhereAssignments}}',
 			'{{initRelationDAOs}}',
 			'{{loadRelations}}',
+			'{{rowProcessingPHPCode}}',
 			'{{unsetForbiddenColumns}}',
 		);
 		$replaceWith = array(
@@ -952,6 +969,7 @@ EOF
 			implode("\n", $andWhereAssignments),
 			implode("\n", $initRelationDAOs),
 			(!empty($loadRelations)) ? implode("\n", $loadRelations) : '',
+			$rowProcessingPHPCode,
 			implode("\n", $unsetForbiddenColumns),
 		);
 		$content = str_replace(

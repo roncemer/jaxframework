@@ -185,6 +185,7 @@ $GENERATOR_CFG_VALIDATIONS = array(
 	new GenCfgValidation('loaders/*/relations/*/local', 'string'),
 	new GenCfgValidation('loaders/*/relations/*/foreign', 'string'),
 	new GenCfgValidation('loaders/*/relations/*/orderBy', 'string'),
+	new GenCfgValidation('loaders/*/rowProcessingPHPCode', 'string'),
 	new GenCfgValidation('loaders/*/forbiddenColumns', 'array,NULL', 'integer'),
 	new GenCfgValidation('loaders/*/forbiddenColumns/*', 'string'),
 
