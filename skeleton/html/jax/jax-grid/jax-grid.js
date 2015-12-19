@@ -310,6 +310,14 @@ angular.module('JaxGridApp', [])
 
 	$scope.syncAutocompleteSingleRowSelectorValuesFromInputs = function() {
 		if (($scope.containerElement !== null) && (typeof($scope.containerElement) == 'object')) {
+			// Update combobox values which don't match the values of their input elements.
+			$('input[data-combobox-seq]', $scope.containerElement).each(function(idx, el) {
+				var elem = $(el);
+				var idval = elem.attr('data-idval');
+				if ((idval === undefined) || (idval != elem.val())) {
+					elem.trigger('lookupDescription');
+				}
+			});
 			// Update select2 values which don't match the values of their input elements.
 			$('input.select2-offscreen', $scope.containerElement).each(function(idx, el) {
 				var elem = $(el);

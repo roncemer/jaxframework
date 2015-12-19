@@ -457,6 +457,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 
 		function origInputChanged() {
 			var idval = getIdValue();
+			origInput.attr('data-idval', idval);
 			if (idval === null) {
         		setLabel(selectPlaceholder);
 			} else {
@@ -541,6 +542,14 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 			return false;
 		});
 		origInput.change(function(evt) {
+			if (!$.contains(document, search[0])) {
+				origInput.off(this);
+				return;
+			}
+			origInputChanged();
+			trackReadonlyDisabledState();
+		});
+		origInput.on('lookupDescription', function(evt) {
 			if (!$.contains(document, search[0])) {
 				origInput.off(this);
 				return;
