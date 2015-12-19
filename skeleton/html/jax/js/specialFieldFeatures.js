@@ -158,13 +158,27 @@ function autoShowOrHideSpecialFieldFeatures(hideAll) {
 			// not readonly or disabled.
 			selector = 'input:not([disabled]):not([readonly])';
 			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.nextAll('.popupSearchLink').show();
+			elems.each(function(index, elem) {
+				elem = $(elem);
+				if (elem.attr('data-combobox-seq') !== undefined) {
+					elem.parent().nextAll('.popupSearchLink').show();
+				} else {
+					elem.nextAll('.popupSearchLink').show();
+				}
+			});
 
 			// Hide pop-up search icons for inputs which have them, when they are
 			// readonly or disabled.
 			selector = 'input[disabled], input[readonly]';
 			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.nextAll('.popupSearchLink').hide();
+			elems.each(function(index, elem) {
+				elem = $(elem);
+				if (elem.attr('data-combobox-seq') !== undefined) {
+					elem.parent().nextAll('.popupSearchLink').hide();
+				} else {
+					elem.nextAll('.popupSearchLink').hide();
+				}
+			});
 
 			// Show date picker icons for inputs which have date pickers
 			// and are not readonly or disabled.
