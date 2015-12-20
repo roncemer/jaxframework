@@ -100,7 +100,7 @@ create database $ini_database default character set utf8 default collate utf8_ge
 
 grant all privileges on *.* to '$ini_username'@'%' identified by '$ini_password';
 grant all privileges on *.* to $ini_username@localhost identified by '$ini_password';
-" | mysql -h "$ini_server" -u root --verbose
+" | sudo mysql -h "$ini_server" -u root --verbose
 					;;
 				pgsql)
 					echo "
