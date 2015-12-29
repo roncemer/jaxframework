@@ -42,7 +42,7 @@ function parseMsgsFromJSON(json) {
 					}
 
 					// Traverse upward, looking for a tab-pane container.  If we find it,
-					// look for its tab, and add a flag icon to the tab so the user can
+					// look for its tab, and add an icon to the tab so the user can
 					// more easily find the tabs which have errors.
 					var parent = elem.parent();
 					while (parent.length > 0) {
@@ -51,7 +51,7 @@ function parseMsgsFromJSON(json) {
 							if (typeof(id) !== 'undefined') {
 								if (tabIdsSoFar.indexOf(id) < 0) {
 									tabIdsSoFar.push(id);
-									$("div.tabbable li a[href='#"+id+"']").addClass('has-errors').append($('<i class="glyphicon glyphicon-flag"/>'));
+									$("div.tabbable li a[href='#"+id+"']").addClass('has-errors').append($('<i class="glyphicon glyphicon-exclamation-sign"/>'));
 								}
 							}
 						}
@@ -59,7 +59,7 @@ function parseMsgsFromJSON(json) {
 					}
 
 					// Traverse upward, looking for an accordion-body container.  If we find it,
-					// look for its accordion-heading, and add a flag icon to the tab so the user
+					// look for its accordion-heading, and add an icon to the tab so the user
 					// can more easily find the accordion groups which have errors.
 					var parent = elem.parent();
 					while (parent.length > 0) {
@@ -68,7 +68,7 @@ function parseMsgsFromJSON(json) {
 							if (typeof(id) !== 'undefined') {
 								if (tabIdsSoFar.indexOf(id) < 0) {
 									tabIdsSoFar.push(id);
-									$("div.accordion-heading a[href='#"+id+"']").addClass('has-errors').append($('<i class="glyphicon glyphicon-flag"/>'));
+									$("div.accordion-heading a[href='#"+id+"']").addClass('has-errors').append($('<i class="glyphicon glyphicon-exclamation-sign"/>'));
 								}
 							}
 						}
@@ -108,8 +108,8 @@ function clearMsgs() {
 	$('#errorMsg').text('').hide();
 	$('#successMsg').text('').hide();
 	$('.fieldErrorMsg').text('').removeClass('help-block help-inline').hide();
-	$("div.tabbable li a.has-errors i[class='glyphicon glyphicon-flag']").remove();
+	$("div.tabbable li a.has-errors i[class='glyphicon glyphicon-exclamation-sign']").remove();
 	$("div.tabbable li a.has-errors").removeClass('has-errors');
-	$("div.accordion-heading a.has-errors i[class='glyphicon glyphicon-flag']").remove();
+	$("div.accordion-heading a.has-errors i[class='glyphicon glyphicon-exclamation-sign']").remove();
 	$("div.accordion-heading a.has-errors").removeClass('has-errors');
 }

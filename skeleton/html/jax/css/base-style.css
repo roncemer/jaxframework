@@ -348,3 +348,7 @@ Usage:
 .combobox-clear .glyphicon, .combobox-chevron-down .glyphicon {
 	opacity: 0.5;
 }
+
+.has-errors i.glyphicon-exclamation-sign {
+	color: #ff4040;
+}
