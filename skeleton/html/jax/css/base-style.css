@@ -132,11 +132,7 @@ img {
 	font-size: 10pt;
 	border: 1px solid #cd0a0a;
 	background-color: #fef1ec;
-	background-image: url('../images/error20x16.png');
-	background-repeat: no-repeat;
-	background-position: left center;
 	padding: 2px;
-	padding-left: 22px;
 	padding-right: 4px;
 	display: none;
 }
@@ -170,14 +166,6 @@ img {
 .reportTotals {
 	font-weight: bold;
 }
-
-.helpIcon {
-	width: 16px;
-	height: 16px;
-	background-image: url('../images/help16x16.png');
-	display: inline-block;
-}
-
 .center:focus, .right:focus {
 	text-align: left;
 }
@@ -350,5 +338,5 @@ Usage:
 }
 
 .has-errors i.glyphicon-exclamation-sign {
-	color: #ff4040;
+	color: #ff0000;
 }

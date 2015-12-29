@@ -94,7 +94,7 @@ function parseMsgsFromJSON(json) {
 		"One or more fields have validation errors.  Please check the form.\n" : '';
 
 	var elem = $('#errorMsg');
-	elem.html((fieldErrorNotification+msgs.errorMsg+orphanedFieldErrors).replace(/\r\n|\r|\n/g, '<br/>'));
+	elem.html('<i class="glyphicon glyphicon-exclamation-sign"/>'+((fieldErrorNotification+msgs.errorMsg+orphanedFieldErrors).replace(/\r\n|\r|\n/g, '<br/>')));
 	if (elem.html() != '') elem.show();
 
 	var elem = $('#successMsg');
