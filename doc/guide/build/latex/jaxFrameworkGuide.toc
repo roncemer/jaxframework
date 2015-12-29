@@ -25,12 +25,12 @@
 \contentsline {section}{\numberline {4.1}Connection and PreparedStatement}{13}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Introduction}{13}{subsection.4.1.1}
 \contentsline {subsection}{\numberline {4.1.2}Connection}{13}{subsection.4.1.2}
-\contentsline {subsection}{\numberline {4.1.3}PreparedStatement}{15}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.3}PreparedStatement}{14}{subsection.4.1.3}
 \contentsline {subsection}{\numberline {4.1.4}How it All Works Together}{15}{subsection.4.1.4}
 \contentsline {section}{\numberline {4.2}Database Schema}{16}{section.4.2}
 \contentsline {subsection}{\numberline {4.2.1}Introduction}{16}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}YAML DDL File Format}{17}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}XML DDL File Format}{20}{subsection.4.2.3}
+\contentsline {subsection}{\numberline {4.2.3}XML DDL File Format}{19}{subsection.4.2.3}
 \contentsline {section}{\numberline {4.3}Data Access Objects}{20}{section.4.3}
 \contentsline {subsection}{\numberline {4.3.1}Introduction}{20}{subsection.4.3.1}
 \contentsline {subsection}{\numberline {4.3.2}The insert(), update(), delete() and load() Functions}{24}{subsection.4.3.2}
@@ -44,7 +44,7 @@
 \contentsline {section}{\numberline {5.2}Generator Configuration YAML File Format}{27}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}Top-Level Entries}{27}{subsection.5.2.1}
 \contentsline {subsection}{\numberline {5.2.2}Searches}{28}{subsection.5.2.2}
-\contentsline {subsection}{\numberline {5.2.3}Autocomplete Searches}{30}{subsection.5.2.3}
+\contentsline {subsection}{\numberline {5.2.3}Autocomplete Searches}{29}{subsection.5.2.3}
 \contentsline {subsection}{\numberline {5.2.4}Popup Searches}{31}{subsection.5.2.4}
 \contentsline {subsection}{\numberline {5.2.5}Loaders}{32}{subsection.5.2.5}
 \contentsline {subsection}{\numberline {5.2.6}CRUDs}{34}{subsection.5.2.6}
@@ -80,11 +80,11 @@
 \contentsline {subsubsection}{Class: EmailAddressValidator}{50}{subsubsection*.20}
 \contentsline {subsubsection}{Class: NoDuplicatesValidator}{50}{subsubsection*.21}
 \contentsline {subsubsection}{Class: ForeignKeyValidator}{50}{subsubsection*.22}
-\contentsline {chapter}{\numberline {7}Permission System}{53}{chapter.7}
-\contentsline {section}{\numberline {7.1}Introduction}{53}{section.7.1}
-\contentsline {section}{\numberline {7.2}Sessions and the Login/Logout Process}{53}{section.7.2}
-\contentsline {section}{\numberline {7.3}The Permissions Class}{54}{section.7.3}
-\contentsline {section}{\numberline {7.4}Other Files in the Permission System}{55}{section.7.4}
-\contentsline {subsection}{\numberline {7.4.1}The requireLogin.include.php and loginForm.include.php Include Files}{55}{subsection.7.4.1}
-\contentsline {subsection}{\numberline {7.4.2}The logout.php Page}{55}{subsection.7.4.2}
-\contentsline {section}{\numberline {7.5}Highly Customizable}{55}{section.7.5}
+\contentsline {chapter}{\numberline {7}Permission System}{51}{chapter.7}
+\contentsline {section}{\numberline {7.1}Introduction}{51}{section.7.1}
+\contentsline {section}{\numberline {7.2}Sessions and the Login/Logout Process}{51}{section.7.2}
+\contentsline {section}{\numberline {7.3}The Permissions Class}{52}{section.7.3}
+\contentsline {section}{\numberline {7.4}Other Files in the Permission System}{53}{section.7.4}
+\contentsline {subsection}{\numberline {7.4.1}The requireLogin.include.php and loginForm.include.php Include Files}{53}{subsection.7.4.1}
+\contentsline {subsection}{\numberline {7.4.2}The logout.php Page}{53}{subsection.7.4.2}
+\contentsline {section}{\numberline {7.5}Highly Customizable}{53}{section.7.5}

@@ -737,6 +737,11 @@ The structure of a YAML DDL file is as follows:
                 in the insert.
             (column name):
               value: (column value)
+              filename: (filename containing column value)
+                  This can be a relative path, relative to the directory where the YAML schema file
+                  exists, or it can be an absolute path which begins with a forward slash (/).
+              sysVarValue: (system variable to use for value, such as CURRENT_TIMESTAMP)
+                  NOTE: Only one of [value, filename, sysVarValue] may be specified per column.
               quoted: No|Yes; whether to wrap the column value in SQL quotes and escape it
                   accordingly.  Set this to Yes for character-based column types, dates, times, and
                   so on.  Set it to No for numeric column types.

@@ -3,6 +3,7 @@
 \documentclass[letterpaper,10pt,english]{sphinxmanual}
 \usepackage[utf8]{inputenc}
 \DeclareUnicodeCharacter{00A0}{\nobreakspace}
+\usepackage{cmap}
 \usepackage[T1]{fontenc}
 \usepackage{babel}
 \usepackage{times}
@@ -13,7 +14,7 @@
 
 
 \title{Jax Framework Guide}
-\date{July 23, 2014}
+\date{December 29, 2015}
 \release{1.0}
 \author{Ron Cemer}
 \newcommand{\sphinxlogo}{}
@@ -74,10 +75,11 @@
 \expandafter\def\csname PYG@tok@c\endcsname{\let\PYG@it=\textit\def\PYG@tc##1{\textcolor[rgb]{0.25,0.50,0.56}{##1}}}
 \expandafter\def\csname PYG@tok@mf\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.13,0.50,0.31}{##1}}}
 \expandafter\def\csname PYG@tok@err\endcsname{\def\PYG@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
-\expandafter\def\csname PYG@tok@kd\endcsname{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.00,0.44,0.13}{##1}}}
+\expandafter\def\csname PYG@tok@mb\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.13,0.50,0.31}{##1}}}
 \expandafter\def\csname PYG@tok@ss\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.32,0.47,0.09}{##1}}}
 \expandafter\def\csname PYG@tok@sr\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.14,0.33,0.53}{##1}}}
 \expandafter\def\csname PYG@tok@mo\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.13,0.50,0.31}{##1}}}
+\expandafter\def\csname PYG@tok@kd\endcsname{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.00,0.44,0.13}{##1}}}
 \expandafter\def\csname PYG@tok@mi\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.13,0.50,0.31}{##1}}}
 \expandafter\def\csname PYG@tok@kn\endcsname{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.00,0.44,0.13}{##1}}}
 \expandafter\def\csname PYG@tok@o\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
@@ -112,6 +114,8 @@
 \def\PYGZlb{[}
 \def\PYGZrb{]}
 \makeatother
+
+\renewcommand\PYGZsq{\textquotesingle}
 
 \begin{document}
 
@@ -642,7 +646,7 @@ something like this:
 ...
 class ConnectionFactory \PYGZob{}
     public static function getConnection() \PYGZob{}
-        return new MySQLiConnection('localhost', 'jax', '123jAx321', 'jax');
+        return new MySQLiConnection(\PYGZsq{}localhost\PYGZsq{}, \PYGZsq{}jax\PYGZsq{}, \PYGZsq{}123jAx321\PYGZsq{}, \PYGZsq{}jax\PYGZsq{});
     \PYGZcb{}
 \PYGZcb{}
 \end{Verbatim}
@@ -657,34 +661,34 @@ A better implementation might look something like this:
 class ConnectionFactory \PYGZob{}
     public static function getConnection() \PYGZob{}
         // The config dir should NOT be anywhere under the document root!
-        \$dbSettingsFile = dirname(dirname(dirname(\_\_FILE\_\_))).'/config/dbsettings.php';
-        if (file\_exists(\$dbSettingsFile)) \PYGZob{}
-            include \$dbSettingsFile;
+        \PYGZdl{}dbSettingsFile = dirname(dirname(dirname(\PYGZus{}\PYGZus{}FILE\PYGZus{}\PYGZus{}))).\PYGZsq{}/config/dbsettings.php\PYGZsq{};
+        if (file\PYGZus{}exists(\PYGZdl{}dbSettingsFile)) \PYGZob{}
+            include \PYGZdl{}dbSettingsFile;
         \PYGZcb{}
-        unset(\$dbSettingsFile);
-        if ( (!isset(\$dbConnectionClass)) \PYGZbs{}\textbar{}\textbar{} (\$dbConnectionClass == '') ) \PYGZob{}
-            \$dbConnectionClass = 'MySQLiConnection';
+        unset(\PYGZdl{}dbSettingsFile);
+        if ( (!isset(\PYGZdl{}dbConnectionClass)) \PYGZbs{}\textbar{}\textbar{} (\PYGZdl{}dbConnectionClass == \PYGZsq{}\PYGZsq{}) ) \PYGZob{}
+            \PYGZdl{}dbConnectionClass = \PYGZsq{}MySQLiConnection\PYGZsq{};
         \PYGZcb{}
-        if ( (!isset(\$dbServer)) \PYGZbs{}\textbar{}\textbar{} (\$dbServer == '') ) \PYGZob{}
-            \$dbServer = 'localhost';
+        if ( (!isset(\PYGZdl{}dbServer)) \PYGZbs{}\textbar{}\textbar{} (\PYGZdl{}dbServer == \PYGZsq{}\PYGZsq{}) ) \PYGZob{}
+            \PYGZdl{}dbServer = \PYGZsq{}localhost\PYGZsq{};
         \PYGZcb{}
-        if ( (!isset(\$dbUsername)) \PYGZbs{}\textbar{}\textbar{} (\$dbUsername == '') ) \PYGZob{}
-            \$dbUsername = 'jax';
+        if ( (!isset(\PYGZdl{}dbUsername)) \PYGZbs{}\textbar{}\textbar{} (\PYGZdl{}dbUsername == \PYGZsq{}\PYGZsq{}) ) \PYGZob{}
+            \PYGZdl{}dbUsername = \PYGZsq{}jax\PYGZsq{};
         \PYGZcb{}
-        if ( (!isset(\$dbPassword)) \PYGZbs{}\textbar{}\textbar{} (\$dbPassword == '') ) \PYGZob{}
-            \$dbPassword = '123jAx321';
+        if ( (!isset(\PYGZdl{}dbPassword)) \PYGZbs{}\textbar{}\textbar{} (\PYGZdl{}dbPassword == \PYGZsq{}\PYGZsq{}) ) \PYGZob{}
+            \PYGZdl{}dbPassword = \PYGZsq{}123jAx321\PYGZsq{};
         \PYGZcb{}
-        if ( (!isset(\$dbDatabase)) \PYGZbs{}\textbar{}\textbar{} (\$dbDatabase == '') ) \PYGZob{}
-            \$dbDatabase = 'jax';
+        if ( (!isset(\PYGZdl{}dbDatabase)) \PYGZbs{}\textbar{}\textbar{} (\PYGZdl{}dbDatabase == \PYGZsq{}\PYGZsq{}) ) \PYGZob{}
+            \PYGZdl{}dbDatabase = \PYGZsq{}jax\PYGZsq{};
         \PYGZcb{}
-        if (!class\_exists(\$dbConnectionClass, false)) \PYGZob{}
-            include(dirname(\_\_FILE\_\_).'/'.\$dbConnectionClass.'.class.php');
+        if (!class\PYGZus{}exists(\PYGZdl{}dbConnectionClass, false)) \PYGZob{}
+            include(dirname(\PYGZus{}\PYGZus{}FILE\PYGZus{}\PYGZus{}).\PYGZsq{}/\PYGZsq{}.\PYGZdl{}dbConnectionClass.\PYGZsq{}.class.php\PYGZsq{});
         \PYGZcb{}
-        \$db = new \$dbConnectionClass(\$dbServer, \$dbUsername, \$dbPassword, \$dbDatabase);
+        \PYGZdl{}db = new \PYGZdl{}dbConnectionClass(\PYGZdl{}dbServer, \PYGZdl{}dbUsername, \PYGZdl{}dbPassword, \PYGZdl{}dbDatabase);
         // Throw exceptions when we have a failed query or we try to free an invalid result set.
-        \$db-\textgreater{}throwExceptionOnFailedQuery = true;
-        \$db-\textgreater{}throwExceptionOnFailedFreeResult = true;
-        return \$db;
+        \PYGZdl{}db\PYGZhy{}\PYGZgt{}throwExceptionOnFailedQuery = true;
+        \PYGZdl{}db\PYGZhy{}\PYGZgt{}throwExceptionOnFailedFreeResult = true;
+        return \PYGZdl{}db;
     \PYGZcb{}
 \PYGZcb{}
 \end{Verbatim}
@@ -710,7 +714,7 @@ charcters for placeholders where literal values belong.  These literal values co
 variables which are set from various sources.  To create a PreparedStatement, do something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$ps = new PreparedStatement('select * from user where user\_name = ?');
+\PYGZdl{}ps = new PreparedStatement(\PYGZsq{}select * from user where user\PYGZus{}name = ?\PYGZsq{});
 \end{Verbatim}
 
 When the PreparedStatement is initially created, it will contain no parameters.  For the
@@ -736,7 +740,7 @@ the number of rows returned.  So to skip 20 rows and return no more than 5 rows 
 would do something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$ps = new PreparedStatement("select * from user where user\_name like 'a\%'", 20, 5);
+\PYGZdl{}ps = new PreparedStatement(\PYGZdq{}select * from user where user\PYGZus{}name like \PYGZsq{}a\PYGZpc{}\PYGZsq{}\PYGZdq{}, 20, 5);
 \end{Verbatim}
 
 
@@ -748,16 +752,16 @@ update (depending on which type of SQL statement it contains).
 Here is an example of how to list all users:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$db = ConnectionFactory::getConnection();
-\$ps = new PreparedStatement('select * from user where id \textgreater{}= ? and id \textless{}= ? order by user\_name');
-\$ps-\textgreater{}setInt(3);
-\$ps-\textgreater{}setInt(12);
-\$rs = \$db-\textgreater{}executeQuery(\$ps);
-while (\$row = \$db-\textgreater{}fetchObject(\$rs)) \PYGZob{}
-    print\_r(\$row);
+\PYGZdl{}db = ConnectionFactory::getConnection();
+\PYGZdl{}ps = new PreparedStatement(\PYGZsq{}select * from user where id \PYGZgt{}= ? and id \PYGZlt{}= ? order by user\PYGZus{}name\PYGZsq{});
+\PYGZdl{}ps\PYGZhy{}\PYGZgt{}setInt(3);
+\PYGZdl{}ps\PYGZhy{}\PYGZgt{}setInt(12);
+\PYGZdl{}rs = \PYGZdl{}db\PYGZhy{}\PYGZgt{}executeQuery(\PYGZdl{}ps);
+while (\PYGZdl{}row = \PYGZdl{}db\PYGZhy{}\PYGZgt{}fetchObject(\PYGZdl{}rs)) \PYGZob{}
+    print\PYGZus{}r(\PYGZdl{}row);
 \PYGZcb{}
-\$db-\textgreater{}freeResult(\$rs);
-\$db-\textgreater{}close();
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}freeResult(\PYGZdl{}rs);
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}close();
 \end{Verbatim}
 
 The executeQuery() function returns a result set identifier, which can be used to retrieve the rows
@@ -767,12 +771,12 @@ the executeUpdate() function.
 This version is shorter, but uses more memory:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$db = ConnectionFactory::getConnection();
-\$ps = new PreparedStatement('select * from user where id \textgreater{}= ? and id \textless{}= ? order by user\_name');
-\$ps-\textgreater{}setInt(3);
-\$ps-\textgreater{}setInt(12);
-print\_r(\$db-\textgreater{}fetchAllObjects(\$db-\textgreater{}executeQuery(\$ps), true));
-\$db-\textgreater{}close();
+\PYGZdl{}db = ConnectionFactory::getConnection();
+\PYGZdl{}ps = new PreparedStatement(\PYGZsq{}select * from user where id \PYGZgt{}= ? and id \PYGZlt{}= ? order by user\PYGZus{}name\PYGZsq{});
+\PYGZdl{}ps\PYGZhy{}\PYGZgt{}setInt(3);
+\PYGZdl{}ps\PYGZhy{}\PYGZgt{}setInt(12);
+print\PYGZus{}r(\PYGZdl{}db\PYGZhy{}\PYGZgt{}fetchAllObjects(\PYGZdl{}db\PYGZhy{}\PYGZgt{}executeQuery(\PYGZdl{}ps), true));
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}close();
 \end{Verbatim}
 
 Rows can be fetched as objects {[}fetchObject(), fetchAllObjects(){]} or associative arrays
@@ -881,19 +885,19 @@ columns:
   (columnName):
     ...
   primaryKey:
-    columns: [ (comma-separated list of primary key column names) ]
+    columns: [ (comma\PYGZhy{}separated list of primary key column names) ]
   indexes:
     (index name):
       fulltext (No\textbar{}Yes)
         NOTE: Fulltext indexes currently only work with MySQL version 5.6 and later.
               Attempting to create a fulltext index on MySQL prior to version 5.6 will result in an SQL error.
-              Fulltext indexes are ignored on non-MySQL RDBMS.
+              Fulltext indexes are ignored on non\PYGZhy{}MySQL RDBMS.
               For fulltext searching to work (without generating SQL errors), there must be a fulltext index
               on ONLY the column being searched.  Therefore, it is recommended to create fulltext indexes on
               single columns only.  You can create multiple fulltext indexes per table when using MySQL.
       unique: (No\textbar{}Yes)
-        NOTE: The "unique" attribute is ignored, and should be omitted, for fulltext indexes.
-      columns: [ (comma-separated list of index column names) ]
+        NOTE: The \PYGZdq{}unique\PYGZdq{} attribute is ignored, and should be omitted, for fulltext indexes.
+      columns: [ (comma\PYGZhy{}separated list of index column names) ]
     (index name):
       ...
   foreignKeys:
@@ -908,8 +912,8 @@ columns:
     (foreign key name):
       ...
     inserts:
-      -:
-        keyColumnNames: Optional, comma-separated list of column names which uniquely identify
+      \PYGZhy{}:
+        keyColumnNames: Optional, comma\PYGZhy{}separated list of column names which uniquely identify
             this insert, so it can be determined at a later time whether this row already exists
             in the table.
         updateIfExists: No\textbar{}Yes; whether to update the other fields in the existing row if a row
@@ -918,10 +922,15 @@ columns:
             in the insert.
         (column name):
           value: (column value)
+          filename: (filename containing column value)
+              This can be a relative path, relative to the directory where the YAML schema file
+              exists, or it can be an absolute path which begins with a forward slash (/).
+          sysVarValue: (system variable to use for value, such as CURRENT\PYGZus{}TIMESTAMP)
+              NOTE: Only one of [value, filename, sysVarValue] may be specified per column.
           quoted: No\textbar{}Yes; whether to wrap the column value in SQL quotes and escape it
-              accordingly.  Set this to Yes for character-based column types, dates, times, and
+              accordingly.  Set this to Yes for character\PYGZhy{}based column types, dates, times, and
               so on.  Set it to No for numeric column types.
-      -:
+      \PYGZhy{}:
         ...
 \end{Verbatim}
 
@@ -938,19 +947,19 @@ tables:
 
       id: \PYGZob{} type: integer, null: No, autoIncrement: Yes \PYGZcb{}
 
-      when\_added: \PYGZob{} type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT\_TIMESTAMP \PYGZcb{}
+      when\PYGZus{}added: \PYGZob{} type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT\PYGZus{}TIMESTAMP \PYGZcb{}
 
-      user\_name: \PYGZob{} type: varchar, size: 32, null: No, default: "" \PYGZcb{}
+      user\PYGZus{}name: \PYGZob{} type: varchar, size: 32, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
 
-      email\_addr: \PYGZob{} type: varchar, size: 255, null: No, default: "" \PYGZcb{}
+      email\PYGZus{}addr: \PYGZob{} type: varchar, size: 255, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
 
-      password\_hash: \PYGZob{} type: varchar, size: 255, null: No, default: "" \PYGZcb{}
+      password\PYGZus{}hash: \PYGZob{} type: varchar, size: 255, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
 
-      first\_name: \PYGZob{} type: varchar, size: 30, null: No, default: "" \PYGZcb{}
+      first\PYGZus{}name: \PYGZob{} type: varchar, size: 30, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
 
-      last\_name: \PYGZob{} type: varchar, size: 30, null: No, default: "" \PYGZcb{}
+      last\PYGZus{}name: \PYGZob{} type: varchar, size: 30, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
 
-      is\_active: \PYGZob{} type: smallint, null: No, default: 1 \PYGZcb{}
+      is\PYGZus{}active: \PYGZob{} type: smallint, null: No, default: 1 \PYGZcb{}
 
       ...
 \end{Verbatim}
@@ -1011,34 +1020,34 @@ tables:
   perm:
     columns:
       id: \PYGZob{} type: integer, null: No, autoIncrement: Yes \PYGZcb{}
-      when\_added: \PYGZob{} type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT\_TIMESTAMP \PYGZcb{}
-      perm\_name: \PYGZob{} type: varchar, size: 40, null: No, default: "" \PYGZcb{}
-      description: \PYGZob{} type: varchar, size: 40, null: No, default: "" \PYGZcb{}
+      when\PYGZus{}added: \PYGZob{} type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT\PYGZus{}TIMESTAMP \PYGZcb{}
+      perm\PYGZus{}name: \PYGZob{} type: varchar, size: 40, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
+      description: \PYGZob{} type: varchar, size: 40, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
     primaryKey:
       columns: [ id ]
     indexes:
       permname:
         unique: Yes
-        columns: [ perm\_name ]
+        columns: [ perm\PYGZus{}name ]
       descr:
         unique: Yes
         columns: [ description ]
     inserts:
-      -:
-        keyColumnNames: [ perm\_name ]
+      \PYGZhy{}:
+        keyColumnNames: [ perm\PYGZus{}name ]
         updateIfExists: Yes
-        perm\_name: \PYGZob{} value: "all", quoted: Yes \PYGZcb{}
-        description: \PYGZob{} value: "All Permissions", quoted: Yes \PYGZcb{}
-      -:
-        keyColumnNames: [ perm\_name ]
+        perm\PYGZus{}name: \PYGZob{} value: \PYGZdq{}all\PYGZdq{}, quoted: Yes \PYGZcb{}
+        description: \PYGZob{} value: \PYGZdq{}All Permissions\PYGZdq{}, quoted: Yes \PYGZcb{}
+      \PYGZhy{}:
+        keyColumnNames: [ perm\PYGZus{}name ]
         updateIfExists: Yes
-        perm\_name: \PYGZob{} value: "appuser", quoted: Yes \PYGZcb{}
-        description: \PYGZob{} value: "Administer Users", quoted: Yes \PYGZcb{}
-      -:
-        keyColumnNames: [ perm\_name ]
+        perm\PYGZus{}name: \PYGZob{} value: \PYGZdq{}appuser\PYGZdq{}, quoted: Yes \PYGZcb{}
+        description: \PYGZob{} value: \PYGZdq{}Administer Users\PYGZdq{}, quoted: Yes \PYGZcb{}
+      \PYGZhy{}:
+        keyColumnNames: [ perm\PYGZus{}name ]
         updateIfExists: Yes
-        perm\_name: \PYGZob{} value: "approle", quoted: Yes \PYGZcb{}
-        description: \PYGZob{} value: "Administer Roles", quoted: Yes \PYGZcb{}
+        perm\PYGZus{}name: \PYGZob{} value: \PYGZdq{}approle\PYGZdq{}, quoted: Yes \PYGZcb{}
+        description: \PYGZob{} value: \PYGZdq{}Administer Roles\PYGZdq{}, quoted: Yes \PYGZcb{}
 \end{Verbatim}
 
 
@@ -1083,44 +1092,44 @@ Consider the following table schema:
 appuser:
   columns:
     id: \PYGZob{} type: integer, null: No, autoIncrement: Yes \PYGZcb{}
-    when\_added: \PYGZob{} type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT\_TIMESTAMP \PYGZcb{}
-    user\_name: \PYGZob{} type: varchar, size: 32, null: No, default: "" \PYGZcb{}
-    email\_addr: \PYGZob{} type: varchar, size: 255, null: No, default: "" \PYGZcb{}
-    password\_hash: \PYGZob{} type: varchar, size: 255, null: No, default: "" \PYGZcb{}
-    first\_name: \PYGZob{} type: varchar, size: 30, null: No, default: "" \PYGZcb{}
-    last\_name: \PYGZob{} type: varchar, size: 30, null: No, default: "" \PYGZcb{}
-    is\_active: \PYGZob{} type: smallint, null: No, default: 1 \PYGZcb{}
+    when\PYGZus{}added: \PYGZob{} type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT\PYGZus{}TIMESTAMP \PYGZcb{}
+    user\PYGZus{}name: \PYGZob{} type: varchar, size: 32, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
+    email\PYGZus{}addr: \PYGZob{} type: varchar, size: 255, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
+    password\PYGZus{}hash: \PYGZob{} type: varchar, size: 255, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
+    first\PYGZus{}name: \PYGZob{} type: varchar, size: 30, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
+    last\PYGZus{}name: \PYGZob{} type: varchar, size: 30, null: No, default: \PYGZdq{}\PYGZdq{} \PYGZcb{}
+    is\PYGZus{}active: \PYGZob{} type: smallint, null: No, default: 1 \PYGZcb{}
   primaryKey:
     columns: [ id ]
   indexes:
     username:
       unique: Yes
-      columns: [ user\_name ]
+      columns: [ user\PYGZus{}name ]
     emailaddr:
       unique: Yes
-      columns: [ email\_addr ]
+      columns: [ email\PYGZus{}addr ]
     lastfirstname:
       unique: Yes
-      columns: [ last\_name, first\_name ]
-  foreignKeys: \textasciitilde{}
+      columns: [ last\PYGZus{}name, first\PYGZus{}name ]
+  foreignKeys: \PYGZti{}
 \end{Verbatim}
 
 This results in (the equivalent of) the following DDL SQL in the MySQL dialect:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 CREATE TABLE user (
-    id int(11) NOT NULL AUTO\_INCREMENT,
-    when\_added timestamp NOT NULL DEFAULT CURRENT\_TIMESTAMP,
-    user\_name varchar(32) NOT NULL DEFAULT '',
-    email\_addr varchar(255) NOT NULL DEFAULT '',
-    password\_hash varchar(255) NOT NULL DEFAULT '',
-    first\_name varchar(30) NOT NULL DEFAULT '',
-    last\_name varchar(30) NOT NULL DEFAULT '',
-    is\_active smallint(6) NOT NULL DEFAULT '1',
+    id int(11) NOT NULL AUTO\PYGZus{}INCREMENT,
+    when\PYGZus{}added timestamp NOT NULL DEFAULT CURRENT\PYGZus{}TIMESTAMP,
+    user\PYGZus{}name varchar(32) NOT NULL DEFAULT \PYGZsq{}\PYGZsq{},
+    email\PYGZus{}addr varchar(255) NOT NULL DEFAULT \PYGZsq{}\PYGZsq{},
+    password\PYGZus{}hash varchar(255) NOT NULL DEFAULT \PYGZsq{}\PYGZsq{},
+    first\PYGZus{}name varchar(30) NOT NULL DEFAULT \PYGZsq{}\PYGZsq{},
+    last\PYGZus{}name varchar(30) NOT NULL DEFAULT \PYGZsq{}\PYGZsq{},
+    is\PYGZus{}active smallint(6) NOT NULL DEFAULT \PYGZsq{}1\PYGZsq{},
     PRIMARY KEY (id),
-    KEY username (user\_name),
-    KEY emailaddr (email\_addr),
-    KEY lastfirstname (last\_name, first\_name)
+    KEY username (user\PYGZus{}name),
+    KEY emailaddr (email\PYGZus{}addr),
+    KEY lastfirstname (last\PYGZus{}name, first\PYGZus{}name)
 ) ENGINE=InnoDB;
 \end{Verbatim}
 
@@ -1131,26 +1140,26 @@ for brevity):
 html/classes/dao/abstract/AppuserAbstract.class.php:
 
 abstract class AppuserAbstract \PYGZob{}
-    public \$id;
-    public \$when\_added;
-    public \$user\_name;
-    public \$email\_addr;
-    public \$password\_hash;
-    public \$first\_name;
-    public \$last\_name;
-    public \$is\_active;
+    public \PYGZdl{}id;
+    public \PYGZdl{}when\PYGZus{}added;
+    public \PYGZdl{}user\PYGZus{}name;
+    public \PYGZdl{}email\PYGZus{}addr;
+    public \PYGZdl{}password\PYGZus{}hash;
+    public \PYGZdl{}first\PYGZus{}name;
+    public \PYGZdl{}last\PYGZus{}name;
+    public \PYGZdl{}is\PYGZus{}active;
 
     public static function createDefault() \PYGZob{}
-        \$v = new Appuser();
-        \$v-\textgreater{}defaultAllFields();
-        return \$v;
+        \PYGZdl{}v = new Appuser();
+        \PYGZdl{}v\PYGZhy{}\PYGZgt{}defaultAllFields();
+        return \PYGZdl{}v;
     \PYGZcb{}
 
     public function defaultAllFields() \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function loadFromArray(\$arr) \PYGZob{}
+    public function loadFromArray(\PYGZdl{}arr) \PYGZob{}
         ...
     \PYGZcb{}
 \PYGZcb{}
@@ -1172,116 +1181,116 @@ Phpdaogen will also generate something like the following DAO class (also pruned
 html/classes/dao/abstract/AppuserDAOAbstract.class.php:
 
 abstract class AppuserDAOAbstract \PYGZob{}
-    public static \$ALLOWED\_QUERY\_OPERATORS = ...
-    public static \$ALLOWED\_NUMERIC\_QUERY\_OPERATORS = ...
-    public static \$ALLOWED\_STRING\_QUERY\_OPERATORS = ...
-    public static \$ALLOWED\_BINARY\_QUERY\_OPERATORS = ...
-    protected \$connection;
-    protected \$cache = null;
+    public static \PYGZdl{}ALLOWED\PYGZus{}QUERY\PYGZus{}OPERATORS = ...
+    public static \PYGZdl{}ALLOWED\PYGZus{}NUMERIC\PYGZus{}QUERY\PYGZus{}OPERATORS = ...
+    public static \PYGZdl{}ALLOWED\PYGZus{}STRING\PYGZus{}QUERY\PYGZus{}OPERATORS = ...
+    public static \PYGZdl{}ALLOWED\PYGZus{}BINARY\PYGZus{}QUERY\PYGZus{}OPERATORS = ...
+    protected \PYGZdl{}connection;
+    protected \PYGZdl{}cache = null;
 
-    public function \_\_construct(\$connection, \$cache = null) \PYGZob{}
-        \$this-\textgreater{}connection = \$connection;
-        \$this-\textgreater{}cache = \$cache;
+    public function \PYGZus{}\PYGZus{}construct(\PYGZdl{}connection, \PYGZdl{}cache = null) \PYGZob{}
+        \PYGZdl{}this\PYGZhy{}\PYGZgt{}connection = \PYGZdl{}connection;
+        \PYGZdl{}this\PYGZhy{}\PYGZgt{}cache = \PYGZdl{}cache;
     \PYGZcb{}
 
     public function getCache() \PYGZob{}
-        return \$this-\textgreater{}cache;
+        return \PYGZdl{}this\PYGZhy{}\PYGZgt{}cache;
     \PYGZcb{}
 
-    public function setCache(\$cache) \PYGZob{}
-        \$this-\textgreater{}cache = \$cache;
+    public function setCache(\PYGZdl{}cache) \PYGZob{}
+        \PYGZdl{}this\PYGZhy{}\PYGZgt{}cache = \PYGZdl{}cache;
     \PYGZcb{}
 
-    public function insert(\&\$user) \PYGZob{}
+    public function insert(\PYGZam{}\PYGZdl{}user) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function update(\$user) \PYGZob{}
+    public function update(\PYGZdl{}user) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function delete(\$id) \PYGZob{}
+    public function delete(\PYGZdl{}id) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function load(\$id) \PYGZob{}
+    public function load(\PYGZdl{}id) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByIdPS(\$id, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByIdPS(\PYGZdl{}id, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findById(\$id, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findById(\PYGZdl{}id, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByWhen\_addedPS(\$when\_added, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByWhen\PYGZus{}addedPS(\PYGZdl{}when\PYGZus{}added, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByWhen\_added(\$when\_added, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByWhen\PYGZus{}added(\PYGZdl{}when\PYGZus{}added, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByUser\_namePS(\$user\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByUser\PYGZus{}namePS(\PYGZdl{}user\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
 
     \PYGZcb{}
 
-    public function findByUser\_name(\$user\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByUser\PYGZus{}name(\PYGZdl{}user\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByEmail\_addrPS(\$email\_addr, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByEmail\PYGZus{}addrPS(\PYGZdl{}email\PYGZus{}addr, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByEmail\_addr(\$email\_addr, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByEmail\PYGZus{}addr(\PYGZdl{}email\PYGZus{}addr, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByPassword\_hashPS(\$password\_hash, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByPassword\PYGZus{}hashPS(\PYGZdl{}password\PYGZus{}hash, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByPassword\_hash(\$password\_hash, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByPassword\PYGZus{}hash(\PYGZdl{}password\PYGZus{}hash, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByFirst\_namePS(\$first\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByFirst\PYGZus{}namePS(\PYGZdl{}first\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByFirst\_name(\$first\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByFirst\PYGZus{}name(\PYGZdl{}first\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByLast\_namePS(\$last\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByLast\PYGZus{}namePS(\PYGZdl{}last\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByLast\_name(\$last\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByLast\PYGZus{}name(\PYGZdl{}last\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByIs\_activePS(\$is\_active, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByIs\PYGZus{}activePS(\PYGZdl{}is\PYGZus{}active, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findByIs\_active(\$is\_active, \$queryOperator = '=', \$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findByIs\PYGZus{}active(\PYGZdl{}is\PYGZus{}active, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findAllPS(\$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findAllPS(\PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findAll(\$orderBy = null, \$offset = 0, \$limit = 0) \PYGZob{}
+    public function findAll(\PYGZdl{}orderBy = null, \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public function findWithPreparedStatement(\$ps) \PYGZob{}
+    public function findWithPreparedStatement(\PYGZdl{}ps) \PYGZob{}
         ...
     \PYGZcb{}
 \PYGZcb{}
@@ -1313,16 +1322,16 @@ The insert() function adds a new row to the table.  Its only argument is a data 
 new row, do something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$db = ConnectionFactory::getConnection();
-\$appuserDAO = new AppuserDAO(\$db);
-\$row = Appuser::createDefault();
-\$row-\textgreater{}user\_name = 'johndoe';
-\$row-\textgreater{}first\_name = 'John';
-\$row-\textgreater{}last\_name = 'Doe';
+\PYGZdl{}db = ConnectionFactory::getConnection();
+\PYGZdl{}appuserDAO = new AppuserDAO(\PYGZdl{}db);
+\PYGZdl{}row = Appuser::createDefault();
+\PYGZdl{}row\PYGZhy{}\PYGZgt{}user\PYGZus{}name = \PYGZsq{}johndoe\PYGZsq{};
+\PYGZdl{}row\PYGZhy{}\PYGZgt{}first\PYGZus{}name = \PYGZsq{}John\PYGZsq{};
+\PYGZdl{}row\PYGZhy{}\PYGZgt{}last\PYGZus{}name = \PYGZsq{}Doe\PYGZsq{};
 (set additional fields here)
-\$appuserDAO-\textgreater{}insert(\$row);
-echo "Newly inserted row's id is \PYGZob{}\$row-\textgreater{}id\PYGZcb{}\PYGZbs{}\PYGZbs{}n";
-\$db-\textgreater{}close();
+\PYGZdl{}appuserDAO\PYGZhy{}\PYGZgt{}insert(\PYGZdl{}row);
+echo \PYGZdq{}Newly inserted row\PYGZsq{}s id is \PYGZob{}\PYGZdl{}row\PYGZhy{}\PYGZgt{}id\PYGZcb{}\PYGZbs{}\PYGZbs{}n\PYGZdq{};
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}close();
 \end{Verbatim}
 
 
@@ -1332,15 +1341,15 @@ The update() function saves an updated row back to the table (updates an existin
 argument is a data object.  To update an existing row, do something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$db = ConnectionFactory::getConnection();
-\$appuserDAO = new AppuserDAO(\$db);
-if (!(\$row = \$appuserDAO-\textgreater{}load(2))) \PYGZob{}
-    echo "user id 2 not found!\PYGZbs{}\PYGZbs{}n";
+\PYGZdl{}db = ConnectionFactory::getConnection();
+\PYGZdl{}appuserDAO = new AppuserDAO(\PYGZdl{}db);
+if (!(\PYGZdl{}row = \PYGZdl{}appuserDAO\PYGZhy{}\PYGZgt{}load(2))) \PYGZob{}
+    echo \PYGZdq{}user id 2 not found!\PYGZbs{}\PYGZbs{}n\PYGZdq{};
 \PYGZcb{} else \PYGZob{}
-    \$row-\textgreater{}last\_name = 'Smith';
-    \$appuserDAO-\textgreater{}update(\$row);
+    \PYGZdl{}row\PYGZhy{}\PYGZgt{}last\PYGZus{}name = \PYGZsq{}Smith\PYGZsq{};
+    \PYGZdl{}appuserDAO\PYGZhy{}\PYGZgt{}update(\PYGZdl{}row);
 \PYGZcb{}
-\$db-\textgreater{}close();
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}close();
 \end{Verbatim}
 
 
@@ -1351,10 +1360,10 @@ value (in the case of a compound primary key, it will require one argument per p
 To delete an existing row, do something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$db = ConnectionFactory::getConnection();
-\$appuserDAO = new AppuserDAO(\$db);
-\$appuserDAO-\textgreater{}delete(2);    // Deletes any existing row with id 2.
-\$db-\textgreater{}close();
+\PYGZdl{}db = ConnectionFactory::getConnection();
+\PYGZdl{}appuserDAO = new AppuserDAO(\PYGZdl{}db);
+\PYGZdl{}appuserDAO\PYGZhy{}\PYGZgt{}delete(2);    // Deletes any existing row with id 2.
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}close();
 \end{Verbatim}
 
 
@@ -1365,14 +1374,14 @@ The load() retrieves an existing row by its primary key.  Its only argument is t
 To load an existing row, do something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\$db = ConnectionFactory::getConnection();
-\$appuserDAO = new AppuserDAO(\$db);
-if (!(\$row = \$appuserDAO-\textgreater{}load(2))) \PYGZob{}
-    echo "user id 2 not found!\PYGZbs{}\PYGZbs{}n";
+\PYGZdl{}db = ConnectionFactory::getConnection();
+\PYGZdl{}appuserDAO = new AppuserDAO(\PYGZdl{}db);
+if (!(\PYGZdl{}row = \PYGZdl{}appuserDAO\PYGZhy{}\PYGZgt{}load(2))) \PYGZob{}
+    echo \PYGZdq{}user id 2 not found!\PYGZbs{}\PYGZbs{}n\PYGZdq{};
 \PYGZcb{} else \PYGZob{}
-    print\_r(\$row);
+    print\PYGZus{}r(\PYGZdl{}row);
 \PYGZcb{}
-\$db-\textgreater{}close();
+\PYGZdl{}db\PYGZhy{}\PYGZgt{}close();
 \end{Verbatim}
 
 
@@ -1382,14 +1391,14 @@ For each column in the table, phpdaogen generates a pair of finder functions.  F
 first\_name column, phpdaogen generates the following two functions:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-public function findByUser\_namePS(\$user\_name, \$queryOperator = '=', \$orderBy = null,
-    \$offset = 0, \$limit = 0) \PYGZob{}
+public function findByUser\PYGZus{}namePS(\PYGZdl{}user\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null,
+    \PYGZdl{}offset = 0, \PYGZdl{}limit = 0) \PYGZob{}
     ...
 \PYGZcb{}
-public function findByUser\_name(\$user\_name, \$queryOperator = '=', \$orderBy = null, \$offset = 0,
-    \$limit = 0) \PYGZob{}
-    return \$this-\textgreater{}findWithPreparedStatement(\$this-\textgreater{}findByUser\_namePS(\$user\_name, \$queryOperator,
-        \$orderBy, \$offset, \$limit));
+public function findByUser\PYGZus{}name(\PYGZdl{}user\PYGZus{}name, \PYGZdl{}queryOperator = \PYGZsq{}=\PYGZsq{}, \PYGZdl{}orderBy = null, \PYGZdl{}offset = 0,
+    \PYGZdl{}limit = 0) \PYGZob{}
+    return \PYGZdl{}this\PYGZhy{}\PYGZgt{}findWithPreparedStatement(\PYGZdl{}this\PYGZhy{}\PYGZgt{}findByUser\PYGZus{}namePS(\PYGZdl{}user\PYGZus{}name, \PYGZdl{}queryOperator,
+        \PYGZdl{}orderBy, \PYGZdl{}offset, \PYGZdl{}limit));
 \PYGZcb{}
 \end{Verbatim}
 
@@ -1470,29 +1479,29 @@ A generator configuration (or gencfg) file has the following structure:
 \begin{Verbatim}[commandchars=\\\{\}]
 (global settings)
 searches:
-  Searches defined here will result in generated server-side search includes which can be used
-  to allow the user search for rows.  Searches return JSON-encoded data, in a special format
-  custom-made for consumption by the jax-grid component via the AJAXSearchGrid class.
+  Searches defined here will result in generated server\PYGZhy{}side search includes which can be used
+  to allow the user search for rows.  Searches return JSON\PYGZhy{}encoded data, in a special format
+  custom\PYGZhy{}made for consumption by the jax\PYGZhy{}grid component via the AJAXSearchGrid class.
   ...
 autocompleteSearches:
-  Searches defined here will result in generated server-side search includes which can be used
-  to satisfy autocomplete requests.  Searches return JSON-encoded data, in a special format
-  custom-made for consumption by the jQuery-UI autocomplete functionality.
+  Searches defined here will result in generated server\PYGZhy{}side search includes which can be used
+  to satisfy autocomplete requests.  Searches return JSON\PYGZhy{}encoded data, in a special format
+  custom\PYGZhy{}made for consumption by the jQuery\PYGZhy{}UI autocomplete functionality.
   ...
 popupSearches:
-  Popup searches defined here will generate client-side JavaScript includes which will produce
-  jax-grid-based inline popup searches which tie into the server-side search includes to fetch
+  Popup searches defined here will generate client\PYGZhy{}side JavaScript includes which will produce
+  jax\PYGZhy{}grid\PYGZhy{}based inline popup searches which tie into the server\PYGZhy{}side search includes to fetch
   their data.  Popup searches are used for establishing foreign key relations by allowing the
   user to look up the appropriate row in the referenced table, and then importing the id into
   the form.
   ...
 loaders:
-  Loaders defined here will generate server-side single-row loader includes which can be access
+  Loaders defined here will generate server\PYGZhy{}side single\PYGZhy{}row loader includes which can be access
   on the client in order to fetch a single row from a table.  These are handy for looking up a
-  description from an entered Id, or for loading a row into a form.  Single-row loader includes
+  description from an entered Id, or for loading a row into a form.  Single\PYGZhy{}row loader includes
   may also join in information from other table(s) and put that data into attributes of the
   resulting row which is then returned to the client.  Loaders return the resulting data in
-  JSON-encoded format.
+  JSON\PYGZhy{}encoded format.
   ...
 cruds:
   CRUD pages defined here will combined searches, popup searches, loaders, form fields, filters,
@@ -1535,13 +1544,13 @@ The searches section of the YAML file looks like this:
 \begin{Verbatim}[commandchars=\\\{\}]
 searches:
   (search name):
-    searchCommand: (optional value of the 'command' request parameter to pass when making
-        server-side search requests to satisfy this search; if omitted, this will default to
-        "search\textless{}search name\textgreater{}s" with the first character of search name uppercased)
+    searchCommand: (optional value of the \PYGZsq{}command\PYGZsq{} request parameter to pass when making
+        server\PYGZhy{}side search requests to satisfy this search; if omitted, this will default to
+        \PYGZdq{}search\PYGZlt{}search name\PYGZgt{}s\PYGZdq{} with the first character of search name uppercased)
     outputPath: (output path for search includes, relative to the html directory; defaults to
-        'include/search')
+        \PYGZsq{}include/search\PYGZsq{})
     docRootPath: (path back to the document root from the output path; defaults to an
-        upward-pointing relative path based on outputPath)
+        upward\PYGZhy{}pointing relative path based on outputPath)
     searchTemplate: (filename of search template to use; always in templates/search; defaults to
         search.include.php)
     phpClasses:
@@ -1553,34 +1562,34 @@ searches:
       (unique include identifier; unused): (path to PHP include file)
       (unique include identifier; unused): (path to PHP include file)
       ...
-    extraSelectColumns: [ (comma-separated list of column names from other table aliases) ]
+    extraSelectColumns: [ (comma\PYGZhy{}separated list of column names from other table aliases) ]
       NOTE: This can be either in the form of an array or simply a string containing expressions
             to be appended to the column list in the select.
-    joins: (sql join clauses; the main table is always aliased as 'pri')
+    joins: (sql join clauses; the main table is always aliased as \PYGZsq{}pri\PYGZsq{})
     searchableColumns:
-      -:
+      \PYGZhy{}:
         columnName: (searchable column name, as it is known in the table in which it resides)
         tableAlias: (table alias for the table in which the searchable field exists; defaults to
-            'pri')
+            \PYGZsq{}pri\PYGZsq{})
         title: (title for this column; automatically generatd from column name if omitted)
         sqlType: (SQL type)
-        queryOperator: (SQL query operator; defaults to '=')
+        queryOperator: (SQL query operator; defaults to \PYGZsq{}=\PYGZsq{})
         unsignedSearch: (No\textbar{}Yes; only applies to numeric fields \PYGZbs{}[integer, smallint, bigint,
             decimal])
-      -:
+      \PYGZhy{}:
         ...
-    andWhere: (sql "where" subclause which will be ANDed with the remainder of the "where"
-        clause; the main table is always aliased as 'pri')
+    andWhere: (sql \PYGZdq{}where\PYGZdq{} subclause which will be ANDed with the remainder of the \PYGZdq{}where\PYGZdq{}
+        clause; the main table is always aliased as \PYGZsq{}pri\PYGZsq{})
     andWhereAssignments:
-      -:
+      \PYGZhy{}:
         expression: (PHP expression of value to put into PreparedStatement placeholder)
         psType: (PreparedStatement data type) \PYGZcb{}
-    groupBy: (optional sql "group by" subclause which will inserted immediately after the
-        "where" clause)
-    rowProcessingPHPCode: (optional PHP code which runs inside a loop, to pre-process every row.
-        The \$row variable will contain the current row to be processed.  You can use this
-            function to calculate and set any calculated attributes in \$row.)
-    forbiddenColumns: [ (comma-separated list of columns NOT to be sent to the client) ]
+    groupBy: (optional sql \PYGZdq{}group by\PYGZdq{} subclause which will inserted immediately after the
+        \PYGZdq{}where\PYGZdq{} clause)
+    rowProcessingPHPCode: (optional PHP code which runs inside a loop, to pre\PYGZhy{}process every row.
+        The \PYGZdl{}row variable will contain the current row to be processed.  You can use this
+            function to calculate and set any calculated attributes in \PYGZdl{}row.)
+    forbiddenColumns: [ (comma\PYGZhy{}separated list of columns NOT to be sent to the client) ]
   (search name):
     ...
 \end{Verbatim}
@@ -1592,22 +1601,22 @@ Allowed Query Operators by SQL Column Type
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 sqlType
-} & \textbf{
+} & \textsf{\relax 
 Allowed queryOperator Values
-}\\\hline
-
+}\\
+\hline
 integer, smallint, bigint or decimal
  & 
 =, \textless{}\textgreater{}, \textless{}, \textless{}=, \textgreater{}, \textgreater{}=
-\\\hline
-
+\\
+\hline
 char, varchar or text
  & 
 =, \textless{}\textgreater{}, \textless{}, \textless{}=, \textgreater{}, \textgreater{}=, beginsWith, contains, endsWith, fulltext
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 Other SQL types are not currently directly searchable by users without special coding.
@@ -1643,13 +1652,13 @@ The autocompleteSearches section of the YAML file looks like this:
 \begin{Verbatim}[commandchars=\\\{\}]
 autocompleteSearches:
   (search name):
-    searchCommand: Optional value of the 'command' request parameter to pass when making
-        server-side search requests to satisfy this search; if omitted, this will default to
-        "autocomplete\textless{}search name\textgreater{}s" with the first character of search name uppercased.
+    searchCommand: Optional value of the \PYGZsq{}command\PYGZsq{} request parameter to pass when making
+        server\PYGZhy{}side search requests to satisfy this search; if omitted, this will default to
+        \PYGZdq{}autocomplete\PYGZlt{}search name\PYGZgt{}s\PYGZdq{} with the first character of search name uppercased.
     outputPath: Output path for search includes, relative to the html directory; defaults to
-        'include/search'.
+        \PYGZsq{}include/search\PYGZsq{}.
     docRootPath: Path back to the document root from the output path; defaults to an
-        upward-pointing relative path based on outputPath.
+        upward\PYGZhy{}pointing relative path based on outputPath.
     searchTemplate: The filename of the search template to use; always in templates/search;
         defaults to search.include.php.
     phpClasses:
@@ -1658,38 +1667,38 @@ autocompleteSearches:
       (PHP class name): \PYGZob{} path: (path to PHP class file) \PYGZcb{}
       ...
     phpIncludes:
-      -: (path to PHP include file)
-      -: (path to PHP include file)
+      \PYGZhy{}: (path to PHP include file)
+      \PYGZhy{}: (path to PHP include file)
       ...
-    extraSelectColumns: [ (comma-separated list of column names from other table aliases) ]
+    extraSelectColumns: [ (comma\PYGZhy{}separated list of column names from other table aliases) ]
       NOTE: This can be either in the form of an array or simply a string containing expressions
             to be appended to the column list in the select.
-    joins: SQL join clauses; the main table is always aliased as 'pri'.
+    joins: SQL join clauses; the main table is always aliased as \PYGZsq{}pri\PYGZsq{}.
     searchableColumns:
-      -:
+      \PYGZhy{}:
         columnName: Searchable column name, as it is known in the table in which it resides.
         tableAlias: Table alias for the table in which the searchable field exists; defaults to
-            'pri'.
+            \PYGZsq{}pri\PYGZsq{}.
         sqlType: SQL data type.
-        queryOperator: SQL query operator; defaults to '='.
+        queryOperator: SQL query operator; defaults to \PYGZsq{}=\PYGZsq{}.
         unsignedSearch: No\textbar{}Yes; only applies to numeric fields \PYGZbs{}[integer, smallint, bigint,
             decimal].
-      -:
+      \PYGZhy{}:
         ...
-    andWhere: SQL "where" subclause which will be ANDed with the remainder of the "where"
-        clause; the main table is always aliased as 'pri'.
+    andWhere: SQL \PYGZdq{}where\PYGZdq{} subclause which will be ANDed with the remainder of the \PYGZdq{}where\PYGZdq{}
+        clause; the main table is always aliased as \PYGZsq{}pri\PYGZsq{}.
     andWhereAssignments:
-      -:
+      \PYGZhy{}:
         expression: PHP expression of value to put into PreparedStatement placeholder.
         psType: PreparedStatement data type.
         searchResultLabelExpression: PHP expression to build search result label.  This must
-            extract columns from the \$row object and format them for display in the autocomplete
+            extract columns from the \PYGZdl{}row object and format them for display in the autocomplete
             list.  This expression will be executed once per row.
         searchResultValueExpression: PHP expresion to build search result value.  This must
-            extract the identifier column from the \$row object and prepare it for use in
+            extract the identifier column from the \PYGZdl{}row object and prepare it for use in
             autocompletion.  The end result will be an identifier value to be plugged into the
-            input field when the current row's label is selected from the autocomplete list.
-            This entry is optional.  If omitted, the table's primary key column will be used.
+            input field when the current row\PYGZsq{}s label is selected from the autocomplete list.
+            This entry is optional.  If omitted, the table\PYGZsq{}s primary key column will be used.
   (search name):
     ...
 \end{Verbatim}
@@ -1705,29 +1714,29 @@ The popupSearches section of the YAML file looks like this:
 \begin{Verbatim}[commandchars=\\\{\}]
 popupSearches:
   (popup search name):
-    outputPath: The output path for client-side JavaScript include file, relative to the html
-        directory; defaults to 'js/search'.
-    popupSearchTemplate: The filename of the pop-up search template to use; always in
+    outputPath: The output path for client\PYGZhy{}side JavaScript include file, relative to the html
+        directory; defaults to \PYGZsq{}js/search\PYGZsq{}.
+    popupSearchTemplate: The filename of the pop\PYGZhy{}up search template to use; always in
         templates/search; defaults to popupSearch.js.
     searchPresentation: AJAXSearchGrid for AJAXSearchGrid presentation, or dataTables for (deprecated)
         dataTables presentation.  If omitted, this defaults to dataTables for backward
         compatibility.  All new YAML files generated by makegencfg will have searchPresentation
         set to AJAXSearchGrid.
     defaultSorts: An optional list of objects, where each object must have an attribute named
-        "attr" which is the attribute (column) name on which to sort, and and attribute name
-        "dir" which is set to 1 for ascending sort or -1 for descending sort.  This attribute
+        \PYGZdq{}attr\PYGZdq{} which is the attribute (column) name on which to sort, and and attribute name
+        \PYGZdq{}dir\PYGZdq{} which is set to 1 for ascending sort or \PYGZhy{}1 for descending sort.  This attribute
         only applies to AJAXSearchGrid searchPresentation.
-    searchCommand: The value of the 'command' request parameter to pass when making server-side
-        search requests to satisfy this search; required for pop-up searches.
+    searchCommand: The value of the \PYGZsq{}command\PYGZsq{} request parameter to pass when making server\PYGZhy{}side
+        search requests to satisfy this search; required for pop\PYGZhy{}up searches.
     idColumn: The name of the \PYGZbs{}[integer, smallint or bigint] primary key column which will be
         retrieved when a users selects a row from this popup search.
     beforeSearchCallback: An optional function to be called at the beginning of each search.
         The function receives the AJAXSearchGrid as its only argument.  This attribute only
         applies to AJAXSearchGrid searchPresentation.
-    modifyURLCallback: An optional function to modify the server-side request URL before making
-        the server-side request.  The function receives the AJAXSearchGrid and the URL as its
+    modifyURLCallback: An optional function to modify the server\PYGZhy{}side request URL before making
+        the server\PYGZhy{}side request.  The function receives the AJAXSearchGrid and the URL as its
         arguments, and returns the modified URL.  The function will get called once for each
-        server-side search request.  This attribute only applies to AJAXSearchGrid searchPresentation.
+        server\PYGZhy{}side search request.  This attribute only applies to AJAXSearchGrid searchPresentation.
     afterSearchCallback: An optional function to be called at the end of each search.  The
         function receives the AJAXSearchGrid as its only argument.  This attribute only applies
         to AJAXSearchGrid searchPresentation.
@@ -1747,14 +1756,14 @@ popupSearches:
         columnCSSClass: Any additional CSS classes you wish to apply to the data cells.
         fnRender: [DEPRECATED]  Optional DataTables callback function for rendering the cell.
             This attribute only applies to the deprecated dataTables searchPresentation.  You
-            can specify either the name of a JavaScript function which you've defined in another
+            can specify either the name of a JavaScript function which you\PYGZsq{}ve defined in another
             JavaScript include, or define an anonymous function right in the YAML file as long
             as you follow proper YAML syntax and remain mindful of the affect of indentation on
             the YAML parser.  For documentation on this function, look for fnRender on this
-            page: {}`DataTables - Usage \textless{}http://www.datatables.net/usage/columns\textgreater{}{}`\_.
+            page: {}`DataTables \PYGZhy{} Usage \PYGZlt{}http://www.datatables.net/usage/columns\PYGZgt{}{}`\PYGZus{}.
         columnFilters: An optional list of column filters to apply to the column data as it is
-            being displayed.  These are the names of the developer-defined column filters to
-            apply.  This works in parallel with the columnFilters attribute at the pop-up search
+            being displayed.  These are the names of the developer\PYGZhy{}defined column filters to
+            apply.  This works in parallel with the columnFilters attribute at the pop\PYGZhy{}up search
             level, which is used to define column filter functions.  This attribute only applies
             to AJAXSearchGrid searchPresentation.
         headerTemplate: An optional AngularJS HTML template to use when rendering the header
@@ -1771,7 +1780,7 @@ popupSearches:
         server.  This allows the popupSearch to receive columns which are not listed in the
         columns list, such as columns on which calculations are based but which are not
         displayed directly.  This attribute only applies to AJAXSearchGrid searchPresentation.
-    columnFilters: An optional list which maps developer-defined column filter names to column
+    columnFilters: An optional list which maps developer\PYGZhy{}defined column filter names to column
         filter functions.   Each function takes the following arguments, from which it
         calculates and returns the filtered row data to be displayed:
             val: The unfiltered column value, with any previous filter functions applied.
@@ -1783,7 +1792,7 @@ popupSearches:
     extraQueryParams: An optional object which maps parameter names to parameter values for the
         query string in the AJAX URL which is used to fetch search results from the server.
         These extra parameters will be appended to the AJAX request URL before each search.
-        Parameter names and values must NOT be URL-encoded in this map; encodeURIComponent()
+        Parameter names and values must NOT be URL\PYGZhy{}encoded in this map; encodeURIComponent()
         will be called on them automatically as they are appended to the AJAX request URL.
         If any of the keys match existing query parameters on the search URL, their existing
         values will be replaced with the values from this map.  This attribute only applies to
@@ -1791,20 +1800,20 @@ popupSearches:
     fnDrawCallback: [DEPRECATED]  Optional DataTables callback function which will be called
         immediately after each time the table is drawn.  This attribute only applies to the
         deprecated dataTables searchPresentation.  You can specify either the name of a
-        JavaScript function which you've defined in another JavaScript include, or define an
+        JavaScript function which you\PYGZsq{}ve defined in another JavaScript include, or define an
         anonymous function right in the YAML file as long as you follow proper YAML syntax and
         remain mindful of the affect of indentation on the YAML parser. For documentation on
-        this function, look for fnDrawCallback on this page: {}`DataTables - Usage
-        \textless{}http://www.datatables.net/usage/callbacks\textgreater{}{}`\_.
+        this function, look for fnDrawCallback on this page: {}`DataTables \PYGZhy{} Usage
+        \PYGZlt{}http://www.datatables.net/usage/callbacks\PYGZgt{}{}`\PYGZus{}.
     fnServerData: [DEPRECATED]  Optional DataTables callback function which will be called
         immediately before making a search request to the server.  This allows you to alter the
         search URL, possibly adding/changing request parameters based on current state.  This
         attribute only applies to the deprecated dataTables searchPresentation.  You can specify
-        either the name of a JavaScript function which you've defined in another JavaScript
+        either the name of a JavaScript function which you\PYGZsq{}ve defined in another JavaScript
         include, or define an anonymous function right in the YAML file as long as you follow
         proper YAML syntax and remain mindful of the affect of indentation on the YAML parser.
-        For documentation on this function, look for fnServerData on this page: {}`DataTables -
-        Usage \textless{}http://www.datatables.net/usage/callbacks\textgreater{}{}`\_.
+        For documentation on this function, look for fnServerData on this page: {}`DataTables \PYGZhy{}
+        Usage \PYGZlt{}http://www.datatables.net/usage/callbacks\PYGZgt{}{}`\PYGZus{}.
   (popup search name):
     ...
 \end{Verbatim}
@@ -1817,13 +1826,13 @@ The loaders section of the YAML file looks like this:
 \begin{Verbatim}[commandchars=\\\{\}]
 loaders:
   (loader name):
-    searchCommand: Optional value of the 'command' request parameter to pass when making
-        server-side search requests to satisfy this search; if omitted, this will default to
-        "load\textless{}loader name\textgreater{}" with the first character of loader name uppercased.
+    searchCommand: Optional value of the \PYGZsq{}command\PYGZsq{} request parameter to pass when making
+        server\PYGZhy{}side search requests to satisfy this search; if omitted, this will default to
+        \PYGZdq{}load\PYGZlt{}loader name\PYGZgt{}\PYGZdq{} with the first character of loader name uppercased.
     outputPath: Output path for loader includes, relative to the html directory; defaults to
-        'include/search'.
+        \PYGZsq{}include/search\PYGZsq{}.
     docRootPath: Path back to the document root from the output path; defaults to an
-        upward-pointing relative path based on outputPath.
+        upward\PYGZhy{}pointing relative path based on outputPath.
     idColumn: The column name of the unique identifying column.
     idColumnPSType: The PreparedStatement type of the id column; one of: boolean, int, float,
         double, string, match, or binary; defaults to int.
@@ -1835,45 +1844,45 @@ loaders:
       (PHP class name): \PYGZob{} path: (path to PHP class file) \PYGZcb{}
       ...
     phpIncludes:
-      -: (path to PHP include file)
-      -: (path to PHP include file)
+      \PYGZhy{}: (path to PHP include file)
+      \PYGZhy{}: (path to PHP include file)
       ...
-    andWhere: SQL "where" subclause which will be ANDed with the remainder of the "where"
-        clause; the main table is always aliased as 'pri'.
+    andWhere: SQL \PYGZdq{}where\PYGZdq{} subclause which will be ANDed with the remainder of the \PYGZdq{}where\PYGZdq{}
+        clause; the main table is always aliased as \PYGZsq{}pri\PYGZsq{}.
     andWhereAssignments:
-      -:
+      \PYGZhy{}:
         expression: PHP expression of value to put into PreparedStatement placeholder.
         psType: PreparedStatement data type. \PYGZcb{}
     relations:
       (object attribute name to hold related data):
         table: The table name of the referenced table.
-        useDAO: Yes to load related rows using the related table's DAO; No to load them as plain
+        useDAO: Yes to load related rows using the related table\PYGZsq{}s DAO; No to load them as plain
             old PHP objects.  This is especially useful in combination with sqlQuery, for
             returning the results of an arbitrary join select.
         relationType: many\textbar{}one; determines whether an array of rows will be fetched, or a single
             row.
         offset: The number of initial rows to skip.
-        limit: The maximum number of rows to return; hint: if relationType is 'one', set this to
+        limit: The maximum number of rows to return; hint: if relationType is \PYGZsq{}one\PYGZsq{}, set this to
             1 for more efficient queries.
         sqlQuery: Optional direct SQL query to use for fetching the rows.
         sqlQueryAssignments:
-          -:
+          \PYGZhy{}:
             expression: PHP expression for the value to be assigned to the next ? placeholder in
                 sqlQuery.
             psType: PreparedStatement data type for the expression; one of: boolean, int, float,
                 double, string, match, binary; defaults to string; \PYGZbs{}[NOTE: match is the string
-                with leading and trailing \% characters for doing like queries)].
-          -:
+                with leading and trailing \PYGZpc{} characters for doing like queries)].
+          \PYGZhy{}:
             ...
         queryOperator: One of the allowed query operators recognized by the DAO for the
-            referenced column in the referenced table; defaults to '='.
+            referenced column in the referenced table; defaults to \PYGZsq{}=\PYGZsq{}.
         local: Column name of the referring column in the main/referring table.
         foreign: Column name of the referenced column in the referenced table.
-        orderBy: SQL 'order by' clause for the query; must be valid for querying the referenced
+        orderBy: SQL \PYGZsq{}order by\PYGZsq{} clause for the query; must be valid for querying the referenced
             table.
       (object attribute name to hold related data):
         ...
-    forbiddenColumns: [ (comma-separated list of columns NOT to be sent to the client) ]
+    forbiddenColumns: [ (comma\PYGZhy{}separated list of columns NOT to be sent to the client) ]
 \end{Verbatim}
 
 For a relation, if sqlQuery is specified, then sqlQueryAssignments is required and queryOperator,
@@ -1905,7 +1914,7 @@ cruds:
     outputPath: Output path for CRUD page and includes, relative to the html directory; defaults
         to empty.
     docRootPath: Path back to the document root from the output path; defaults to an
-        upward-pointing relative path based on outputPath.
+        upward\PYGZhy{}pointing relative path based on outputPath.
     phpClasses:
       \PYGZbs{}[NOTE: this section is optional, since the generated code uses a class autoloader.]
       (class name): \PYGZob{} path: (path to PHP class file, relative to the directory where the CRUD
@@ -1914,14 +1923,14 @@ cruds:
     postInitPHPIncludes:
       (path to PHP include file, relative to the directory where the CRUD page will go )
       ...
-    javaScriptFiles: [ (comma-separated list of JavaScript files which will be included in the
+    javaScriptFiles: [ (comma\PYGZhy{}separated list of JavaScript files which will be included in the
         page header, or one JavaScript file per line, beginning on the next line, indented two
         spaces in from this line) ]
-    cssFiles: [ (comma-separated list of CSS files which will be included in the page header, or
+    cssFiles: [ (comma\PYGZhy{}separated list of CSS files which will be included in the page header, or
         one CSS file per line, beginning on the next line, indented two spaces in from this
         line) ]
-    allowAddSimilar: Yes to create an "Add Similar" link for each row in the search table,
-        allowing the user to easily "clone" rows; No to omit this feature.  Optional.  Defaults
+    allowAddSimilar: Yes to create an \PYGZdq{}Add Similar\PYGZdq{} link for each row in the search table,
+        allowing the user to easily \PYGZdq{}clone\PYGZdq{} rows; No to omit this feature.  Optional.  Defaults
         to No.
     crudSearch:
       likePopupSearch: Name of popupSearch entry to use as a prototype.  This entry is optional.
@@ -1929,7 +1938,7 @@ cruds:
           file; it will be used as a starting point.  Any attributes which are defined in the
           crudSearch entry will override attributes of the same names in the popupSearch, but
           only for the purpose of generating the crudSearch.  This makes it easy to define a
-          popupSearch entry for a table, then use it either as-is or customize it for use as the
+          popupSearch entry for a table, then use it either as\PYGZhy{}is or customize it for use as the
           CRUD search for the same table.
 
       \PYGZbs{}[NOTE: The remaining parameters in this section are identical to the popupSearch section.
@@ -1947,13 +1956,13 @@ cruds:
               accordionGroup, accordionClose
           onclick: optional JavaScript code to execute when the field is clicked with the mouse;
               only applicable to certain input types; see
-              {}`here \textless{}http://www.w3schools.com/jsref/event\_onclick.asp\textgreater{}{}`\_ for details.  Use of
+              {}`here \PYGZlt{}http://www.w3schools.com/jsref/event\PYGZus{}onclick.asp\PYGZgt{}{}`\PYGZus{} for details.  Use of
               this attribute is not the preferred method.  When possible, please use the jQuery
               click() function to hook event handlers to input components.  You can hook up
               event handlers in the preInitHook() JavaScript callback.
-          onchange: optional JavaScript code to execute when the field's value changes; only
+          onchange: optional JavaScript code to execute when the field\PYGZsq{}s value changes; only
               applicable to certain input types; see {}`here
-              \textless{}http://www.w3schools.com/jsref/event\_onchange.asp\textgreater{}{}`\_ for details.  Use of this
+              \PYGZlt{}http://www.w3schools.com/jsref/event\PYGZus{}onchange.asp\PYGZgt{}{}`\PYGZus{} for details.  Use of this
               attribute is not the preferred method.  When possible, please use the jQuery
               change() function to hook event handlers to input components.  You can hook up
               event handlers in the preInitHook() JavaScript callback.
@@ -1967,11 +1976,11 @@ cruds:
           autocompleteSingleRowSelector:
             (option name): (option value)
               \PYGZbs{}[NOTE: The presence of this (sub)section causes a normal input component
-               (typically inputType text) to behave as a searchable, drop-down list with
-               server-side autocomplete functionality, for the puprose of selecting a row from a
+               (typically inputType text) to behave as a searchable, drop\PYGZhy{}down list with
+               server\PYGZhy{}side autocomplete functionality, for the puprose of selecting a row from a
                related table and submitting its id or primary key to the server when the form is
                submitted.  This functionality is implemented using a combination of the jQuery
-               Select2 component and a server-side autocomplete include (generated by the
+               Select2 component and a server\PYGZhy{}side autocomplete include (generated by the
                autocompletes section in the YAML file).  The options here are passed into the
                hookAutocompleteSingleRowSelectorToInput(options) function in
                html/jax/js/specialFieldFeatures.js.  Refer to that file for more details.
@@ -1979,7 +1988,7 @@ cruds:
             autocompleteCommand: The autocomplete command to use for searching rows on the
                 server. Required.
             idColumn: The name of the primary key/unique identifying column for the table being
-                searched. Optional.  Defaults to 'id'.
+                searched. Optional.  Defaults to \PYGZsq{}id\PYGZsq{}.
             idIsString: Yes if the primary key/unique identifying column is a string (character)
                 column, No if it is an integer column. Optional. Defaults to No.
             minimumInputLength: The minimum number of characters the user must enter in order to
@@ -1987,7 +1996,7 @@ cruds:
             allowClear: Yes to display a clear button when the select box has a selection. The
                 button, when clicked, resets the value of the select box back to the
                 placeholder, thus this option is only available when selectPlaceholder is
-                specified as a non-empty placeholder (or left at its default, non-empty
+                specified as a non\PYGZhy{}empty placeholder (or left at its default, non\PYGZhy{}empty
                 placeholder string).  Optional.  Defaults to No.
             selectPlaceholder: The placeholder text to be put into the select box if the id is
                 zero (integer id) or empty (string id).  Optional.
@@ -2013,8 +2022,8 @@ cruds:
           disabled: No\textbar{}Yes; whether to set the input component to disabled
           rows: number of visible rows of text for textarea input types
           cols: number of visible columns of text for textarea input types
-          accept: comma-separated list of MIME types to accept for file input types (see the
-              accept attribute of the HTML \textless{}file\textgreater{} tag for details)
+          accept: comma\PYGZhy{}separated list of MIME types to accept for file input types (see the
+              accept attribute of the HTML \PYGZlt{}file\PYGZgt{} tag for details)
           multiple: No\textbar{}Yes; whether to allow multiple items to be selected for select input
               types
           options:
@@ -2028,18 +2037,18 @@ cruds:
           value: for checkbox input types, this is the value to return when the checkbox is
               checked.  Optional.  Defaults to 1.
           html: for htmlfragment input types, this is HTML code to be inserted at this point in
-              the form.  For normal layout mode (div+CSS), this should be a set of nested \textless{}div\textgreater{}
-              elements in the form of \textless{}div class="form-row"\textgreater{}\textless{}div class="form-cell"\textgreater{}(label
-              content goes here)\textless{}/div\textgreater{}\textless{}div class="form-cell"\textgreater{}(input content goes here)\textless{}/div\textgreater{}.
+              the form.  For normal layout mode (div+CSS), this should be a set of nested \PYGZlt{}div\PYGZgt{}
+              elements in the form of \PYGZlt{}div class=\PYGZdq{}form\PYGZhy{}row\PYGZdq{}\PYGZgt{}\PYGZlt{}div class=\PYGZdq{}form\PYGZhy{}cell\PYGZdq{}\PYGZgt{}(label
+              content goes here)\PYGZlt{}/div\PYGZgt{}\PYGZlt{}div class=\PYGZdq{}form\PYGZhy{}cell\PYGZdq{}\PYGZgt{}(input content goes here)\PYGZlt{}/div\PYGZgt{}.
               When using tables to layout the forms (not recommended), the outer tag in this
-              content must be a table row (\textless{}tr\textgreater{}) element which fits into the two-column table
+              content must be a table row (\PYGZlt{}tr\PYGZgt{}) element which fits into the two\PYGZhy{}column table
               which is used to layout the form.  The first column is generally used for field
               labels, and the second column is generally used for input elements.  However, you
               can use this to put any arbitrary HTML content into the form, as long as you wrap
               it inside the appropriate tags.  However, when using div+CSS, the content must
-              always follow the two-column model UNLESS the inLayout attribute is set to No.
+              always follow the two\PYGZhy{}column model UNLESS the inLayout attribute is set to No.
               The content can even include PHP code blocks by wrapping them in the standard
-              \textless{}?php ... ?\%gt; tags.
+              \PYGZlt{}?php ... ?\PYGZpc{}gt; tags.
 
       filters:
         (unique column name to be filtered):
@@ -2049,7 +2058,7 @@ cruds:
                 jax/classes/crud/filter/TrimFilter.class.php.
               \PYGZbs{}[NOTE: the include entry is optional, since the generated code uses a class
                   autoloader.]
-            params: \PYGZob{} (filter-specific parameters) \PYGZcb{}
+            params: \PYGZob{} (filter\PYGZhy{}specific parameters) \PYGZcb{}
           ...
         ...
 
@@ -2064,16 +2073,16 @@ cruds:
             phpCondition: An optional PHP expression which evaluates to true if we need to run
                 this validator, or false if not; this allows you to only run the validator when
                 a certain set of conditions are met.
-            params: \PYGZob{} (validator-specific parameters) \PYGZcb{}
+            params: \PYGZob{} (validator\PYGZhy{}specific parameters) \PYGZcb{}
             ...
           ...
 
       addFocusField: Optional field name to receive the input focus when going into add mode.
       editFocusField: Optional field name to receive the input focus when going into edit mode.
-      onlyUpdateColumns: [ (comma-separated list of columns in the main table which are allowed
+      onlyUpdateColumns: [ (comma\PYGZhy{}separated list of columns in the main table which are allowed
           to be updated when saving an updated row in edit mode; if this is set, only columns in
           this list will be updated) ]
-      neverUpdateColumns: [ (comma-separated list of columns in the main table which should
+      neverUpdateColumns: [ (comma\PYGZhy{}separated list of columns in the main table which should
           never be updated when saving an updated row in edit mode) ]
 \end{Verbatim}
 
@@ -2139,7 +2148,7 @@ file which will create a search, a loader and a CRUD page for the table.
 To generate the initial generator configuration YAML file, run the following command:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-gen/makegencfg \textless{}tableName\textgreater{}
+gen/makegencfg \PYGZlt{}tableName\PYGZgt{}
 \end{Verbatim}
 
 Where \textless{}tableName\textgreater{} is the name of the table.  If a generator configuration YAML file already exists
@@ -2163,7 +2172,7 @@ The search generator is a command-line PHP application.  To run it, do something
 Jax Framework ™ root directory):
 
 \begin{Verbatim}[commandchars=\\\{\}]
-gen/searchgen \textless{}tableName\textgreater{}
+gen/searchgen \PYGZlt{}tableName\PYGZgt{}
 \end{Verbatim}
 
 Where \textless{}tableName\textgreater{} is the name of the table for which you want to generate searches, loaders and
@@ -2193,7 +2202,7 @@ The CRUD generator is a command-line PHP application.  To run it, do something l
 Jax Framework ™ root directory):
 
 \begin{Verbatim}[commandchars=\\\{\}]
-gen/crudgen \textless{}tableName\textgreater{}
+gen/crudgen \PYGZlt{}tableName\PYGZgt{}
 \end{Verbatim}
 
 Where \textless{}tableName\textgreater{} is the name of the table for which you want to generate CRUD pages.  If you omit
@@ -2255,92 +2264,92 @@ preUpdateHook() function, and read by the postUpdateHook() function, for example
 \begin{Verbatim}[commandchars=\\\{\}]
 // Put code here to perform any custom initialization.
 function initHook() \PYGZob{}
-    global \$params, \$command;
+    global \PYGZdl{}params, \PYGZdl{}command;
     ...
 \PYGZcb{}
 
-// Add custom pre-processing on \$row.
-// At this point, \$row is an instance of stdClass, cast from the \$\_POST array.
+// Add custom pre\PYGZhy{}processing on \PYGZdl{}row.
+// At this point, \PYGZdl{}row is an instance of stdClass, cast from the \PYGZdl{}\PYGZus{}POST array.
 function preFilterHook() \PYGZob{}
-    global \$db, \$row, \$result;
+    global \PYGZdl{}db, \PYGZdl{}row, \PYGZdl{}result;
     ...
 \PYGZcb{}
 
 // Add custom validation here.
-// At this point, \$row is an instance of stdClass, cast from the \$\_POST array.
-// Any errors which result from validation must be put into the \$result error message container.
+// At this point, \PYGZdl{}row is an instance of stdClass, cast from the \PYGZdl{}\PYGZus{}POST array.
+// Any errors which result from validation must be put into the \PYGZdl{}result error message container.
 function validationHook() \PYGZob{}
-    global \$db, \$row, \$result;
+    global \PYGZdl{}db, \PYGZdl{}row, \PYGZdl{}result;
     ...
 \PYGZcb{}
 
 // Add any special processing here which must occur before the columns are copied from the new
-// row (\$row) to the old row (\$oldRow) and the old row is updated in the table.
-// At this point, \$row is an instance of stdClass, cast from the \$\_POST array, and \$oldRow is
+// row (\PYGZdl{}row) to the old row (\PYGZdl{}oldRow) and the old row is updated in the table.
+// At this point, \PYGZdl{}row is an instance of stdClass, cast from the \PYGZdl{}\PYGZus{}POST array, and \PYGZdl{}oldRow is
 // the original data object of the correct class, retrieved from the table.
-// If there are specific columns which should not be copied from \$row to \$oldRow before \$oldRow
-// is saved back to the table, add those column names to the \$neverUpdateColumns array.
+// If there are specific columns which should not be copied from \PYGZdl{}row to \PYGZdl{}oldRow before \PYGZdl{}oldRow
+// is saved back to the table, add those column names to the \PYGZdl{}neverUpdateColumns array.
 // Generally, these would be configured in the CRUD generator YAML configuration file, but
 // sometimes it is conditional whether to allow a column to be updated.
 function preUpdateHook() \PYGZob{}
-    global \$db, \$row, \$oldRow, \$neverUpdateColumns;
+    global \PYGZdl{}db, \PYGZdl{}row, \PYGZdl{}oldRow, \PYGZdl{}neverUpdateColumns;
     ...
 \PYGZcb{}
 
-// Add any special processing here which must occur after the old row (\$oldRow) has been updated
+// Add any special processing here which must occur after the old row (\PYGZdl{}oldRow) has been updated
 // in the table, but before the transaction is committed.
-// At this point, \$row is an instance of stdClass, cast from the \$\_POST array, and \$oldRow is
+// At this point, \PYGZdl{}row is an instance of stdClass, cast from the \PYGZdl{}\PYGZus{}POST array, and \PYGZdl{}oldRow is
 // the original data object of the correct class, retrieved from the table and specific columns
-// updated from \$row.
-// Setting \$success to false (it will be true when this function is called) will cause the
+// updated from \PYGZdl{}row.
+// Setting \PYGZdl{}success to false (it will be true when this function is called) will cause the
 // transaction to be rolled back.
 function postUpdateHook() \PYGZob{}
-    global \$db, \$row, \$oldRow, \$success;
+    global \PYGZdl{}db, \PYGZdl{}row, \PYGZdl{}oldRow, \PYGZdl{}success;
     ...
 \PYGZcb{}
 
-// Add any special processing here which must occur before the new row (\$newRow) is inserted.
-// At this point, \$row is an instance of stdClass, cast from the \$\_POST array, and \$newRow is
-// a data object of the correct class, created from the values in \$row.
+// Add any special processing here which must occur before the new row (\PYGZdl{}newRow) is inserted.
+// At this point, \PYGZdl{}row is an instance of stdClass, cast from the \PYGZdl{}\PYGZus{}POST array, and \PYGZdl{}newRow is
+// a data object of the correct class, created from the values in \PYGZdl{}row.
 function preInsertHook() \PYGZob{}
-    global \$db, \$row, \$newRow;
+    global \PYGZdl{}db, \PYGZdl{}row, \PYGZdl{}newRow;
     ...
 \PYGZcb{}
 
 // Add any special processing here which must occur after the old row has been inserted
 // in the table, but before the transaction is committed.
-// At this point, \$row is an instance of stdClass, cast from the \$\_POST array, and \$newRow is
-// a data object of the correct class, created from the values in \$row.
-// Setting \$success to false (it will be true when this function is called) will cause the
+// At this point, \PYGZdl{}row is an instance of stdClass, cast from the \PYGZdl{}\PYGZus{}POST array, and \PYGZdl{}newRow is
+// a data object of the correct class, created from the values in \PYGZdl{}row.
+// Setting \PYGZdl{}success to false (it will be true when this function is called) will cause the
 // transaction to be rolled back.
 function postInsertHook() \PYGZob{}
-    global \$db, \$row, \$newRow, \$success;
+    global \PYGZdl{}db, \PYGZdl{}row, \PYGZdl{}newRow, \PYGZdl{}success;
     ...
 \PYGZcb{}
 
-// Add delete check validation here.  The id which the user is attempting to delete is in \$id.
-// Any errors which would prevent deletion must be put into the \$result error message container.
+// Add delete check validation here.  The id which the user is attempting to delete is in \PYGZdl{}id.
+// Any errors which would prevent deletion must be put into the \PYGZdl{}result error message container.
 function deleteCheckHook() \PYGZob{}
-    global \$db, \$id, \$result;
+    global \PYGZdl{}db, \PYGZdl{}id, \PYGZdl{}result;
     ...
 \PYGZcb{}
 
-// Add any special processing here which must occur before the row (identified by \$id) is deleted.
+// Add any special processing here which must occur before the row (identified by \PYGZdl{}id) is deleted.
 function preDeleteHook() \PYGZob{}
-    global \$db, \$id;
+    global \PYGZdl{}db, \PYGZdl{}id;
     ...
 \PYGZcb{}
 
-// Add any special processing here which must occur after the row (identified by \$id) is deleted
+// Add any special processing here which must occur after the row (identified by \PYGZdl{}id) is deleted
 // but before the transaction is committed.
 function postDeleteHook() \PYGZob{}
-    global \$db, \$id;
+    global \PYGZdl{}db, \PYGZdl{}id;
     ...
 \PYGZcb{}
 
 // Put code here to execute just before the view is output.
-// This may include processing of unhandled commands in \$command.  To handle a command which
-// requires a POST, first confirm that (\$\_SERVER['REQUEST\_METHOD'] == 'POST').
+// This may include processing of unhandled commands in \PYGZdl{}command.  To handle a command which
+// requires a POST, first confirm that (\PYGZdl{}\PYGZus{}SERVER[\PYGZsq{}REQUEST\PYGZus{}METHOD\PYGZsq{}] == \PYGZsq{}POST\PYGZsq{}).
 function preViewOutputHook() \PYGZob{}
     ...
 \PYGZcb{}
@@ -2423,8 +2432,8 @@ function postInitHook() \PYGZob{}
 // This function is called at the beginning of the attachSpecialFieldFeatures() function, which
 // attaches special features to input elements with specific CSS classes.  For example, input
 // elements with date and datetime classes get a date picker icon, and also get their change
-// event hooked to filter and re-format their values.  Input elements with numeric-scale0
-// through numeric-scale10 classes get their change event hooked to filter and re-format their
+// event hooked to filter and re\PYGZhy{}format their values.  Input elements with numeric\PYGZhy{}scale0
+// through numeric\PYGZhy{}scale10 classes get their change event hooked to filter and re\PYGZhy{}format their
 // numeric values.
 function preAttachSpecialFieldFeatures() \PYGZob{}
     ...
@@ -2442,7 +2451,7 @@ function postAttachSpecialFieldFeatures() \PYGZob{}
 // for this row.
 function getAdditionalRowSearchActionLinksPre(id, rowData) \PYGZob{}
     ...
-    return '';
+    return \PYGZsq{}\PYGZsq{};
 \PYGZcb{}
 
 // This function is called once per row in the search data table.
@@ -2451,11 +2460,11 @@ function getAdditionalRowSearchActionLinksPre(id, rowData) \PYGZob{}
 // for this row.
 function getAdditionalRowSearchActionLinksPost(id, rowData) \PYGZob{}
     ...
-    return '';
+    return \PYGZsq{}\PYGZsq{};
 \PYGZcb{}
 
 // This function is called once per row in the search data table.
-// You can customize this function to enable/disable editing of specific rows on a per-row basis,
+// You can customize this function to enable/disable editing of specific rows on a per\PYGZhy{}row basis,
 // or globally.  This function returns true if a specific row may be edited; false if not.
 function canEditRow(id, rowData) \PYGZob{}
     ...
@@ -2463,7 +2472,7 @@ function canEditRow(id, rowData) \PYGZob{}
 \PYGZcb{}
 
 // This function is called once per row in the search data table.
-// You can customize this function to enable/disable deleting of specific rows on a per-row basis,
+// You can customize this function to enable/disable deleting of specific rows on a per\PYGZhy{}row basis,
 // or globally.  This function returns true if a specific row may be deleted; false if not.
 function canDeleteRow(id, rowData) \PYGZob{}
     ...
@@ -2471,7 +2480,7 @@ function canDeleteRow(id, rowData) \PYGZob{}
 \PYGZcb{}
 
 // This function is called once per row in the search data table.
-// You can customize this function to enable/disable viewing of specific rows on a per-row basis,
+// You can customize this function to enable/disable viewing of specific rows on a per\PYGZhy{}row basis,
 // or globally.  This function returns true if a specific row may be viewed; false if not.
 function canViewRow(id, rowData) \PYGZob{}
     ...
@@ -2530,12 +2539,12 @@ function preSaveHook() \PYGZob{}
 // This function is called immediately after a row has been inserted, updated or deleted.
 // The mode global variable determines which type of save operation has just occurred.
 // If this function returns boolean false, the current mode will not be changed back to
-// SEARCH\_MODE following the return of this function.  This allows implementation of
-// custom features such as "Save and Continue Editing".
+// SEARCH\PYGZus{}MODE following the return of this function.  This allows implementation of
+// custom features such as \PYGZdq{}Save and Continue Editing\PYGZdq{}.
 // When this function is called, the justInsertedRowId JavaScript variable is set to the
 // id of the row which was just inserted, or to zero (0) if the save operation which just
 // occurred was not an insert.  This allows implementation of custom features such as
-// "Add New ... and Continue Editing".
+// \PYGZdq{}Add New ... and Continue Editing\PYGZdq{}.
 function postSaveHook() \PYGZob{}
     ...
 \PYGZcb{}
@@ -2594,10 +2603,10 @@ accepts a different set of parameters.
 
 \begin{Verbatim}[commandchars=\\\{\}]
 abstract class Filter \PYGZob{}
-    public function \_\_construct(\$params = array()) \PYGZob{}
+    public function \PYGZus{}\PYGZus{}construct(\PYGZdl{}params = array()) \PYGZob{}
     \PYGZcb{}
 
-    public abstract function filter(\$db, \&\$row);
+    public abstract function filter(\PYGZdl{}db, \PYGZam{}\PYGZdl{}row);
     \PYGZcb{}
 \PYGZcb{}
 \end{Verbatim}
@@ -2608,13 +2617,13 @@ lowercase:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 filters:
-  user\_name:
+  user\PYGZus{}name:
     trim:
       class: TrimFilter
-      params: \PYGZob{} valueName: user\_name \PYGZcb{}
+      params: \PYGZob{} valueName: user\PYGZus{}name \PYGZcb{}
     lower:
       class: LowerFilter
-      params: \PYGZob{} valueName: user\_name \PYGZcb{}
+      params: \PYGZob{} valueName: user\PYGZus{}name \PYGZcb{}
 \end{Verbatim}
 
 
@@ -2629,25 +2638,25 @@ IntFilter Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be filtered.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted,
 it defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 convertZeroToNULL
  & 
 Boolean true to convert a zero value to NULL; false to not.  Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2660,33 +2669,33 @@ DecimalFilter Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be filtered.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted,
 it defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 fractionalDigits
  & 
 An optional nnumber of fractional digits to use when rounding the value.  This may
 be positive, zero or negative.  If this parameter is not present, no rounding will
 occur.  Refer to the PHP round() function for an in-depth description of how
 rounding occurs.
-\\\hline
-
+\\
+\hline
 convertZeroToNULL
  & 
 Boolean true to convert a zero value to NULL; false to not.  Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2698,25 +2707,25 @@ LowerFilter Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be filtered.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted,
 it defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 convertEmptyToNULL
  & 
 Boolean true to convert an empty value to NULL; false to not.  Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2728,25 +2737,25 @@ UpperFilter Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be filtered.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted,
 it defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 convertEmptyToNULL
  & 
 Boolean true to convert an empty value to NULL; false to not.  Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2758,25 +2767,25 @@ TrimFilter Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be filtered.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted,
 it defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 convertEmptyToNULL
  & 
 Boolean true to convert an empty value to NULL; false to not.  Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2794,11 +2803,11 @@ accepts a different set of parameters.
 \begin{Verbatim}[commandchars=\\\{\}]
 abstract class Validator \PYGZob{}
     // Validate value(s) based on the rules of this validator.
-    // \$db is an open database Connection object.
-    // \$row is an object whose attributes contain at least the value(s) being validated by this
+    // \PYGZdl{}db is an open database Connection object.
+    // \PYGZdl{}row is an object whose attributes contain at least the value(s) being validated by this
     // validator.
     // Returns a string containing the error message, or an empty string if no error.
-    public abstract function validate(\$db, \&\$row);
+    public abstract function validate(\PYGZdl{}db, \PYGZam{}\PYGZdl{}row);
 \PYGZcb{}
 \end{Verbatim}
 
@@ -2808,20 +2817,20 @@ not empty, does not exceed a specified length, and is unique (not duplicated in 
 
 \begin{Verbatim}[commandchars=\\\{\}]
 validators:
-  user\_name:
+  user\PYGZus{}name:
   notempty:
     class: NotEmptyValidator
-    params: \PYGZob{} valueName: user\_name \PYGZcb{}
+    params: \PYGZob{} valueName: user\PYGZus{}name \PYGZcb{}
   length:
     class: LengthValidator
-    params: \PYGZob{} valueName: user\_name, maxLength: 32 \PYGZcb{}
+    params: \PYGZob{} valueName: user\PYGZus{}name, maxLength: 32 \PYGZcb{}
   noduplicates:
     class: NoDuplicatesValidator
     params:
       table: user
       fields:
-        user\_name: \PYGZob{} field: user\_name, type: string, queryOperator: = \PYGZcb{}
-        id: \PYGZob{} field: id, type: int, queryOperator: \textless{}\textgreater{} \PYGZcb{}
+        user\PYGZus{}name: \PYGZob{} field: user\PYGZus{}name, type: string, queryOperator: = \PYGZcb{}
+        id: \PYGZob{} field: id, type: int, queryOperator: \PYGZlt{}\PYGZgt{} \PYGZcb{}
       errorMsg: The selected Username is already in use.
 \end{Verbatim}
 
@@ -2843,32 +2852,32 @@ NotZeroValidator Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be validated.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted, it
 defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 type
  & 
 The PHP type to convert the value to before checking for non-zero.  Must be one of:
 int, double or boolean.
-\\\hline
-
+\\
+\hline
 allowNULL
  & 
 Boolean true to allow NULL values to pass through un-validated; false to not.
 Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2880,52 +2889,52 @@ RangeValidator Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be validated.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted, it
 defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 type
  & 
 The PHP type to convert the value to before checking for in-range.  Must be one of:
 int, double, boolean or string.  For numeric values, numeric comparisons are done.
 For string values, string comparisons are done which may be either case-sensitive or
 case-insenstive.
-\\\hline
-
+\\
+\hline
 caseInsensitive
  & 
 True if string comparisons should be case insensitive.  Ignored if type is not
 string.
-\\\hline
-
+\\
+\hline
 min
  & 
 Optional lower-bound value to compare against.  If omitted, no lower-bound
 comparison will be performed.
-\\\hline
-
+\\
+\hline
 max
  & 
 Optional upper-bound value to compare against.  If omitted, no upper-bound
 omparison will be performed.
-\\\hline
-
+\\
+\hline
 allowNULL
  & 
 Boolean true to allow NULL values to pass through un-validated; false to not.
 Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2938,47 +2947,47 @@ ListValidator Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be validated.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted, it
 defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 type
  & 
 The PHP type to convert the value to before checking for in-list.  Must be one of:
 int, double, boolean or string.  For numeric values, numeric comparisons are done.
 For string values, string comparisons are done which may be either case-sensitive or
 case-insenstive.
-\\\hline
-
+\\
+\hline
 caseInsensitive
  & 
 True if string comparisons should be case insensitive.  Ignored if type is not
-\\\hline
-
+\\
+\hline
 string.
- & \\\hline
-
+ & \\
+\hline
 validValues
  & 
 An array of accepted (valid) values for the field being validated.
-\\\hline
-
+\\
+\hline
 allowNULL
  & 
 Boolean true to allow NULL values to pass through un-validated; false to not.
 Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -2990,26 +2999,26 @@ NotEmptyValidator Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be validated.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted, it
 defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 allowNULL
  & 
 Boolean true to allow NULL values to pass through un-validated; false to not.
 Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -3022,38 +3031,38 @@ LengthValidator Parameters
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Parameter Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 valueName
  & 
 The field name of the field or table column to be validated.  This may or may not
 represent an actual column in the database table.  This is optional.  If omitted, it
 defaults to the grandparent key (the key under the ``filters'' key) which should
 generally be the name of the field.
-\\\hline
-
+\\
+\hline
 minLength
  & 
 Optional minimum allowed length for the value.  If omitted, no minimum-length
 comparison will be performed.
-\\\hline
-
+\\
+\hline
 maxLength
  & 
 Optional maximum allowed length for the value.  If omitted, no maximum-length
 comparison will be performed.
-\\\hline
-
+\\
+\hline
 allowNULL
  & 
 Boolean true to allow NULL values to pass through un-validated; false to not.
 Defaults to false.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -3075,28 +3084,28 @@ NoDuplicatesValidator field entry attributes
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Attribute Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 field
  & 
 The value name/database column name to check for duplicates.
-\\\hline
-
+\\
+\hline
 type
  & 
 The PreparedStatement data type for this field.  Must be one of: int, float, double,
 boolean, string or binary.
-\\\hline
-
+\\
+\hline
 queryOperator
  & 
 The SQL query operator to use for the query.  If not specified, defaults to `='.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -3111,28 +3120,28 @@ ForeignKeyValidator foreignKeyMapping entry attributes
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{
+\textsf{\relax 
 Attribute Name
-} & \textbf{
+} & \textsf{\relax 
 Description
-}\\\hline
-
+}\\
+\hline
 local
  & 
 The value name from the form to match to a column in the referenced database table.
-\\\hline
-
+\\
+\hline
 foreign
  & 
 The referenced column in the referenced database table.
-\\\hline
-
+\\
+\hline
 type
  & 
 The PreparedStatement data type for this field.  Must be one of: int, float, double,
 boolean, string or binary.
-\\\hline
-\end{tabulary}
+\\
+\hline\end{tabulary}
 
 
 
@@ -3238,22 +3247,22 @@ The Permissions class looks something like this (code removed for brevity):
 
 \begin{Verbatim}[commandchars=\\\{\}]
 class Permissions \PYGZob{}
-    public static function hasPermissions(\$user\_id, \$permissions) \PYGZob{}
+    public static function hasPermissions(\PYGZdl{}user\PYGZus{}id, \PYGZdl{}permissions) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public static function getRequiredPermissionsForScript(\$scriptFilename) \PYGZob{}
+    public static function getRequiredPermissionsForScript(\PYGZdl{}scriptFilename) \PYGZob{}
         ...
     \PYGZcb{}
 
-    public static function hasPermissionsForScript(\$user\_id, \$scriptFilename) \PYGZob{}
+    public static function hasPermissionsForScript(\PYGZdl{}user\PYGZus{}id, \PYGZdl{}scriptFilename) \PYGZob{}
         return Permissions::hasPermissions(
-            \$user\_id,
-            Permissions::getRequiredPermissionsForScript(\$scriptFilename)
+            \PYGZdl{}user\PYGZus{}id,
+            Permissions::getRequiredPermissionsForScript(\PYGZdl{}scriptFilename)
         );
     \PYGZcb{}
 
-    public static function inScriptPermissionsCheck(\$user\_id, \$scriptFilename, \$showMenuIfFailed) \PYGZob{}
+    public static function inScriptPermissionsCheck(\PYGZdl{}user\PYGZus{}id, \PYGZdl{}scriptFilename, \PYGZdl{}showMenuIfFailed) \PYGZob{}
         ...
     \PYGZcb{}
 \PYGZcb{}
@@ -3277,8 +3286,8 @@ permission to access that page.
 The inScriptPermissionsCheck() function is called at the top of every page by doing something like this:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-include dirname(\_\_FILE\_\_).'/classes/Permissions.class.php';
-Permissions::inScriptPermissionsCheck(\$loggedInUser-\textgreater{}id, \_\_FILE\_\_, true);
+include dirname(\PYGZus{}\PYGZus{}FILE\PYGZus{}\PYGZus{}).\PYGZsq{}/classes/Permissions.class.php\PYGZsq{};
+Permissions::inScriptPermissionsCheck(\PYGZdl{}loggedInUser\PYGZhy{}\PYGZgt{}id, \PYGZus{}\PYGZus{}FILE\PYGZus{}\PYGZus{}, true);
 \end{Verbatim}
 
 Note how the second argument is \_\_FILE\_\_, which gives the server-side path to the PHP file which is

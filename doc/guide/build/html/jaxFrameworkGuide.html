@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -435,42 +433,43 @@ injection attacks as long as you propery use PreparedStatement for all queries.<
 <p>The Connection class is an abstract class.  There is one subclass of Connection for each type of
 RDBMS supported by phpdaogen.  In the examples, we use MySQL, so the ConnectionFactory class looks
 something like this:</p>
-<div class="highlight-python"><pre>...
+<div class="highlight-python"><div class="highlight"><pre>...
 class ConnectionFactory {
     public static function getConnection() {
-        return new MySQLiConnection('localhost', 'jax', '123jAx321', 'jax');
+        return new MySQLiConnection(&#39;localhost&#39;, &#39;jax&#39;, &#39;123jAx321&#39;, &#39;jax&#39;);
     }
-}</pre>
+}
+</pre></div>
 </div>
 <p>This is a very naive implementation, and is only provided as a starting point.  What if you need to
 run your database on a different server, or use a database other than MySQL?</p>
 <p>A better implementation might look something like this:</p>
-<div class="highlight-python"><pre>...
+<div class="highlight-python"><div class="highlight"><pre>...
 class ConnectionFactory {
     public static function getConnection() {
         // The config dir should NOT be anywhere under the document root!
-        $dbSettingsFile = dirname(dirname(dirname(__FILE__))).'/config/dbsettings.php';
+        $dbSettingsFile = dirname(dirname(dirname(__FILE__))).&#39;/config/dbsettings.php&#39;;
         if (file_exists($dbSettingsFile)) {
             include $dbSettingsFile;
         }
         unset($dbSettingsFile);
-        if ( (!isset($dbConnectionClass)) \|| ($dbConnectionClass == '') ) {
-            $dbConnectionClass = 'MySQLiConnection';
+        if ( (!isset($dbConnectionClass)) \|| ($dbConnectionClass == &#39;&#39;) ) {
+            $dbConnectionClass = &#39;MySQLiConnection&#39;;
         }
-        if ( (!isset($dbServer)) \|| ($dbServer == '') ) {
-            $dbServer = 'localhost';
+        if ( (!isset($dbServer)) \|| ($dbServer == &#39;&#39;) ) {
+            $dbServer = &#39;localhost&#39;;
         }
-        if ( (!isset($dbUsername)) \|| ($dbUsername == '') ) {
-            $dbUsername = 'jax';
+        if ( (!isset($dbUsername)) \|| ($dbUsername == &#39;&#39;) ) {
+            $dbUsername = &#39;jax&#39;;
         }
-        if ( (!isset($dbPassword)) \|| ($dbPassword == '') ) {
-            $dbPassword = '123jAx321';
+        if ( (!isset($dbPassword)) \|| ($dbPassword == &#39;&#39;) ) {
+            $dbPassword = &#39;123jAx321&#39;;
         }
-        if ( (!isset($dbDatabase)) \|| ($dbDatabase == '') ) {
-            $dbDatabase = 'jax';
+        if ( (!isset($dbDatabase)) \|| ($dbDatabase == &#39;&#39;) ) {
+            $dbDatabase = &#39;jax&#39;;
         }
         if (!class_exists($dbConnectionClass, false)) {
-            include(dirname(__FILE__).'/'.$dbConnectionClass.'.class.php');
+            include(dirname(__FILE__).&#39;/&#39;.$dbConnectionClass.&#39;.class.php&#39;);
         }
         $db = new $dbConnectionClass($dbServer, $dbUsername, $dbPassword, $dbDatabase);
         // Throw exceptions when we have a failed query or we try to free an invalid result set.
@@ -478,7 +477,8 @@ class ConnectionFactory {
         $db-&gt;throwExceptionOnFailedFreeResult = true;
         return $db;
     }
-}</pre>
+}
+</pre></div>
 </div>
 <p>Looking at the code, you can see how it&#8217;s getting its connection parameters from a PHP script which
 (if it exists) is outside of the document root.  In fact, it could exit anywhere on the server&#8217;s
@@ -497,7 +497,8 @@ safely discarded.  Re-using a closed Connection instance is not allowed.</p>
 <p>The PreparedStatement class allows you to use templated SQL statements with question mark (?)
 charcters for placeholders where literal values belong.  These literal values come from PHP
 variables which are set from various sources.  To create a PreparedStatement, do something like this:</p>
-<div class="highlight-python"><pre>$ps = new PreparedStatement('select * from user where user_name = ?');</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ps = new PreparedStatement(&#39;select * from user where user_name = ?&#39;);
+</pre></div>
 </div>
 <p>When the PreparedStatement is initially created, it will contain no parameters.  For the
 PreparedStatement to be useable, it needs to have all parameters filled in (one parameter per
@@ -519,7 +520,8 @@ additional arguments to its constructor: $selectOffset and $selectLimit.  Both d
 $selectOffset is zero, no initial rows are returned.  If $selectLimit is zero, there is no limit to
 the number of rows returned.  So to skip 20 rows and return no more than 5 rows after that, you
 would do something like this:</p>
-<div class="highlight-python"><pre>$ps = new PreparedStatement("select * from user where user_name like 'a%'", 20, 5);</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ps = new PreparedStatement(&quot;select * from user where user_name like &#39;a%&#39;&quot;, 20, 5);
+</pre></div>
 </div>
 </div>
 <div class="section" id="how-it-all-works-together">
@@ -527,8 +529,8 @@ would do something like this:</p>
 <p>Once a PreparedStatement has had its parameters filled out, it&#8217;s ready to be used for a query or an
 update (depending on which type of SQL statement it contains).</p>
 <p>Here is an example of how to list all users:</p>
-<div class="highlight-python"><pre>$db = ConnectionFactory::getConnection();
-$ps = new PreparedStatement('select * from user where id &gt;= ? and id &lt;= ? order by user_name');
+<div class="highlight-python"><div class="highlight"><pre>$db = ConnectionFactory::getConnection();
+$ps = new PreparedStatement(&#39;select * from user where id &gt;= ? and id &lt;= ? order by user_name&#39;);
 $ps-&gt;setInt(3);
 $ps-&gt;setInt(12);
 $rs = $db-&gt;executeQuery($ps);
@@ -536,18 +538,20 @@ while ($row = $db-&gt;fetchObject($rs)) {
     print_r($row);
 }
 $db-&gt;freeResult($rs);
-$db-&gt;close();</pre>
+$db-&gt;close();
+</pre></div>
 </div>
 <p>The executeQuery() function returns a result set identifier, which can be used to retrieve the rows
 returned by the query.  If your SQL statement is an update-only statement which returns no rows, use
 the executeUpdate() function.</p>
 <p>This version is shorter, but uses more memory:</p>
-<div class="highlight-python"><pre>$db = ConnectionFactory::getConnection();
-$ps = new PreparedStatement('select * from user where id &gt;= ? and id &lt;= ? order by user_name');
+<div class="highlight-python"><div class="highlight"><pre>$db = ConnectionFactory::getConnection();
+$ps = new PreparedStatement(&#39;select * from user where id &gt;= ? and id &lt;= ? order by user_name&#39;);
 $ps-&gt;setInt(3);
 $ps-&gt;setInt(12);
 print_r($db-&gt;fetchAllObjects($db-&gt;executeQuery($ps), true));
-$db-&gt;close();</pre>
+$db-&gt;close();
+</pre></div>
 </div>
 <p>Rows can be fetched as objects [fetchObject(), fetchAllObjects()] or associative arrays
 [fetchArray(), fetchAllArrays()].  When you&#8217;re done with a result set, always free it using
@@ -621,7 +625,7 @@ tends to be more picky, verbose and difficult to read, the recommended format is
 <div class="section" id="yaml-ddl-file-format">
 <h3>YAML DDL File Format<a class="headerlink" href="#yaml-ddl-file-format" title="Permalink to this headline">¶</a></h3>
 <p>The structure of a YAML DDL file is as follows:</p>
-<div class="highlight-python"><pre>tables:
+<div class="highlight-python"><div class="highlight"><pre>tables:
   (table name):
 columns:
   (column name):
@@ -647,7 +651,7 @@ columns:
               on ONLY the column being searched.  Therefore, it is recommended to create fulltext indexes on
               single columns only.  You can create multiple fulltext indexes per table when using MySQL.
       unique: (No|Yes)
-        NOTE: The "unique" attribute is ignored, and should be omitted, for fulltext indexes.
+        NOTE: The &quot;unique&quot; attribute is ignored, and should be omitted, for fulltext indexes.
       columns: [ (comma-separated list of index column names) ]
     (index name):
       ...
@@ -673,18 +677,24 @@ columns:
             in the insert.
         (column name):
           value: (column value)
+          filename: (filename containing column value)
+              This can be a relative path, relative to the directory where the YAML schema file
+              exists, or it can be an absolute path which begins with a forward slash (/).
+          sysVarValue: (system variable to use for value, such as CURRENT_TIMESTAMP)
+              NOTE: Only one of [value, filename, sysVarValue] may be specified per column.
           quoted: No|Yes; whether to wrap the column value in SQL quotes and escape it
               accordingly.  Set this to Yes for character-based column types, dates, times, and
               so on.  Set it to No for numeric column types.
       -:
-        ...</pre>
+        ...
+</pre></div>
 </div>
 <p>Items in parentheses get replaced with their actual values.  If two or more options are listed, the
 first option is the default which is used if the parameter is omitted.  Some attributes are
 optional, depending on column types, etc.  Also note that although in the example above, attributes
 are listed one per line, it is possible (and preferable in most cases) to simply put them all on one
 line within a pair of curly braces, like this:</p>
-<div class="highlight-python"><pre>tables:
+<div class="highlight-python"><div class="highlight"><pre>tables:
   appuser:
     columns:
 
@@ -692,19 +702,20 @@ line within a pair of curly braces, like this:</p>
 
       when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
 
-      user_name: { type: varchar, size: 32, null: No, default: "" }
+      user_name: { type: varchar, size: 32, null: No, default: &quot;&quot; }
 
-      email_addr: { type: varchar, size: 255, null: No, default: "" }
+      email_addr: { type: varchar, size: 255, null: No, default: &quot;&quot; }
 
-      password_hash: { type: varchar, size: 255, null: No, default: "" }
+      password_hash: { type: varchar, size: 255, null: No, default: &quot;&quot; }
 
-      first_name: { type: varchar, size: 30, null: No, default: "" }
+      first_name: { type: varchar, size: 30, null: No, default: &quot;&quot; }
 
-      last_name: { type: varchar, size: 30, null: No, default: "" }
+      last_name: { type: varchar, size: 30, null: No, default: &quot;&quot; }
 
       is_active: { type: smallint, null: No, default: 1 }
 
-      ...</pre>
+      ...
+</pre></div>
 </div>
 <p>In YAML, tabs should not be used for indentation; only spaces.  The indentation depth controls the
 nesting of elements, so be careful to get your indentation correct.</p>
@@ -736,14 +747,14 @@ that MySQL only allows one column of type timestamp per table.</li>
 <p>Inserts are used to pre-populate certain tables when they are first created.  This is used to load
 up a database with initial (required) data, such as default permissions lists.  Here is an example
 of how to define a table and populate it with some default rows:</p>
-<div class="highlight-python"><pre>tables:
+<div class="highlight-python"><div class="highlight"><pre>tables:
   ...
   perm:
     columns:
       id: { type: integer, null: No, autoIncrement: Yes }
       when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
-      perm_name: { type: varchar, size: 40, null: No, default: "" }
-      description: { type: varchar, size: 40, null: No, default: "" }
+      perm_name: { type: varchar, size: 40, null: No, default: &quot;&quot; }
+      description: { type: varchar, size: 40, null: No, default: &quot;&quot; }
     primaryKey:
       columns: [ id ]
     indexes:
@@ -757,18 +768,19 @@ of how to define a table and populate it with some default rows:</p>
       -:
         keyColumnNames: [ perm_name ]
         updateIfExists: Yes
-        perm_name: { value: "all", quoted: Yes }
-        description: { value: "All Permissions", quoted: Yes }
+        perm_name: { value: &quot;all&quot;, quoted: Yes }
+        description: { value: &quot;All Permissions&quot;, quoted: Yes }
       -:
         keyColumnNames: [ perm_name ]
         updateIfExists: Yes
-        perm_name: { value: "appuser", quoted: Yes }
-        description: { value: "Administer Users", quoted: Yes }
+        perm_name: { value: &quot;appuser&quot;, quoted: Yes }
+        description: { value: &quot;Administer Users&quot;, quoted: Yes }
       -:
         keyColumnNames: [ perm_name ]
         updateIfExists: Yes
-        perm_name: { value: "approle", quoted: Yes }
-        description: { value: "Administer Roles", quoted: Yes }</pre>
+        perm_name: { value: &quot;approle&quot;, quoted: Yes }
+        description: { value: &quot;Administer Roles&quot;, quoted: Yes }
+</pre></div>
 </div>
 </div>
 <div class="section" id="xml-ddl-file-format">
@@ -803,15 +815,15 @@ rows by various columns.</p>
 <p>In all discussions in this guide, it is assumed that we are using the default mode of operation for
 the phpdaogen code generator, which generates abstract classes.</p>
 <p>Consider the following table schema:</p>
-<div class="highlight-python"><pre>appuser:
+<div class="highlight-python"><div class="highlight"><pre>appuser:
   columns:
     id: { type: integer, null: No, autoIncrement: Yes }
     when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
-    user_name: { type: varchar, size: 32, null: No, default: "" }
-    email_addr: { type: varchar, size: 255, null: No, default: "" }
-    password_hash: { type: varchar, size: 255, null: No, default: "" }
-    first_name: { type: varchar, size: 30, null: No, default: "" }
-    last_name: { type: varchar, size: 30, null: No, default: "" }
+    user_name: { type: varchar, size: 32, null: No, default: &quot;&quot; }
+    email_addr: { type: varchar, size: 255, null: No, default: &quot;&quot; }
+    password_hash: { type: varchar, size: 255, null: No, default: &quot;&quot; }
+    first_name: { type: varchar, size: 30, null: No, default: &quot;&quot; }
+    last_name: { type: varchar, size: 30, null: No, default: &quot;&quot; }
     is_active: { type: smallint, null: No, default: 1 }
   primaryKey:
     columns: [ id ]
@@ -825,27 +837,29 @@ the phpdaogen code generator, which generates abstract classes.</p>
     lastfirstname:
       unique: Yes
       columns: [ last_name, first_name ]
-  foreignKeys: ~</pre>
+  foreignKeys: ~
+</pre></div>
 </div>
 <p>This results in (the equivalent of) the following DDL SQL in the MySQL dialect:</p>
-<div class="highlight-python"><pre>CREATE TABLE user (
+<div class="highlight-python"><div class="highlight"><pre>CREATE TABLE user (
     id int(11) NOT NULL AUTO_INCREMENT,
     when_added timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_name varchar(32) NOT NULL DEFAULT '',
-    email_addr varchar(255) NOT NULL DEFAULT '',
-    password_hash varchar(255) NOT NULL DEFAULT '',
-    first_name varchar(30) NOT NULL DEFAULT '',
-    last_name varchar(30) NOT NULL DEFAULT '',
-    is_active smallint(6) NOT NULL DEFAULT '1',
+    user_name varchar(32) NOT NULL DEFAULT &#39;&#39;,
+    email_addr varchar(255) NOT NULL DEFAULT &#39;&#39;,
+    password_hash varchar(255) NOT NULL DEFAULT &#39;&#39;,
+    first_name varchar(30) NOT NULL DEFAULT &#39;&#39;,
+    last_name varchar(30) NOT NULL DEFAULT &#39;&#39;,
+    is_active smallint(6) NOT NULL DEFAULT &#39;1&#39;,
     PRIMARY KEY (id),
     KEY username (user_name),
     KEY emailaddr (email_addr),
     KEY lastfirstname (last_name, first_name)
-) ENGINE=InnoDB;</pre>
+) ENGINE=InnoDB;
+</pre></div>
 </div>
 <p>Phpdaogen will then generate something like the following abstract data object class (pruned down
 for brevity):</p>
-<div class="highlight-python"><pre>html/classes/dao/abstract/AppuserAbstract.class.php:
+<div class="highlight-python"><div class="highlight"><pre>html/classes/dao/abstract/AppuserAbstract.class.php:
 
 abstract class AppuserAbstract {
     public $id;
@@ -870,17 +884,19 @@ abstract class AppuserAbstract {
     public function loadFromArray($arr) {
         ...
     }
-}</pre>
+}
+</pre></div>
 </div>
 <p>This data object class is very straightforward, and requires no discussion.  The concrete data object
 class looks something like this:</p>
-<div class="highlight-python"><pre>html/classes/dao/Appuser.class.php:
+<div class="highlight-python"><div class="highlight"><pre>html/classes/dao/Appuser.class.php:
 
 class Appuser extends AppuserAbstract {
-}</pre>
+}
+</pre></div>
 </div>
 <p>Phpdaogen will also generate something like the following DAO class (also pruned down for brevity):</p>
-<div class="highlight-python"><pre>html/classes/dao/abstract/AppuserDAOAbstract.class.php:
+<div class="highlight-python"><div class="highlight"><pre>html/classes/dao/abstract/AppuserDAOAbstract.class.php:
 
 abstract class AppuserDAOAbstract {
     public static $ALLOWED_QUERY_OPERATORS = ...
@@ -919,68 +935,68 @@ abstract class AppuserDAOAbstract {
         ...
     }
 
-    public function findByIdPS($id, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByIdPS($id, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findById($id, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findById($id, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByWhen_addedPS($when_added, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByWhen_addedPS($when_added, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByWhen_added($when_added, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByWhen_added($when_added, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByUser_namePS($user_name, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByUser_namePS($user_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
 
     }
 
-    public function findByUser_name($user_name, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByUser_name($user_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByEmail_addrPS($email_addr, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByEmail_addrPS($email_addr, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByEmail_addr($email_addr, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByEmail_addr($email_addr, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByPassword_hashPS($password_hash, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByPassword_hashPS($password_hash, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByPassword_hash($password_hash, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByPassword_hash($password_hash, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByFirst_namePS($first_name, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByFirst_namePS($first_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByFirst_name($first_name, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByFirst_name($first_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByLast_namePS($last_name, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByLast_namePS($last_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByLast_name($last_name, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByLast_name($last_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByIs_activePS($is_active, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByIs_activePS($is_active, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
-    public function findByIs_active($is_active, $queryOperator = '=', $orderBy = null, $offset = 0, $limit = 0) {
+    public function findByIs_active($is_active, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0, $limit = 0) {
         ...
     }
 
@@ -995,7 +1011,8 @@ abstract class AppuserDAOAbstract {
     public function findWithPreparedStatement($ps) {
         ...
     }
-}</pre>
+}
+</pre></div>
 </div>
 <p>This class is much more complex, and merits some discussion.  First note that the constructor
 requires a Connection instance, which gives it something to use to talk to the database.  Also note
@@ -1007,8 +1024,9 @@ possibly stale data.  You can tune your cache expiration time to limit the maxim
 data, mitigating the stale data problem somewhat while still maintaining good performance.  Caching
 can work wonders for the speed and performance of high-volume web applications.  The concrete DAO
 class looks something like this:</p>
-<div class="highlight-python"><pre>class AppuserDAO extends AppuserDAOAbstract {
-}</pre>
+<div class="highlight-python"><div class="highlight"><pre>class AppuserDAO extends AppuserDAOAbstract {
+}
+</pre></div>
 </div>
 </div>
 <div class="section" id="the-insert-update-delete-and-load-functions">
@@ -1017,31 +1035,33 @@ class looks something like this:</p>
 <h4>insert()<a class="headerlink" href="#insert" title="Permalink to this headline">¶</a></h4>
 <p>The insert() function adds a new row to the table.  Its only argument is a data object.  To insert a
 new row, do something like this:</p>
-<div class="highlight-python"><pre>$db = ConnectionFactory::getConnection();
+<div class="highlight-python"><div class="highlight"><pre>$db = ConnectionFactory::getConnection();
 $appuserDAO = new AppuserDAO($db);
 $row = Appuser::createDefault();
-$row-&gt;user_name = 'johndoe';
-$row-&gt;first_name = 'John';
-$row-&gt;last_name = 'Doe';
+$row-&gt;user_name = &#39;johndoe&#39;;
+$row-&gt;first_name = &#39;John&#39;;
+$row-&gt;last_name = &#39;Doe&#39;;
 (set additional fields here)
 $appuserDAO-&gt;insert($row);
-echo "Newly inserted row's id is {$row-&gt;id}\\n";
-$db-&gt;close();</pre>
+echo &quot;Newly inserted row&#39;s id is {$row-&gt;id}\\n&quot;;
+$db-&gt;close();
+</pre></div>
 </div>
 </div>
 <div class="section" id="update">
 <h4>update()<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h4>
 <p>The update() function saves an updated row back to the table (updates an existing row).  Its only
 argument is a data object.  To update an existing row, do something like this:</p>
-<div class="highlight-python"><pre>$db = ConnectionFactory::getConnection();
+<div class="highlight-python"><div class="highlight"><pre>$db = ConnectionFactory::getConnection();
 $appuserDAO = new AppuserDAO($db);
 if (!($row = $appuserDAO-&gt;load(2))) {
-    echo "user id 2 not found!\\n";
+    echo &quot;user id 2 not found!\\n&quot;;
 } else {
-    $row-&gt;last_name = 'Smith';
+    $row-&gt;last_name = &#39;Smith&#39;;
     $appuserDAO-&gt;update($row);
 }
-$db-&gt;close();</pre>
+$db-&gt;close();
+</pre></div>
 </div>
 </div>
 <div class="section" id="delete">
@@ -1049,10 +1069,11 @@ $db-&gt;close();</pre>
 <p>The delete() function deletes an existing row from the table.  Its only argument is the primary key
 value (in the case of a compound primary key, it will require one argument per primary key column).
 To delete an existing row, do something like this:</p>
-<div class="highlight-python"><pre>$db = ConnectionFactory::getConnection();
+<div class="highlight-python"><div class="highlight"><pre>$db = ConnectionFactory::getConnection();
 $appuserDAO = new AppuserDAO($db);
 $appuserDAO-&gt;delete(2);    // Deletes any existing row with id 2.
-$db-&gt;close();</pre>
+$db-&gt;close();
+</pre></div>
 </div>
 </div>
 <div class="section" id="load">
@@ -1060,14 +1081,15 @@ $db-&gt;close();</pre>
 <p>The load() retrieves an existing row by its primary key.  Its only argument is the primary key value
 (in the case of a compound primary key, it will require one argument per primary key column).
 To load an existing row, do something like this:</p>
-<div class="highlight-python"><pre>$db = ConnectionFactory::getConnection();
+<div class="highlight-python"><div class="highlight"><pre>$db = ConnectionFactory::getConnection();
 $appuserDAO = new AppuserDAO($db);
 if (!($row = $appuserDAO-&gt;load(2))) {
-    echo "user id 2 not found!\\n";
+    echo &quot;user id 2 not found!\\n&quot;;
 } else {
     print_r($row);
 }
-$db-&gt;close();</pre>
+$db-&gt;close();
+</pre></div>
 </div>
 </div>
 </div>
@@ -1075,15 +1097,16 @@ $db-&gt;close();</pre>
 <h3>The Finder Functions<a class="headerlink" href="#the-finder-functions" title="Permalink to this headline">¶</a></h3>
 <p>For each column in the table, phpdaogen generates a pair of finder functions.  For example, for the
 first_name column, phpdaogen generates the following two functions:</p>
-<div class="highlight-python"><pre>public function findByUser_namePS($user_name, $queryOperator = '=', $orderBy = null,
+<div class="highlight-python"><div class="highlight"><pre>public function findByUser_namePS($user_name, $queryOperator = &#39;=&#39;, $orderBy = null,
     $offset = 0, $limit = 0) {
     ...
 }
-public function findByUser_name($user_name, $queryOperator = '=', $orderBy = null, $offset = 0,
+public function findByUser_name($user_name, $queryOperator = &#39;=&#39;, $orderBy = null, $offset = 0,
     $limit = 0) {
     return $this-&gt;findWithPreparedStatement($this-&gt;findByUser_namePS($user_name, $queryOperator,
         $orderBy, $offset, $limit));
-}</pre>
+}
+</pre></div>
 </div>
 <p>The first function exists solely for convenience.  Given search criteria, it builds and returns a
 PreparedStatement instance containing the parameterized SQL to find and retrieve the corresponding
@@ -1147,7 +1170,7 @@ the generator configuration file for the user table would be named gencfg/user.y
 <div class="section" id="top-level-entries">
 <h3>Top-Level Entries<a class="headerlink" href="#top-level-entries" title="Permalink to this headline">¶</a></h3>
 <p>A generator configuration (or gencfg) file has the following structure:</p>
-<div class="highlight-python"><pre>(global settings)
+<div class="highlight-python"><div class="highlight"><pre>(global settings)
 searches:
   Searches defined here will result in generated server-side search includes which can be used
   to allow the user search for rows.  Searches return JSON-encoded data, in a special format
@@ -1176,7 +1199,8 @@ loaders:
 cruds:
   CRUD pages defined here will combined searches, popup searches, loaders, form fields, filters,
   validators, etc. to create a complete working CRUD page.
-  ...</pre>
+  ...
+</pre></div>
 </div>
 <p>The global settings which appear at the top of the file can contain any combination of the
 following:</p>
@@ -1196,13 +1220,13 @@ currently logged in user, in order for the permissions to work; defaults to $log
 <div class="section" id="searches">
 <h3>Searches<a class="headerlink" href="#searches" title="Permalink to this headline">¶</a></h3>
 <p>The searches section of the YAML file looks like this:</p>
-<div class="highlight-python"><pre>searches:
+<div class="highlight-python"><div class="highlight"><pre>searches:
   (search name):
-    searchCommand: (optional value of the 'command' request parameter to pass when making
+    searchCommand: (optional value of the &#39;command&#39; request parameter to pass when making
         server-side search requests to satisfy this search; if omitted, this will default to
-        "search&lt;search name&gt;s" with the first character of search name uppercased)
+        &quot;search&lt;search name&gt;s&quot; with the first character of search name uppercased)
     outputPath: (output path for search includes, relative to the html directory; defaults to
-        'include/search')
+        &#39;include/search&#39;)
     docRootPath: (path back to the document root from the output path; defaults to an
         upward-pointing relative path based on outputPath)
     searchTemplate: (filename of search template to use; always in templates/search; defaults to
@@ -1219,33 +1243,34 @@ currently logged in user, in order for the permissions to work; defaults to $log
     extraSelectColumns: [ (comma-separated list of column names from other table aliases) ]
       NOTE: This can be either in the form of an array or simply a string containing expressions
             to be appended to the column list in the select.
-    joins: (sql join clauses; the main table is always aliased as 'pri')
+    joins: (sql join clauses; the main table is always aliased as &#39;pri&#39;)
     searchableColumns:
       -:
         columnName: (searchable column name, as it is known in the table in which it resides)
         tableAlias: (table alias for the table in which the searchable field exists; defaults to
-            'pri')
+            &#39;pri&#39;)
         title: (title for this column; automatically generatd from column name if omitted)
         sqlType: (SQL type)
-        queryOperator: (SQL query operator; defaults to '=')
+        queryOperator: (SQL query operator; defaults to &#39;=&#39;)
         unsignedSearch: (No|Yes; only applies to numeric fields \[integer, smallint, bigint,
             decimal])
       -:
         ...
-    andWhere: (sql "where" subclause which will be ANDed with the remainder of the "where"
-        clause; the main table is always aliased as 'pri')
+    andWhere: (sql &quot;where&quot; subclause which will be ANDed with the remainder of the &quot;where&quot;
+        clause; the main table is always aliased as &#39;pri&#39;)
     andWhereAssignments:
       -:
         expression: (PHP expression of value to put into PreparedStatement placeholder)
         psType: (PreparedStatement data type) }
-    groupBy: (optional sql "group by" subclause which will inserted immediately after the
-        "where" clause)
+    groupBy: (optional sql &quot;group by&quot; subclause which will inserted immediately after the
+        &quot;where&quot; clause)
     rowProcessingPHPCode: (optional PHP code which runs inside a loop, to pre-process every row.
         The $row variable will contain the current row to be processed.  You can use this
             function to calculate and set any calculated attributes in $row.)
     forbiddenColumns: [ (comma-separated list of columns NOT to be sent to the client) ]
   (search name):
-    ...</pre>
+    ...
+</pre></div>
 </div>
 <p>Within an entry under the searchableColumns subsection, the queryOperator parameter can be any of
 the following, depending on the sqlType for the searchable field:</p>
@@ -1294,13 +1319,13 @@ the file under include/customSearch to keep it separate from generated searches.
 <div class="section" id="autocomplete-searches">
 <h3>Autocomplete Searches<a class="headerlink" href="#autocomplete-searches" title="Permalink to this headline">¶</a></h3>
 <p>The autocompleteSearches section of the YAML file looks like this:</p>
-<div class="highlight-python"><pre>autocompleteSearches:
+<div class="highlight-python"><div class="highlight"><pre>autocompleteSearches:
   (search name):
-    searchCommand: Optional value of the 'command' request parameter to pass when making
+    searchCommand: Optional value of the &#39;command&#39; request parameter to pass when making
         server-side search requests to satisfy this search; if omitted, this will default to
-        "autocomplete&lt;search name&gt;s" with the first character of search name uppercased.
+        &quot;autocomplete&lt;search name&gt;s&quot; with the first character of search name uppercased.
     outputPath: Output path for search includes, relative to the html directory; defaults to
-        'include/search'.
+        &#39;include/search&#39;.
     docRootPath: Path back to the document root from the output path; defaults to an
         upward-pointing relative path based on outputPath.
     searchTemplate: The filename of the search template to use; always in templates/search;
@@ -1317,20 +1342,20 @@ the file under include/customSearch to keep it separate from generated searches.
     extraSelectColumns: [ (comma-separated list of column names from other table aliases) ]
       NOTE: This can be either in the form of an array or simply a string containing expressions
             to be appended to the column list in the select.
-    joins: SQL join clauses; the main table is always aliased as 'pri'.
+    joins: SQL join clauses; the main table is always aliased as &#39;pri&#39;.
     searchableColumns:
       -:
         columnName: Searchable column name, as it is known in the table in which it resides.
         tableAlias: Table alias for the table in which the searchable field exists; defaults to
-            'pri'.
+            &#39;pri&#39;.
         sqlType: SQL data type.
-        queryOperator: SQL query operator; defaults to '='.
+        queryOperator: SQL query operator; defaults to &#39;=&#39;.
         unsignedSearch: No|Yes; only applies to numeric fields \[integer, smallint, bigint,
             decimal].
       -:
         ...
-    andWhere: SQL "where" subclause which will be ANDed with the remainder of the "where"
-        clause; the main table is always aliased as 'pri'.
+    andWhere: SQL &quot;where&quot; subclause which will be ANDed with the remainder of the &quot;where&quot;
+        clause; the main table is always aliased as &#39;pri&#39;.
     andWhereAssignments:
       -:
         expression: PHP expression of value to put into PreparedStatement placeholder.
@@ -1341,10 +1366,11 @@ the file under include/customSearch to keep it separate from generated searches.
         searchResultValueExpression: PHP expresion to build search result value.  This must
             extract the identifier column from the $row object and prepare it for use in
             autocompletion.  The end result will be an identifier value to be plugged into the
-            input field when the current row's label is selected from the autocomplete list.
-            This entry is optional.  If omitted, the table's primary key column will be used.
+            input field when the current row&#39;s label is selected from the autocomplete list.
+            This entry is optional.  If omitted, the table&#39;s primary key column will be used.
   (search name):
-    ...</pre>
+    ...
+</pre></div>
 </div>
 <p>The autocompleteSearches section works very similarly to the searches section (above).  For more
 details, see that section.</p>
@@ -1352,10 +1378,10 @@ details, see that section.</p>
 <div class="section" id="popup-searches">
 <h3>Popup Searches<a class="headerlink" href="#popup-searches" title="Permalink to this headline">¶</a></h3>
 <p>The popupSearches section of the YAML file looks like this:</p>
-<div class="highlight-python"><pre>popupSearches:
+<div class="highlight-python"><div class="highlight"><pre>popupSearches:
   (popup search name):
     outputPath: The output path for client-side JavaScript include file, relative to the html
-        directory; defaults to 'js/search'.
+        directory; defaults to &#39;js/search&#39;.
     popupSearchTemplate: The filename of the pop-up search template to use; always in
         templates/search; defaults to popupSearch.js.
     searchPresentation: AJAXSearchGrid for AJAXSearchGrid presentation, or dataTables for (deprecated)
@@ -1363,10 +1389,10 @@ details, see that section.</p>
         compatibility.  All new YAML files generated by makegencfg will have searchPresentation
         set to AJAXSearchGrid.
     defaultSorts: An optional list of objects, where each object must have an attribute named
-        "attr" which is the attribute (column) name on which to sort, and and attribute name
-        "dir" which is set to 1 for ascending sort or -1 for descending sort.  This attribute
+        &quot;attr&quot; which is the attribute (column) name on which to sort, and and attribute name
+        &quot;dir&quot; which is set to 1 for ascending sort or -1 for descending sort.  This attribute
         only applies to AJAXSearchGrid searchPresentation.
-    searchCommand: The value of the 'command' request parameter to pass when making server-side
+    searchCommand: The value of the &#39;command&#39; request parameter to pass when making server-side
         search requests to satisfy this search; required for pop-up searches.
     idColumn: The name of the \[integer, smallint or bigint] primary key column which will be
         retrieved when a users selects a row from this popup search.
@@ -1396,7 +1422,7 @@ details, see that section.</p>
         columnCSSClass: Any additional CSS classes you wish to apply to the data cells.
         fnRender: [DEPRECATED]  Optional DataTables callback function for rendering the cell.
             This attribute only applies to the deprecated dataTables searchPresentation.  You
-            can specify either the name of a JavaScript function which you've defined in another
+            can specify either the name of a JavaScript function which you&#39;ve defined in another
             JavaScript include, or define an anonymous function right in the YAML file as long
             as you follow proper YAML syntax and remain mindful of the affect of indentation on
             the YAML parser.  For documentation on this function, look for fnRender on this
@@ -1440,7 +1466,7 @@ details, see that section.</p>
     fnDrawCallback: [DEPRECATED]  Optional DataTables callback function which will be called
         immediately after each time the table is drawn.  This attribute only applies to the
         deprecated dataTables searchPresentation.  You can specify either the name of a
-        JavaScript function which you've defined in another JavaScript include, or define an
+        JavaScript function which you&#39;ve defined in another JavaScript include, or define an
         anonymous function right in the YAML file as long as you follow proper YAML syntax and
         remain mindful of the affect of indentation on the YAML parser. For documentation on
         this function, look for fnDrawCallback on this page: `DataTables - Usage
@@ -1449,25 +1475,26 @@ details, see that section.</p>
         immediately before making a search request to the server.  This allows you to alter the
         search URL, possibly adding/changing request parameters based on current state.  This
         attribute only applies to the deprecated dataTables searchPresentation.  You can specify
-        either the name of a JavaScript function which you've defined in another JavaScript
+        either the name of a JavaScript function which you&#39;ve defined in another JavaScript
         include, or define an anonymous function right in the YAML file as long as you follow
         proper YAML syntax and remain mindful of the affect of indentation on the YAML parser.
         For documentation on this function, look for fnServerData on this page: `DataTables -
         Usage &lt;http://www.datatables.net/usage/callbacks&gt;`_.
   (popup search name):
-    ...</pre>
+    ...
+</pre></div>
 </div>
 </div>
 <div class="section" id="loaders">
 <h3>Loaders<a class="headerlink" href="#loaders" title="Permalink to this headline">¶</a></h3>
 <p>The loaders section of the YAML file looks like this:</p>
-<div class="highlight-python"><pre>loaders:
+<div class="highlight-python"><div class="highlight"><pre>loaders:
   (loader name):
-    searchCommand: Optional value of the 'command' request parameter to pass when making
+    searchCommand: Optional value of the &#39;command&#39; request parameter to pass when making
         server-side search requests to satisfy this search; if omitted, this will default to
-        "load&lt;loader name&gt;" with the first character of loader name uppercased.
+        &quot;load&lt;loader name&gt;&quot; with the first character of loader name uppercased.
     outputPath: Output path for loader includes, relative to the html directory; defaults to
-        'include/search'.
+        &#39;include/search&#39;.
     docRootPath: Path back to the document root from the output path; defaults to an
         upward-pointing relative path based on outputPath.
     idColumn: The column name of the unique identifying column.
@@ -1484,8 +1511,8 @@ details, see that section.</p>
       -: (path to PHP include file)
       -: (path to PHP include file)
       ...
-    andWhere: SQL "where" subclause which will be ANDed with the remainder of the "where"
-        clause; the main table is always aliased as 'pri'.
+    andWhere: SQL &quot;where&quot; subclause which will be ANDed with the remainder of the &quot;where&quot;
+        clause; the main table is always aliased as &#39;pri&#39;.
     andWhereAssignments:
       -:
         expression: PHP expression of value to put into PreparedStatement placeholder.
@@ -1493,13 +1520,13 @@ details, see that section.</p>
     relations:
       (object attribute name to hold related data):
         table: The table name of the referenced table.
-        useDAO: Yes to load related rows using the related table's DAO; No to load them as plain
+        useDAO: Yes to load related rows using the related table&#39;s DAO; No to load them as plain
             old PHP objects.  This is especially useful in combination with sqlQuery, for
             returning the results of an arbitrary join select.
         relationType: many|one; determines whether an array of rows will be fetched, or a single
             row.
         offset: The number of initial rows to skip.
-        limit: The maximum number of rows to return; hint: if relationType is 'one', set this to
+        limit: The maximum number of rows to return; hint: if relationType is &#39;one&#39;, set this to
             1 for more efficient queries.
         sqlQuery: Optional direct SQL query to use for fetching the rows.
         sqlQueryAssignments:
@@ -1512,14 +1539,15 @@ details, see that section.</p>
           -:
             ...
         queryOperator: One of the allowed query operators recognized by the DAO for the
-            referenced column in the referenced table; defaults to '='.
+            referenced column in the referenced table; defaults to &#39;=&#39;.
         local: Column name of the referring column in the main/referring table.
         foreign: Column name of the referenced column in the referenced table.
-        orderBy: SQL 'order by' clause for the query; must be valid for querying the referenced
+        orderBy: SQL &#39;order by&#39; clause for the query; must be valid for querying the referenced
             table.
       (object attribute name to hold related data):
         ...
-    forbiddenColumns: [ (comma-separated list of columns NOT to be sent to the client) ]</pre>
+    forbiddenColumns: [ (comma-separated list of columns NOT to be sent to the client) ]
+</pre></div>
 </div>
 <p>For a relation, if sqlQuery is specified, then sqlQueryAssignments is required and queryOperator,
 local, foreign and orderBy are ignored.  This means that you can use only one or the other
@@ -1540,7 +1568,7 @@ the file under include/customSearch to keep it separate from generated searches 
 <div class="section" id="cruds">
 <h3>CRUDs<a class="headerlink" href="#cruds" title="Permalink to this headline">¶</a></h3>
 <p>The cruds section of the YAML file looks like this:</p>
-<div class="highlight-python"><pre>cruds:
+<div class="highlight-python"><div class="highlight"><pre>cruds:
   (CRUD page name, excluding .php extension):
     outputPath: Output path for CRUD page and includes, relative to the html directory; defaults
         to empty.
@@ -1560,8 +1588,8 @@ the file under include/customSearch to keep it separate from generated searches 
     cssFiles: [ (comma-separated list of CSS files which will be included in the page header, or
         one CSS file per line, beginning on the next line, indented two spaces in from this
         line) ]
-    allowAddSimilar: Yes to create an "Add Similar" link for each row in the search table,
-        allowing the user to easily "clone" rows; No to omit this feature.  Optional.  Defaults
+    allowAddSimilar: Yes to create an &quot;Add Similar&quot; link for each row in the search table,
+        allowing the user to easily &quot;clone&quot; rows; No to omit this feature.  Optional.  Defaults
         to No.
     crudSearch:
       likePopupSearch: Name of popupSearch entry to use as a prototype.  This entry is optional.
@@ -1591,7 +1619,7 @@ the file under include/customSearch to keep it separate from generated searches 
               this attribute is not the preferred method.  When possible, please use the jQuery
               click() function to hook event handlers to input components.  You can hook up
               event handlers in the preInitHook() JavaScript callback.
-          onchange: optional JavaScript code to execute when the field's value changes; only
+          onchange: optional JavaScript code to execute when the field&#39;s value changes; only
               applicable to certain input types; see `here
               &lt;http://www.w3schools.com/jsref/event_onchange.asp&gt;`_ for details.  Use of this
               attribute is not the preferred method.  When possible, please use the jQuery
@@ -1619,7 +1647,7 @@ the file under include/customSearch to keep it separate from generated searches 
             autocompleteCommand: The autocomplete command to use for searching rows on the
                 server. Required.
             idColumn: The name of the primary key/unique identifying column for the table being
-                searched. Optional.  Defaults to 'id'.
+                searched. Optional.  Defaults to &#39;id&#39;.
             idIsString: Yes if the primary key/unique identifying column is a string (character)
                 column, No if it is an integer column. Optional. Defaults to No.
             minimumInputLength: The minimum number of characters the user must enter in order to
@@ -1669,8 +1697,8 @@ the file under include/customSearch to keep it separate from generated searches 
               checked.  Optional.  Defaults to 1.
           html: for htmlfragment input types, this is HTML code to be inserted at this point in
               the form.  For normal layout mode (div+CSS), this should be a set of nested &lt;div&gt;
-              elements in the form of &lt;div class="form-row"&gt;&lt;div class="form-cell"&gt;(label
-              content goes here)&lt;/div&gt;&lt;div class="form-cell"&gt;(input content goes here)&lt;/div&gt;.
+              elements in the form of &lt;div class=&quot;form-row&quot;&gt;&lt;div class=&quot;form-cell&quot;&gt;(label
+              content goes here)&lt;/div&gt;&lt;div class=&quot;form-cell&quot;&gt;(input content goes here)&lt;/div&gt;.
               When using tables to layout the forms (not recommended), the outer tag in this
               content must be a table row (&lt;tr&gt;) element which fits into the two-column table
               which is used to layout the form.  The first column is generally used for field
@@ -1714,7 +1742,8 @@ the file under include/customSearch to keep it separate from generated searches 
           to be updated when saving an updated row in edit mode; if this is set, only columns in
           this list will be updated) ]
       neverUpdateColumns: [ (comma-separated list of columns in the main table which should
-          never be updated when saving an updated row in edit mode) ]</pre>
+          never be updated when saving an updated row in edit mode) ]
+</pre></div>
 </div>
 <div class="section" id="tabs-and-accordions">
 <h4>Tabs and Accordions<a class="headerlink" href="#tabs-and-accordions" title="Permalink to this headline">¶</a></h4>
@@ -1768,7 +1797,8 @@ an accordionGroup input type.</p>
 ™ includes a command which will look at a table&#8217;s schema and generate a starting-point YAML
 file which will create a search, a loader and a CRUD page for the table.</p>
 <p>To generate the initial generator configuration YAML file, run the following command:</p>
-<div class="highlight-python"><pre>gen/makegencfg &lt;tableName&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>gen/makegencfg &lt;tableName&gt;
+</pre></div>
 </div>
 <p>Where &lt;tableName&gt; is the name of the table.  If a generator configuration YAML file already exists
 for the table you specify, the command will report that fact, and will exit without overwriting the
@@ -1785,7 +1815,8 @@ search and CRUD generators after you edit a generator configuration YAML file.</
 <h2>Search Generator<a class="headerlink" href="#search-generator" title="Permalink to this headline">¶</a></h2>
 <p>The search generator is a command-line PHP application.  To run it, do something like this (from the
 Jax Framework ™ root directory):</p>
-<div class="highlight-python"><pre>gen/searchgen &lt;tableName&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>gen/searchgen &lt;tableName&gt;
+</pre></div>
 </div>
 <p>Where &lt;tableName&gt; is the name of the table for which you want to generate searches, loaders and
 popup searches.  If you omit the table name, the search generator will (re-)generate searches,
@@ -1807,7 +1838,8 @@ directory.</p>
 <h2>CRUD Generator<a class="headerlink" href="#crud-generator" title="Permalink to this headline">¶</a></h2>
 <p>The CRUD generator is a command-line PHP application.  To run it, do something like this (from the
 Jax Framework ™ root directory):</p>
-<div class="highlight-python"><pre>gen/crudgen &lt;tableName&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>gen/crudgen &lt;tableName&gt;
+</pre></div>
 </div>
 <p>Where &lt;tableName&gt; is the name of the table for which you want to generate CRUD pages.  If you omit
 the table name, the CRUD generator will (re-)generate CRUD pages for all tables.</p>
@@ -1855,7 +1887,7 @@ variables.  These global variables are (some of) the global variables which woul
 time the function is called.  There may be others, and you are free to define and use your own
 global variables.  It is even possible to define a global variable which is initialized by the
 preUpdateHook() function, and read by the postUpdateHook() function, for example.</p>
-<div class="highlight-python"><pre>// Put code here to perform any custom initialization.
+<div class="highlight-python"><div class="highlight"><pre>// Put code here to perform any custom initialization.
 function initHook() {
     global $params, $command;
     ...
@@ -1942,10 +1974,11 @@ function postDeleteHook() {
 
 // Put code here to execute just before the view is output.
 // This may include processing of unhandled commands in $command.  To handle a command which
-// requires a POST, first confirm that ($_SERVER['REQUEST_METHOD'] == 'POST').
+// requires a POST, first confirm that ($_SERVER[&#39;REQUEST_METHOD&#39;] == &#39;POST&#39;).
 function preViewOutputHook() {
     ...
-}</pre>
+}
+</pre></div>
 </div>
 </div>
 <div class="section" id="view-callbacks">
@@ -1961,7 +1994,7 @@ would be a script block which outputs JavaScript variables which contain arrays 
 which come from server-side PHP code, encoded using json_encode().</p>
 <p>The following hook functions can be defined inside the &lt;crudName&gt;_view_hooks.include.php file.
 The comments above them describe how they work.</p>
-<div class="highlight-python"><pre>// Put code here to output any custom content after the page header template has been output.
+<div class="highlight-python"><div class="highlight"><pre>// Put code here to output any custom content after the page header template has been output.
 function afterHeaderViewHook() {
     ...
 }
@@ -1989,7 +2022,8 @@ function searchBlock4ViewHook() {
 // Put code here to output any custom content before the page footer template is output.
 function beforeFooterViewHook() {
     ...
-}</pre>
+}
+</pre></div>
 </div>
 </div>
 <div class="section" id="controller-callbacks">
@@ -2001,7 +2035,7 @@ and are written in JavaScript.  Each callback function is optional; if it does n
 not be called.</p>
 <p>The following hook functions can be defined inside the &lt;crudName&gt;_controller_hooks.js file.
 The comments above them describe how they work.</p>
-<div class="highlight-python"><pre>// This function is called after the page is loaded but before everything else is initialized.
+<div class="highlight-python"><div class="highlight"><pre>// This function is called after the page is loaded but before everything else is initialized.
 // You can put custom initialization code here.
 function preInitHook() {
     ...
@@ -2035,7 +2069,7 @@ function postAttachSpecialFieldFeatures() {
 // for this row.
 function getAdditionalRowSearchActionLinksPre(id, rowData) {
     ...
-    return '';
+    return &#39;&#39;;
 }
 
 // This function is called once per row in the search data table.
@@ -2044,7 +2078,7 @@ function getAdditionalRowSearchActionLinksPre(id, rowData) {
 // for this row.
 function getAdditionalRowSearchActionLinksPost(id, rowData) {
     ...
-    return '';
+    return &#39;&#39;;
 }
 
 // This function is called once per row in the search data table.
@@ -2124,11 +2158,11 @@ function preSaveHook() {
 // The mode global variable determines which type of save operation has just occurred.
 // If this function returns boolean false, the current mode will not be changed back to
 // SEARCH_MODE following the return of this function.  This allows implementation of
-// custom features such as "Save and Continue Editing".
+// custom features such as &quot;Save and Continue Editing&quot;.
 // When this function is called, the justInsertedRowId JavaScript variable is set to the
 // id of the row which was just inserted, or to zero (0) if the save operation which just
 // occurred was not an insert.  This allows implementation of custom features such as
-// "Add New ... and Continue Editing".
+// &quot;Add New ... and Continue Editing&quot;.
 function postSaveHook() {
     ...
 }
@@ -2142,7 +2176,8 @@ function postSaveHook() {
 function fixupAJAXURL(url) {
     ...
     return url;
-}</pre>
+}
+</pre></div>
 </div>
 </div>
 </div>
@@ -2180,25 +2215,27 @@ in their original locations.</p>
 <p>The Filter abstract class is very simple.  It takes an array of parameters for its constructor.
 These come from the params attribute of the filter entry in the YAML file.  Each individual filter
 accepts a different set of parameters.</p>
-<div class="highlight-python"><pre>abstract class Filter {
+<div class="highlight-python"><div class="highlight"><pre>abstract class Filter {
     public function __construct($params = array()) {
     }
 
     public abstract function filter($db, &amp;$row);
     }
-}</pre>
+}
+</pre></div>
 </div>
 <p>The following excerpt from gencfg/user.yaml illustrates the use of the TrimFilter and LowerFilter
 filter classes to trim leading and trailing whitespace from user_name column and convert it to
 lowercase:</p>
-<div class="highlight-python"><pre>filters:
+<div class="highlight-python"><div class="highlight"><pre>filters:
   user_name:
     trim:
       class: TrimFilter
       params: { valueName: user_name }
     lower:
       class: LowerFilter
-      params: { valueName: user_name }</pre>
+      params: { valueName: user_name }
+</pre></div>
 </div>
 </div>
 <div class="section" id="filters-and-their-parameters">
@@ -2356,19 +2393,20 @@ for brevity.  The validation functionality is handled by the validate() function
 class also takes an array of parameters for its constructor, just like the Filter class.  These come
 from the params attribute of the validator entry in the YAML file.  Each individual validator
 accepts a different set of parameters.</p>
-<div class="highlight-python"><pre>abstract class Validator {
+<div class="highlight-python"><div class="highlight"><pre>abstract class Validator {
     // Validate value(s) based on the rules of this validator.
     // $db is an open database Connection object.
     // $row is an object whose attributes contain at least the value(s) being validated by this
     // validator.
     // Returns a string containing the error message, or an empty string if no error.
     public abstract function validate($db, &amp;$row);
-}</pre>
+}
+</pre></div>
 </div>
 <p>The following excerpt from gencfg/user.yaml illustrates the use of the NotEmptyValidator,
 LengthValidator and NoDuplicatesValidator validator classes to validate that the user_name field is
 not empty, does not exceed a specified length, and is unique (not duplicated in another user row).</p>
-<div class="highlight-python"><pre>validators:
+<div class="highlight-python"><div class="highlight"><pre>validators:
   user_name:
   notempty:
     class: NotEmptyValidator
@@ -2383,7 +2421,8 @@ not empty, does not exceed a specified length, and is unique (not duplicated in 
       fields:
         user_name: { field: user_name, type: string, queryOperator: = }
         id: { field: id, type: int, queryOperator: &lt;&gt; }
-      errorMsg: The selected Username is already in use.</pre>
+      errorMsg: The selected Username is already in use.
+</pre></div>
 </div>
 <p>All validators contain default error messages which they emit when something doesn&#8217;t validate
 correctly.  However, you can override those default error messages for most (if not all) validators
@@ -2723,7 +2762,7 @@ application.</p>
 <div class="section" id="the-permissions-class">
 <h2>The Permissions Class<a class="headerlink" href="#the-permissions-class" title="Permalink to this headline">¶</a></h2>
 <p>The Permissions class looks something like this (code removed for brevity):</p>
-<div class="highlight-python"><pre>class Permissions {
+<div class="highlight-python"><div class="highlight"><pre>class Permissions {
     public static function hasPermissions($user_id, $permissions) {
         ...
     }
@@ -2742,7 +2781,8 @@ application.</p>
     public static function inScriptPermissionsCheck($user_id, $scriptFilename, $showMenuIfFailed) {
         ...
     }
-}</pre>
+}
+</pre></div>
 </div>
 <p>The hasPermissions() function returns true if the specified user has all of the permissions listed
 in $permissions; false if the user is missing one or more of the permissions. The $permissions
@@ -2757,8 +2797,9 @@ page.  This does NOT include permissions required to turn on optional features w
 identifier and the server-side filesystem path to a PHP page, and returns true if the user has
 permission to access that page.</p>
 <p>The inScriptPermissionsCheck() function is called at the top of every page by doing something like this:</p>
-<div class="highlight-python"><pre>include dirname(__FILE__).'/classes/Permissions.class.php';
-Permissions::inScriptPermissionsCheck($loggedInUser-&gt;id, __FILE__, true);</pre>
+<div class="highlight-python"><div class="highlight"><pre>include dirname(__FILE__).&#39;/classes/Permissions.class.php&#39;;
+Permissions::inScriptPermissionsCheck($loggedInUser-&gt;id, __FILE__, true);
+</pre></div>
 </div>
 <p>Note how the second argument is __FILE__, which gives the server-side path to the PHP file which is
 currently being executed.  If the user has permission to access the page, this function returns
@@ -2970,7 +3011,7 @@ these subsystems, or replace them entirely.  They are only provided as a startin
     </div>
     <div class="footer">
         &copy; Copyright 2013, Ron Cemer.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>
