@@ -94,8 +94,10 @@ function parseMsgsFromJSON(json) {
 		"One or more fields have validation errors.  Please check the form.\n" : '';
 
 	var elem = $('#errorMsg');
-	elem.html('<i class="glyphicon glyphicon-exclamation-sign"/>'+((fieldErrorNotification+msgs.errorMsg+orphanedFieldErrors).replace(/\r\n|\r|\n/g, '<br/>')));
-	if (elem.html() != '') elem.show();
+	var html = (fieldErrorNotification+msgs.errorMsg+orphanedFieldErrors).replace(/\r\n|\r|\n/g, '<br/>');
+	if (html != '') html = '<i class="glyphicon glyphicon-exclamation-sign"/>'+html;
+	elem.html(html);
+	if (html != '') elem.show();
 
 	var elem = $('#successMsg');
 	elem.html(msgs.successMsg.replace(/\r\n|\r|\n/g, '<br/>'));
