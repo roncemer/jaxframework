@@ -1,2 +1,6 @@
 #!/bin/sh
+
+# NOTE: To install required packages on Ubuntu:
+#    sudo apt-get -y install python-sphinx texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+
 make html latexpdf
