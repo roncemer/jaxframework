@@ -85,7 +85,7 @@ RowFetcher.prototype.getRowArrayForURL = function(url) {
 			success:function(data, textStatus, jqXHR) {
 				if (typeof(data) != 'object') data = [];
 				if (cache != null) {
-					cache.set(url, data, cacheExpirationTimeSeconds);
+					cache.set(url, data, this.cacheExpirationTimeSeconds);
 				}
 				callback(data, textStatus, jqXHR);
 			},
