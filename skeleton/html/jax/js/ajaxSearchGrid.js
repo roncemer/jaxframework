@@ -191,6 +191,7 @@ function AJAXSearchGrid(container, params, tableHTML) {
 	this.baseURL = this.rowFetcher.getBaseURL();
 
 	// Fetch searchable columns; populate this.$scope.searchByOptions.
+	this.searchableColumnsFetched = false;
 	this.searchableColumns = [];
 	this.$scope.searchByOptions = [];
 
@@ -200,6 +201,7 @@ function AJAXSearchGrid(container, params, tableHTML) {
 	}
 	this.rowFetcher.getRowArrayForURL(
 		function(row) {
+			ajaxSearchGridInstance.searchableColumnsFetched = true;
 			ajaxSearchGridInstance.searchableColumns = row;
 			var searchByOptions = [];
 			for (var i = 0; i < ajaxSearchGridInstance.searchableColumns.length; i++) {
@@ -262,7 +264,7 @@ function AJAXSearchGrid(container, params, tableHTML) {
 			function(result) {
 				(function() {
 					// Don't do anything until after we have retrieved the list of searchable columns.
-					if (this.searchableColumns.length == 0) return;
+					if (!this.searchableColumnsFetched) return;
 
 					var rows = [];
 					for (var i = 0; i < result.aaData.length; i++) {
