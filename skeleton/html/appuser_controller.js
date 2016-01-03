@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2012 Ronald B. Cemer
+// Copyright (c) 2010-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -15,14 +15,21 @@ function preInitHook() {
 		var fld = $(this);
 		var fieldName = fld.attr('name');
 		var descfld = $("#appuserForm [name='"+(fieldName.replace(/_id$/, '_full_name'))+"']");
-		var id = parseInt($.trim(fld.getValue()));
+		var id = parseInt($.trim(fld.val())) || 0;
 		if (isNaN(id)) id = 0;
 		var row = rowFetcher.getRowForId('loadAppuser', 'id', id);
-		if (row !== null) {
-			descfld.setValue($.trim(row.first_name+' '+row.last_name));
-		} else {
-			descfld.setValue(sprintf('*** USER ID %d NOT FOUND ***', id));
-		}
+		rowFetcher.getRowForId(
+			function(row) {
+				if (row !== null) {
+					descfld.setValue($.trim(row.first_name+' '+row.last_name));
+				} else {
+					descfld.setValue(sprintf(_t('crud.appuser.userIdNotFound'), id));
+				}
+			},
+			'loadAppuser',
+			'id',
+			id
+		);
 	});
 
 	$("#appuserForm [name='state_or_province']").change(function() {
