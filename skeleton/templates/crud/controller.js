@@ -438,9 +438,22 @@ function load{{uTableName}}IntoForm(id, newMode) {
 
 		return true;
 	} finally {
+		// Put the reset of the formLoading* variables into the event queue, so that
+		// all currenctly queued DOM events will execute before it.
+		setTimeout(__reset_formLoading, 1);
+	}
+
+	function __reset_formLoading() {
+		// If there are any AJAX request in progress, don't reset now, but set a timer to check again shortly.
+		if (((typeof($.ajax) != 'undefined') && (typeof($.ajax.active) != 'undefined') && ($.ajax.active > 0)) ||
+			((typeof($.active) != 'undefined') && ($.active > 0))) {
+			setTimeout(__reset_formLoading, 10);
+			return;
+		}
 		formLoading = formLoadingAddMode = formLoadingEditMode = formLoadingDeleteMode = formLoadingViewMode = false;
 		formLoadingMode = -1;
-	}
+	} // __reset_formLoading()
+
 } // load{{uTableName}}IntoForm()
 
 function save{{uTableName}}() {
