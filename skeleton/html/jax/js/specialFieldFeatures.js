@@ -8,6 +8,12 @@
 // If you edit this file, your changes will be lost when framework updates are applied.
 
 var __specialFieldFeatures_lastFocusField__ = null;
+function __specialFieldFeatures_selectAllOnFocus() {
+	if (__specialFieldFeatures_lastFocusField__ !== this) {
+		__specialFieldFeatures_lastFocusField__ = this;
+		setTimeout('__specialFieldFeatures_lastFocusField__.select();', 1);
+	}
+} // __specialFieldFeatures_selectAllOnFocus()
 
 // Attach special field features to input elements based on their CSS classes.
 // Date pickers get attached to any input elements with class "date" or "datetime" which
@@ -109,18 +115,22 @@ function attachSpecialFieldFeatures() {
 		// handled.
 		selector = "input[type='text'], input[type='password']";
 		elems = (root != null) ? root.find(selector) : $(selector);
-		elems.focus(function() {
-			if (__specialFieldFeatures_lastFocusField__ !== this) {
-				__specialFieldFeatures_lastFocusField__ = this;
-				setTimeout('__specialFieldFeatures_lastFocusField__.select();', 1);
+		$.each(
+			elems,
+			function(index, value) {
+				var elem = $(value);
+				elem.unbind('focus', __specialFieldFeatures_selectAllOnFocus);
+				if (!elem.hasClass('combobox-search')) {
+					elem.focus(__specialFieldFeatures_selectAllOnFocus);
+				}
 			}
-		});
+		);
 	}	// for (var ri = 0; ri < roots.length; ri++)
 
 	if (typeof postAttachSpecialFieldFeatures == 'function') {
 		postAttachSpecialFieldFeatures();
 	}
-}
+} // attachSpecialFieldFeatures()
 
 // Show or hide special input field features, such as trigger buttons for pop-up
 // searches and date pickers, based on whether the form as a whole is editable,
@@ -230,7 +240,7 @@ function autoShowOrHideSpecialFieldFeatures(hideAll) {
 			});
 		}	// if (hideAll) ... else
 	}	// for (var ri = 0; ri < roots.length; ri++)
-}
+} // autoShowOrHideSpecialFieldFeatures()
 
 // Filter every field which has a special-feature filter attached to it.
 // If any arguments are passed to this function, each argument must be a jQuery collection
@@ -260,7 +270,7 @@ function filterFieldsWithSpecialFeatures() {
 			filterNumericInput(elems, scale);
 		}
 	}	// for (var ri = 0; ri < roots.length; ri++)
-}
+} // filterFieldsWithSpecialFeatures()
 
 // Filter a date input field.
 // jqFieldSet is a jQuery instance containing one or more date fields to filter.
@@ -270,7 +280,7 @@ function filterDateInput(jqFieldSet) {
 		var dt = Date.parse(elem.val());
 		elem.val((dt != null) ? dt.toString('yyyy-MM-dd') : '');
 	});
-}
+} // filterDateInput()
 
 // Filter a datetime input field.
 // jqFieldSet is a jQuery instance containing one or more date fields to filter.
@@ -280,7 +290,7 @@ function filterDatetimeInput(jqFieldSet) {
 		var dt = Date.parse(elem.val());
 		elem.val((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
 	});
-}
+} // filterDatetimeInput()
 
 // Filter a numeric input field.
 // jqFieldSet is a jQuery instance containing one or more date fields to filter.
@@ -293,7 +303,7 @@ function filterNumericInput(jqFieldSet, scale) {
 		val = val.toFixed(scale);
 		elem.val(val);
 	});
-}
+} // filterNumericInput()
 
 // Hook a single row selector with autocomplete for a related table to an input element.
 // The input element would typically be a text input.
@@ -741,7 +751,7 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 //		}
 
 	} // if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__) ... else
-}
+} // hookAutocompleteSingleRowSelectorToInput()
 
 // Hook an autocomplete drop-down list for a related table to an input element.
 // The input element would typically be a text input.
@@ -779,4 +789,4 @@ function hookAutocompleteToInput(options) {
 			return false; 
 		}
 	});
-}
+} // hookAutocompleteToInput()
