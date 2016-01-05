@@ -343,30 +343,27 @@ function {{tableName}}sUpdateTable() {
 
 function add{{uTableName}}() {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
-	if (load{{uTableName}}IntoForm(0, ADD_MODE)) setMode(ADD_MODE);
+	load{{uTableName}}IntoForm(0, ADD_MODE);
 } // add{{uTableName}}()
 
 function edit{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudEditModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
-	if (load{{uTableName}}IntoForm(id, EDIT_MODE)) setMode(EDIT_MODE);
+	load{{uTableName}}IntoForm(id, EDIT_MODE);
 } // edit{{uTableName}}()
 
 function addSimilar{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
-	if (load{{uTableName}}IntoForm(id, ADD_MODE)) {
-		$("#{{tableName}}Form [name='{{idCol}}']").val('0');
-		setMode(ADD_MODE);
-	}
+	load{{uTableName}}IntoForm(id, ADD_MODE);
 } // addSimilar{{uTableName}}()
 
 function delete{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudDeleteModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
-	if (load{{uTableName}}IntoForm(id, DELETE_MODE)) setMode(DELETE_MODE);
+	load{{uTableName}}IntoForm(id, DELETE_MODE);
 } // delete{{uTableName}}()
 
 function view{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudViewModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
-	if (load{{uTableName}}IntoForm(id, VIEW_MODE)) setMode(VIEW_MODE);
+	load{{uTableName}}IntoForm(id, VIEW_MODE);
 } // view{{uTableName}}()
 
 function load{{uTableName}}IntoForm(id, newMode) {
