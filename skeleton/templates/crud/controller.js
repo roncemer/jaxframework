@@ -354,7 +354,7 @@ function edit{{uTableName}}(id) {
 function addSimilar{{uTableName}}(id) {
 	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
 	if (load{{uTableName}}IntoForm(id, ADD_MODE)) {
-		$("#{{tableName}}Form [name='{{idCol}}']").setValue('0');
+		$("#{{tableName}}Form [name='{{idCol}}']").val('0');
 		setMode(ADD_MODE);
 	}
 } // addSimilar{{uTableName}}()
@@ -378,40 +378,74 @@ function load{{uTableName}}IntoForm(id, newMode) {
 	formLoadingViewMode = (newMode == VIEW_MODE);
 	formLoadingMode = newMode;
 
-	try {
-		if (typeof preLoadFormHook == 'function') {
-			preLoadFormHook(id, newMode, allowEditing);
-		}
-		document.{{tableName}}Form.reset();
-		var url = getBaseURL()+'?command={{crudLoadCommand}}&{{idCol}}='+encodeURIComponent(id);
-		if (typeof fixupAJAXURL == 'function') {
-			url = fixupAJAXURL(url);
-		}
-		var json = $.ajax({
-			type:'GET',
-			url:url,
-			async:false,
-			cache:false,
-			global:false,
-			processData:false
-		}).responseText;
-		var rows = [];
-		if (json != '') eval('rows = '+json+';');
-		if (rows.length != 1) return false;
-		var row = rows[0];
+{{if_crudLoad_synchronous}}
 
+	try {
+
+{{/if_crudLoad_synchronous}}
+	if (typeof preLoadFormHook == 'function') {
+		preLoadFormHook(id, newMode, allowEditing);
+	}
+	document.{{tableName}}Form.reset();
+	var url = getBaseURL()+'?command={{crudLoadCommand}}&{{idCol}}='+encodeURIComponent(id);
+	if (typeof fixupAJAXURL == 'function') {
+		url = fixupAJAXURL(url);
+	}
+
+{{if_crudLoad_asynchronous}}
+	$('#existing{{uTableName}}sCont').hide();
+	$.ajax({
+		type:'GET',
+		url:url,
+		async:true,
+		cache:false,
+		global:false,
+		processData:false,
+		success:function(rows, textStatus, jqXHR) {
+			try {
+				if ((typeof(rows) == 'object') && (rows.length == 1)) {
+					loadRow(rows[0]);
+				}
+			} finally {
+				if (mode == SEARCH_MODE) $('#existing{{uTableName}}sCont').show();
+				// Put the reset of the formLoading* variables into the event queue, so that
+				// all currenctly queued DOM events will execute before it.
+				setTimeout(__reset_formLoading, 1);
+			}
+		},
+		error:function(jqXHR, textStatus, errorThrown) {
+			if (mode == SEARCH_MODE) $('#existing{{uTableName}}sCont').show();
+		}
+	});
+{{/if_crudLoad_asynchronous}}
+{{if_crudLoad_synchronous}}
+	var json = $.ajax({
+		type:'GET',
+		url:url,
+		async:false,
+		cache:false,
+		global:false,
+		processData:false
+	}).responseText;
+	var rows = JSON.parse(json);
+	if (rows.length != 1) return false;
+	loadRow(rows[0]);
+	return true;
+{{/if_crudLoad_synchronous}}
+
+	function loadRow(row) {
 		if (newMode == ADD_MODE) row.{{idCol}} = 0;
 
 		if (typeof midLoadFormHook == 'function') {
 			midLoadFormHook(id, newMode, allowEditing, row);
 		}
-	
+
 		$('#{{tableName}}Form').formHash(row);
 
 		if (typeof mid2LoadFormHook == 'function') {
 			mid2LoadFormHook(id, newMode, allowEditing, row);
 		}
-	
+
 		// Set all fields readonly/disabled if not editable, not readonly/disabled if editable.
 		$('#{{tableName}}Form input').attr('readOnly', !allowEditing);
 		$("#{{tableName}}Form input[type='checkbox'], #{{tableName}}Form input[type='file'], #{{tableName}}Form input[type='radio'], #{{tableName}}Form select").attr('disabled', !allowEditing);
@@ -436,12 +470,18 @@ function load{{uTableName}}IntoForm(id, newMode) {
 
 {{hookAutocompleteSingleRowSelectorsToInputsJS}}
 
-		return true;
+		setMode(newMode);
+	} // loadRow()
+
+{{if_crudLoad_synchronous}}
+
 	} finally {
 		// Put the reset of the formLoading* variables into the event queue, so that
 		// all currenctly queued DOM events will execute before it.
 		setTimeout(__reset_formLoading, 1);
 	}
+
+{{/if_crudLoad_synchronous}}
 
 	function __reset_formLoading() {
 		// If there are any AJAX request in progress, don't reset now, but set a timer to check again shortly.
@@ -486,19 +526,41 @@ function save{{uTableName}}() {
 				if (typeof fixupAJAXURL == 'function') {
 					url = fixupAJAXURL(url);
 				}
+{{if_crudLoad_asynchronous}}
+				$('#save{{uTableName}}Button, #abandon{{uTableName}}Button').attr('disabled', true);
+				$.ajax({
+					type:'POST',
+					url:url,
+					async:true,
+					cache:false,
+					global:false,
+					processData:true,
+					data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").val()},
+					success:function(data, textStatus, jqXHR) {
+						$('#save{{uTableName}}Button, #abandon{{uTableName}}Button').removeAttr('disabled');
+						parseMsgsFromObject(data);
+						if ($('#errorMsg').text() == '') setMode(SEARCH_MODE, false);
+					},
+					error:function(jqXHR, textStatus, errorThrown) {
+						$('#save{{uTableName}}Button, #abandon{{uTableName}}Button').removeAttr('disabled');
+					}
+				});
+{{/if_crudLoad_asynchronous}}
+{{if_crudLoad_synchronous}}
 				var json = $.ajax({
 					type:'POST',
 					url:url,
 					async:false,
-						cache:false,
+					cache:false,
 					global:false,
 					processData:true,
-					data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").getValue()}
+					data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").val()}
 				}).responseText;
 				if (json != '') {
 					parseMsgsFromJSON(json);
-				if ($('#errorMsg').text() == '') setMode(SEARCH_MODE, false);
+					if ($('#errorMsg').text() == '') setMode(SEARCH_MODE, false);
 				}
+{{/if_crudLoad_synchronous}}
 			}
 		);
 		break;

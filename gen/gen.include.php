@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2014 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -243,6 +243,7 @@ $GENERATOR_CFG_VALIDATIONS = array(
 	// crudLoad subsection under cruds top-level section.
 	new GenCfgValidation('cruds/*/crudLoad', 'array'),
 	new GenCfgValidation('cruds/*/crudLoad/loadCommand', 'string'),
+	new GenCfgValidation('cruds/*/crudLoad/synchronous', 'boolean'),
 	// formFields subsection under cruds top-level section.
 	new GenCfgValidation('cruds/*/formFields', 'array'),
 	new GenCfgValidation('cruds/*/formFields/*', 'array'),
@@ -1184,6 +1185,20 @@ function filterSearchPresentation($template, $crudSearchPresentation) {
 	}
 	$template = preg_replace('/\{\{if_searchPresentation_.*?\}\}/', '', $template);
 	$template = preg_replace('/\{\{\\/if_searchPresentation_.*?\}\}/', '', $template);
+	return $template;
+}
+
+function filterCRUDLoadSynchronousOrAsynchronous($template, $crudLoadSynchronousOrAsynchronous) {
+	if ($crudLoadSynchronousOrAsynchronous != 'asynchronous') {
+		$template = preg_replace('/\{\{if_crudLoad_asynchronous\}\}.*?\{\{\\/if_crudLoad_asynchronous\}\}/s', '', $template);
+	}
+	if ($crudLoadSynchronousOrAsynchronous != 'synchronous') {
+		$template = preg_replace('/\{\{if_crudLoad_synchronous\}\}.*?\{\{\\/if_crudLoad_synchronous\}\}/s', '', $template);
+	}
+	$template = preg_replace('/\{\{if_crudLoad_asynchronous\}\}/', '', $template);
+	$template = preg_replace('/\{\{\\/if_crudLoad_asynchronous\}\}/', '', $template);
+	$template = preg_replace('/\{\{if_crudLoad_synchronous\}\}/', '', $template);
+	$template = preg_replace('/\{\{\\/if_crudLoad_synchronous\}\}/', '', $template);
 	return $template;
 }
 

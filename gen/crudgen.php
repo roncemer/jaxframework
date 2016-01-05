@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2015 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -874,10 +874,14 @@ EOF
 		}
 
 		$crudLoadCommand = 'load'.ucfirst($table->tableName);
+		$crudLoadSynchronousOrAsynchronous = 'asynchronous';
 		if (isset($crud['crudLoad'])) {
 			$load = $crud['crudLoad'];
 			if (isset($load['loadCommand']) && is_string($load['loadCommand'])) {
 				$crudLoadCommand = $load['loadCommand'];
+			}
+			if (isset($load['synchronous']) && $load['synchronous']) {
+				$crudLoadSynchronousOrAsynchronous = 'synchronous';
 			}
 		}
 
@@ -1075,11 +1079,15 @@ EOF
 		$content = str_replace(
 			$searchFor,
 			$replaceWith,
-			filterSearchPresentation(
-				file_get_contents($templatesDir.'/view.include.php'),
-				$crudSearchPresentation
+			filterCRUDLoadSynchronousOrAsynchronous(
+				filterSearchPresentation(
+					file_get_contents($templatesDir.'/view.include.php'),
+					$crudSearchPresentation
+				),
+				$crudLoadSynchronousOrAsynchronous
 			)
 		);
+
 		$fn = $generatedOutputDir.'/'.$crudName.'_view'.($oldFileLayout ? '' : '_generated').
 			'.include.php';
 		if ((!file_exists($fn)) || (file_get_contents($fn) != $content)) {
@@ -1110,9 +1118,12 @@ EOF
 		$content = str_replace(
 			$searchFor,
 			$replaceWith,
-			filterSearchPresentation(
-				file_get_contents($templatesDir.'/controller.js'),
-				$crudSearchPresentation
+			filterCRUDLoadSynchronousOrAsynchronous(
+				filterSearchPresentation(
+					file_get_contents($templatesDir.'/controller.js'),
+					$crudSearchPresentation
+				),
+				$crudLoadSynchronousOrAsynchronous
 			)
 		);
 		$fn = $generatedOutputDir.'/'.$crudName.'_controller'.($oldFileLayout ? '' : '_generated').
