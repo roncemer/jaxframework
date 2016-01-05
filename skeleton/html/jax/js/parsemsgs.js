@@ -2,19 +2,17 @@
 // This file is part of the Jax Framework.
 // If you edit this file, your changes will be lost when framework updates are applied.
 
-// Copyright (c) 2010-2014 Ronald B. Cemer
+// Copyright (c) 2010-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
 
 var lastParsedFieldErrors = {};
 
-function parseMsgsFromJSON(json) {
+function parseMsgsFromObject(msgs) {
 	clearMsgs();
 
 	var tabIdsSoFar = [];
-
-	var msgs = JSON.parse(json);
 
 	var anyFieldErrors = false;
 	var orphanedFieldErrors = '';
@@ -102,7 +100,11 @@ function parseMsgsFromJSON(json) {
 	var elem = $('#successMsg');
 	elem.html(msgs.successMsg.replace(/\r\n|\r|\n/g, '<br/>'));
 	if (elem.html() != '') elem.show();
-}
+} // parseMsgsFromObject()
+
+function parseMsgsFromJSON(json) {
+	parseMsgsFromObject(JSON.parse(json));
+} // parseMsgsFromJSON()
 
 function clearMsgs() {
 	lastParsedFieldErrors = {};
@@ -114,4 +116,4 @@ function clearMsgs() {
 	$("div.tabbable li a.has-errors").removeClass('has-errors');
 	$("div.accordion-heading a.has-errors i[class='glyphicon glyphicon-exclamation-sign']").remove();
 	$("div.accordion-heading a.has-errors").removeClass('has-errors');
-}
+} // clearMsgs()
