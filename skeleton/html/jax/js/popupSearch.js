@@ -2,7 +2,7 @@
 // This file is part of the Jax Framework.
 // If you edit this file, your changes will be lost when framework updates are applied.
 
-// Copyright (c) 2010-2012 Ronald B. Cemer
+// Copyright (c) 2010-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -273,8 +273,7 @@ __popupSearch__onHidden__ = function() {
 //   aData A linear array of column values for a single row in the table.
 PopupSearch.prototype.rowSelected = function(aData) {
 	for (var sName in this.selectCopyValues) {
-		$(this.selectCopyValues[sName]).
-			setValue(this.getColValue(sName, aData, '')).trigger('change');
+		$(this.selectCopyValues[sName]).val(this.getColValue(sName, aData, '')).trigger('change');
 	}
 }
 

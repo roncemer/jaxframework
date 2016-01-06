@@ -11,19 +11,19 @@ function preInitHook() {
 	template_rolesTR = $('#cont_template_rolesTR').text();
 	$('#cont_template_rolesTR').remove();
 
-	$("#appuserForm [name='added_by_user_id'], #appuserForm [name='last_updated_by_user_id']").change(function() {
+	$('#added_by_user_id, #last_updated_by_user_id').change(function() {
 		var fld = $(this);
 		var fieldName = fld.attr('name');
-		var descfld = $("#appuserForm [name='"+(fieldName.replace(/_id$/, '_full_name'))+"']");
+		var descfld = $('#'+(fieldName.replace(/_id$/, '_full_name')));
 		var id = parseInt($.trim(fld.val())) || 0;
 		if (isNaN(id)) id = 0;
 		var row = rowFetcher.getRowForId('loadAppuser', 'id', id);
 		rowFetcher.getRowForId(
 			function(row) {
 				if (row !== null) {
-					descfld.setValue($.trim(row.first_name+' '+row.last_name));
+					descfld.val($.trim(row.first_name+' '+row.last_name));
 				} else {
-					descfld.setValue(sprintf(_t('crud.appuser.userIdNotFound'), id));
+					descfld.val(sprintf(_t('crud.appuser.userIdNotFound'), id));
 				}
 			},
 			'loadAppuser',
@@ -32,9 +32,11 @@ function preInitHook() {
 		);
 	});
 
-	$("#appuserForm [name='state_or_province']").change(function() {
-		var fld = $(this);
-		fld.setValue($.trim(fld.getValue().toUpperCase()));
+	$('#state_or_province').change(function() {
+		if ((!formLoading) || formLoadingAddMode) {
+			var fld = $(this);
+			fld.val($.trim(fld.val().toUpperCase()));
+		}
 	});
 }
 
@@ -54,7 +56,7 @@ function postLoadFormHook(id, newMode, allowEditing, row) {
 	}
 
 	// These should only be visible for existing rows.
-	if (newMode != ADD_MODE) $("#idTR, #when_addedTR").show(); else $("#idTR, #when_addedTR").hide();
+	if (newMode != ADD_MODE) $('#idTR, #when_addedTR').show(); else $('#idTR, #when_addedTR').hide();
 
 	// The password entry fields should only be visible if we're in an editable mode.
 	if (allowEditing) {
@@ -64,22 +66,21 @@ function postLoadFormHook(id, newMode, allowEditing, row) {
 	}
 
 	// Always start with empty password fields.
-	$("#userForm input[name='password'], #userForm input[name='reEnterPassword']").setValue('');
+	$('#password, #reEnterPassword').val('');
 
 	// Update password prompts as needed.
 	switch (newMode) {
 	case ADD_MODE:
-		$('#passwordPrompt').text('Password:');
-		$('#reEnterPasswordPrompt').text('Re-Enter Password:');
+		$("label[for='password']").text(_t('crud.appuser.form.input.password.label'));
+		$("label[for='reEnterPassword']").text(_t('crud.appuser.form.input.reEnterPassword.label'));
 		break;
 	case EDIT_MODE:
-		$('#passwordPrompt').text('New Password (optional):');
-		$('#reEnterPasswordPrompt').text('Re-Enter New Password:');
+		$("label[for='password']").text(_t('crud.appuser.form.input.password.existing.label'));
+		$("label[for='reEnterPassword']").text(_t('crud.appuser.form.input.reEnterPassword.existing.label'));
 		break;
 	}
 
-	$("#appuserForm [name='added_by_user_id']").trigger('change');
-	$("#appuserForm [name='last_updated_by_user_id']").trigger('change');
+	$('#added_by_user_id, #last_updated_by_user_id').trigger('change');
 }
 
 function loadRolesIntoForm(roles, newMode) {

@@ -99,8 +99,8 @@ cruds:
       first_name: { title: First Name, inputType: text, size: 30, maxlength: 30 }
       last_name: { title: Last Name, inputType: text, size: 30, maxlength: 30 }
       is_active: { title: User is Active, inputType: checkbox }
-      password: { title: New Password, inputType: password, size: 30, maxlength: 30 }
-      reEnterPassword: { title: Re-Enter New Password, inputType: password, size: 30, maxlength: 30 }
+      password: { title: Password, inputType: password, size: 30, maxlength: 30 }
+      reEnterPassword: { title: Re-Enter Password, inputType: password, size: 30, maxlength: 30 }
 
       userRoles:
         inputType: htmlfragment
