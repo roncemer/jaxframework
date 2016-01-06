@@ -17,7 +17,7 @@ searches:
 autocompleteSearches:
   appuser:
     searchableColumns:
-      user_name: { sqlType: varchar, queryOperator: contains }
+      user_name: { sqlType: varchar, queryOperator: beginsWith }
       first_name: { sqlType: varchar, queryOperator: fulltext }
       last_name: { sqlType: varchar, queryOperator: fulltext }
     searchResultLabelExpression: "$row->id.': '.trim($row->first_name.' '.$row->last_name)"
