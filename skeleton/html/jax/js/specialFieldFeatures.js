@@ -369,388 +369,314 @@ function hookAutocompleteSingleRowSelectorToInput(options) {
 	var rowFetcherOptionalParameters = (typeof(options.rowFetcherOptionalParameters) != 'undefined') ?
 		options.rowFetcherOptionalParameters : null;
 
-	if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__) {
+	var requestSeq = 0;
 
-		// New combobox implementation.
+	function getNextRequestSeq() {
+		requestSeq++;
+		if (requestSeq >= 99999999) requestSeq = 0;
+		return requestSeq;
+	}
 
-		var requestSeq = 0;
+	function undefinedToEmpty(val) {
+		if ((val === undefined) || (val === null)) return '';
+		return val;
+	}
 
-		function getNextRequestSeq() {
-			requestSeq++;
-			if (requestSeq >= 99999999) requestSeq = 0;
-			return requestSeq;
+	var origInput = $(options.inputElement);
+	if (!origInput.parent().hasClass('combobox-wrapper')) origInput.wrap('<div class="combobox-wrapper"></div>');
+
+	var url = getBaseURL()+'?command='+encodeURIComponent(autocompleteCommand);
+	if (typeof fixupAJAXURL == 'function') {
+		url = fixupAJAXURL(url);
+	}
+	if (typeof(rowFetcherOptionalParameters) == 'object') {
+		for (var k in rowFetcherOptionalParameters) {
+			url += '&'+encodeURIComponent(k)+'='+encodeURIComponent(rowFetcherOptionalParameters[k]);
 		}
+	}
 
-		function undefinedToEmpty(val) {
-			if ((val === undefined) || (val === null)) return '';
-			return val;
-		}
+	var comboboxSeq = undefinedToEmpty(origInput.attr('data-combobox-seq'));
+	if (comboboxSeq == '') {
+		if (window.__nextComboboxSeq__ === undefined) window.__nextComboboxSeq__ = 0;
+		comboboxSeq = ++window.__nextComboboxSeq__;
+		origInput.attr('data-combobox-seq', comboboxSeq);
+	}
 
-		var origInput = $(options.inputElement);
-		if (!origInput.parent().hasClass('combobox-wrapper')) origInput.wrap('<div class="combobox-wrapper"></div>');
+	// Restore the original CSS settings for the original input, if we saved them before.
+	if (origInput.attr('data-combobox-orig-style') !== undefined) {
+		origInput.attr('style', undefinedToEmpty(origInput.attr('data-combobox-orig-style')));
+	}
 
-		var url = getBaseURL()+'?command='+encodeURIComponent(autocompleteCommand);
-		if (typeof fixupAJAXURL == 'function') {
-			url = fixupAJAXURL(url);
-		}
-		if (typeof(rowFetcherOptionalParameters) == 'object') {
-			for (var k in rowFetcherOptionalParameters) {
-				url += '&'+encodeURIComponent(k)+'='+encodeURIComponent(rowFetcherOptionalParameters[k]);
-			}
-		}
+	// Remove any old components which were inserted after the original input.
+	origInput.nextAll("input.combobox-search[data-combobox-seq='"+comboboxSeq+"']").remove();
+	origInput.nextAll("a.combobox-clear[data-combobox-seq='"+comboboxSeq+"']").remove();
+	origInput.nextAll("div.combobox-chevron-down[data-combobox-seq='"+comboboxSeq+"']").remove();
 
-		var comboboxSeq = undefinedToEmpty(origInput.attr('data-combobox-seq'));
-		if (comboboxSeq == '') {
-			if (window.__nextComboboxSeq__ === undefined) window.__nextComboboxSeq__ = 0;
-			comboboxSeq = ++window.__nextComboboxSeq__;
-			origInput.attr('data-combobox-seq', comboboxSeq);
-		}
+	// Create a search input after the original input.
+	var search = origInput.clone();
+	search.removeAttr('data-combobox-orig-style');
+	search.attr('id', '__combobox-search__'+new Date().getTime()+'-'+comboboxSeq);
+	search.attr('data-combobox-seq', comboboxSeq);
+	search.removeAttr('name');
+	search.addClass('combobox-search');
+	search.attr('tabindex', '-1');
+	search.insertAfter(origInput);
 
-		// Restore the original CSS settings for the original input, if we saved them before.
-		if (origInput.attr('data-combobox-orig-style') !== undefined) {
-			origInput.attr('style', undefinedToEmpty(origInput.attr('data-combobox-orig-style')));
-		}
+	// Save the original CSS settings for the original input, if we haven't already.
+	if (origInput.attr('data-combobox-orig-style') === undefined) {
+		origInput.attr('data-combobox-orig-style', undefinedToEmpty(origInput.attr('style')));
+	}
 
-		// Remove any old components which were inserted after the original input.
-		origInput.nextAll("input.combobox-search[data-combobox-seq='"+comboboxSeq+"']").remove();
-		origInput.nextAll("a.combobox-clear[data-combobox-seq='"+comboboxSeq+"']").remove();
-		origInput.nextAll("div.combobox-chevron-down[data-combobox-seq='"+comboboxSeq+"']").remove();
+	// Make the original input of zero size so we won't see it, but it can still get the focus.
+	// If we hide it or put it inside an invisible container, it can't receive the focus programmatically.
+	// We hook its focus event below, and transfer the focus to the search component.
+	origInput.css('width', '0px');
+	origInput.css('height', '0px');
+	origInput.css('border', 'none');
+	origInput.css('margin', '0px');
+	origInput.css('padding', '0px');
 
-		// Create a search input after the original input.
-		var search = origInput.clone();
-		search.removeAttr('data-combobox-orig-style');
-		search.attr('id', '__combobox-search__'+new Date().getTime()+'-'+comboboxSeq);
-		search.attr('data-combobox-seq', comboboxSeq);
-		search.removeAttr('name');
-		search.addClass('combobox-search');
-		search.attr('tabindex', '-1');
-		search.insertAfter(origInput);
-
-		// Save the original CSS settings for the original input, if we haven't already.
-		if (origInput.attr('data-combobox-orig-style') === undefined) {
-			origInput.attr('data-combobox-orig-style', undefinedToEmpty(origInput.attr('style')));
-		}
-
-		// Make the original input of zero size so we won't see it, but it can still get the focus.
-		// If we hide it or put it inside an invisible container, it can't receive the focus programmatically.
-		// We hook its focus event below, and transfer the focus to the search component.
-		origInput.css('width', '0px');
-		origInput.css('height', '0px');
-		origInput.css('border', 'none');
-		origInput.css('margin', '0px');
-		origInput.css('padding', '0px');
-
-		var clearLink = null;
-		if (allowClear) {
-			clearLink = $('<a class="btn-default combobox-clear" href="#" onclick="return false;" tabindex="-1"><i class="glyphicon glyphicon-remove-circle"></i></a>');
-			clearLink.attr('data-combobox-seq', comboboxSeq);
-			clearLink.insertAfter(search);
-			clearLink.click(function(evt) {
-				if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
-					origInput.val(idIsString ? '' : '0').trigger('change');
-				}
-				if (!origInput.is('[disabled]')) origInput.focus();
-			});
-		}
-
-		var chevronDown = $('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>');
-		chevronDown.insertAfter(allowClear ? clearLink : search);
-		chevronDown.attr('data-combobox-seq', comboboxSeq);
-
-		function isClearLinkVisible() {
-			if (!allowClear) return false;
-			var display = clearLink.css('display');
-			return ((display == undefined) || (display != 'none'));
-		}
-
-		function getIdValue() {
-			var idval = origInput.val();
-			if (!idIsString) {
-				var idvalint = parseInt($.trim(idval)) || 0;
-				// Fix incorrectly formatted integer values.
-				var idvalstr = ''+idvalint;
-				if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
-				if (idvalint == 0) {
-					if (allowClear && isClearLinkVisible()) clearLink.hide();
-					return null;
-				}
-			} else {
-				if (idval == '') {
-					if (allowClear && isClearLinkVisible()) clearLink.hide();
-					return null;
-				}
-			}
-			if (allowClear) {
-				if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
-					if (!isClearLinkVisible()) clearLink.show();
-				} else {
-					if (isClearLinkVisible()) clearLink.hide();
-				}
-			}
-			return idval;
-		}
-
-		function setLabel(label) {
-       		search.val(label).trigger('change');
-			search.attr('data-current-label', label);
-			search.removeAttr('data-manually-entered');
-		}
-
-		function origInputChanged() {
-			var idval = getIdValue();
-			origInput.attr('data-idval', idval);
-			if (idval === null) {
-        		setLabel(selectPlaceholder);
-			} else {
-				var myRequestSeq = getNextRequestSeq();
-				function rowFetcherCallback(row, textStatus, jqXHR) {
-					// Prevent race conditions.  The last request to be issued wins.
-					if (requestSeq != myRequestSeq) return;
-					if (row !== null) {
-        				setLabel(row.label);
-					} else {
-        				setLabel(notFoundMessage);
-					}
-				}
-				var row = idIsString ?
-					myRowFetcher.getRowForIdString(
-						rowFetcherCallback,
-						autocompleteCommand,
-						idColumn,
-						idval
-					) :
-					myRowFetcher.getRowForId(
-						rowFetcherCallback,
-						autocompleteCommand,
-						idColumn,
-						idval
-					);
-			}
-		}
-
-		function trackReadonlyDisabledState() {
-			var oreadonly = origInput.is('[readonly]');
-			var odisabled = origInput.is('[disabled]');
-			var sreadonly = search.is('[readonly]');
-			var sdisabled = search.is('[disabled]');
-
-			if (sreadonly != oreadonly) {
-				if (oreadonly) search.attr('readonly', true); else search.removeAttr('readonly');
-			}
-			if (sdisabled != odisabled) {
-				if (odisabled) search.attr('disabled', true); else search.removeAttr('disabled');
-			}
-			getIdValue();
-		}
-
-		try {
-			var mutationObserver = new MutationObserver(function(mutations) {
-				if (!$.contains(document, search[0])) {
-					mutationObserver.disconnect();
-					return;
-				}
-				trackReadonlyDisabledState();
-			});
-			mutationObserver.observe(origInput[0], { attributes: true, childList: false, characterData: false });
-		} catch (ex) {}
-
-		origInput.focus(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			search.addClass('active');
-			trackReadonlyDisabledState();
-		});
-		origInput.blur(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			if (typeof(origInput.attr('data-transferring-focus')) != 'undefined') {
-				origInput.removeAttr('data-transferring-focus');
-			}
-			search.removeClass('active');
-			trackReadonlyDisabledState();
-		});
-		origInput.keypress(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
+	var clearLink = null;
+	if (allowClear) {
+		clearLink = $('<a class="btn-default combobox-clear" href="#" onclick="return false;" tabindex="-1"><i class="glyphicon glyphicon-remove-circle"></i></a>');
+		clearLink.attr('data-combobox-seq', comboboxSeq);
+		clearLink.insertAfter(search);
+		clearLink.click(function(evt) {
 			if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
-				origInput.attr('data-transferring-focus', true);
-				search.val(String.fromCharCode(evt.which)).trigger('change');
-				search.attr('data-manually-entered', true);
-				search.focus();
+				origInput.val(idIsString ? '' : '0').trigger('change');
 			}
-			evt.preventDefault();
-			evt.defaultPrevented = true;
-			trackReadonlyDisabledState();
-			return false;
+			if (!origInput.is('[disabled]')) origInput.focus();
 		});
-		origInput.change(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			origInputChanged();
-			trackReadonlyDisabledState();
-		});
-		origInput.on('lookupDescription', function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			origInputChanged();
-			trackReadonlyDisabledState();
-		});
+	}
 
-		search.focus(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
+	var chevronDown = $('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>');
+	chevronDown.insertAfter(allowClear ? clearLink : search);
+	chevronDown.attr('data-combobox-seq', comboboxSeq);
+
+	function isClearLinkVisible() {
+		if (!allowClear) return false;
+		var display = clearLink.css('display');
+		return ((display == undefined) || (display != 'none'));
+	}
+
+	function getIdValue() {
+		var idval = origInput.val();
+		if (!idIsString) {
+			var idvalint = parseInt($.trim(idval)) || 0;
+			// Fix incorrectly formatted integer values.
+			var idvalstr = ''+idvalint;
+			if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
+			if (idvalint == 0) {
+				if (allowClear && isClearLinkVisible()) clearLink.hide();
+				return null;
 			}
-			search.removeClass('active');
-			trackReadonlyDisabledState();
-		});
-		search.blur(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
+		} else {
+			if (idval == '') {
+				if (allowClear && isClearLinkVisible()) clearLink.hide();
+				return null;
 			}
-			var oldval = search.val();
-			var isManuallyEntered = (typeof(search.attr('data-manually-entered')) != 'undefined');
-			if (isManuallyEntered) search.removeAttr('data-manually-entered');
-			if ((oldval != '') && isManuallyEntered) {
-				// If we lose focus on the search input when its value is not empty, plug that value into the original
-				// input and search for its label.
-				origInput.val(search.val()).trigger('change');
+		}
+		if (allowClear) {
+			if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+				if (!isClearLinkVisible()) clearLink.show();
 			} else {
-				// If we lose focus on the search input when its value is empty, restore the current label as its value.
-				search.val((typeof(search.attr('data-current-label')) != 'undefined') ? search.attr('data-current-label') : '').trigger('change');
+				if (isClearLinkVisible()) clearLink.hide();
 			}
-			trackReadonlyDisabledState();
-		});
-		search.keypress(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			// As the value in the search box changes, show or hide the clear button.
-			setTimeout(getIdValue, 1);
-			search.attr('data-manually-entered', true);
-			trackReadonlyDisabledState();
-		});
-		search.mousedown(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			if (!origInput.is('[disabled]')) origInput.focus();
-			evt.stopPropagation();
-			return false;
-		});
+		}
+		return idval;
+	}
 
-		chevronDown.mousedown(function(evt) {
-			if (!$.contains(document, search[0])) {
-				origInput.off(this);
-				return;
-			}
-			if (!origInput.is('[disabled]')) origInput.focus();
-			evt.stopPropagation();
-			return false;
-		});
+	function setLabel(label) {
+      		search.val(label).trigger('change');
+		search.attr('data-current-label', label);
+		search.removeAttr('data-manually-entered');
+	}
 
-		search.autocomplete({
-			minLength:minimumInputLength,
-    		source:url,
-			autoFocus:false,
-    		select:function(event, ui) {
-				setLabel(ui.item.label);
-        		origInput.val(ui.item.value).trigger('change');
-				getIdValue();
-				if (!origInput.is('[disabled]')) origInput.focus();
-				trackReadonlyDisabledState();
-				return false;
-    		},
-			focus:function(event, ui) {
-				return false; 
-			}
-		});
-
-		// Set up the initial state for the value in the original input.
-		origInputChanged();
-
-	} else { // if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__)
-
-		// Old select2-based implementation.
-
-		var elem = $(options.inputElement);
-		var placeholder = {value: '', label:selectPlaceholder};
-
-		elem.select2('destroy');
-		var params = {
-			allowClear: allowClear,
-			initSelection: function(elem, callback) {
-				var id = elem.val();
-				if (!idIsString) id = parseInt($.trim(id)) || 0;
-				if ((id == '') || ((!idIsString) && (id == 0))) {
-					callback(placeholder);
-					return;
+	function origInputChanged() {
+		var idval = getIdValue();
+		origInput.attr('data-idval', idval);
+		if (idval === null) {
+       		setLabel(selectPlaceholder);
+		} else {
+			var myRequestSeq = getNextRequestSeq();
+			function rowFetcherCallback(row, textStatus, jqXHR) {
+				// Prevent race conditions.  The last request to be issued wins.
+				if (requestSeq != myRequestSeq) return;
+				if (row !== null) {
+       				setLabel(row.label);
+				} else {
+       				setLabel(notFoundMessage);
 				}
-				var row = idIsString ?
-					myRowFetcher.getRowForIdString(
-						autocompleteCommand,
-						idColumn,
-						id,
-						rowFetcherOptionalParameters
-					) :
-					myRowFetcher.getRowForId(
-						autocompleteCommand,
-						idColumn,
-						id,
-						rowFetcherOptionalParameters
-					);
-				var data = (row !== null) ? row : {value: id, label: ''+id+': '+notFoundMessage};
-				callback(data);
-				return;
-			},
-			minimumInputLength: minimumInputLength,
-			query: function(options) {
-				var results = myRowFetcher.getRowArrayForIdString(
-					autocompleteCommand,
-					'term',
-					options.term,
-					$.extend({}, rowFetcherOptionalParameters, {offset:(options.page-1)*maxRowsPerPage, limit:maxRowsPerPage})
-				);
-				options.callback({results:results, more: (results.length >= maxRowsPerPage)});
-			},
-			formatResult: function(item) {
-				return item.label;
-			},
-			formatSelection: function(item) {
-				return item.label;
-			},
-			id: function(item) {
-				return item.value;
 			}
-		};
-		if (selectPlaceholder != '') params.placeholder = placeholder.label;
-		// Create the select2 component; hook it to the input element.
-		elem.select2(params);
-		// Remove the bogus 'width:0px' CSS style which seems to be automatically added
-		// by select2 to its own containers.
-		elem.siblings('.select2-container').css('width', '');
-// select2 3.4.8 handles this automatically at creation time, and has support for both
-// readonly and disabled attributes on the original input element.
-//		// Disable the select2 if the input element is readonly or disabled.
-//		if ((typeof(elem.attr('readonly')) !== 'undefined') ||
-//			(typeof(elem.attr('disabled')) !== 'undefined')) {
-//			elem.select2('disable');
-//		}
+			var row = idIsString ?
+				myRowFetcher.getRowForIdString(
+					rowFetcherCallback,
+					autocompleteCommand,
+					idColumn,
+					idval
+				) :
+				myRowFetcher.getRowForId(
+					rowFetcherCallback,
+					autocompleteCommand,
+					idColumn,
+					idval
+				);
+		}
+	}
 
-	} // if ((typeof(__jaxUseCombobox__) != 'undefined') && __jaxUseCombobox__) ... else
+	function trackReadonlyDisabledState() {
+		var oreadonly = origInput.is('[readonly]');
+		var odisabled = origInput.is('[disabled]');
+		var sreadonly = search.is('[readonly]');
+		var sdisabled = search.is('[disabled]');
+
+		if (sreadonly != oreadonly) {
+			if (oreadonly) search.attr('readonly', true); else search.removeAttr('readonly');
+		}
+		if (sdisabled != odisabled) {
+			if (odisabled) search.attr('disabled', true); else search.removeAttr('disabled');
+		}
+		getIdValue();
+	}
+
+	try {
+		var mutationObserver = new MutationObserver(function(mutations) {
+			if (!$.contains(document, search[0])) {
+				mutationObserver.disconnect();
+				return;
+			}
+			trackReadonlyDisabledState();
+		});
+		mutationObserver.observe(origInput[0], { attributes: true, childList: false, characterData: false });
+	} catch (ex) {}
+
+	origInput.focus(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		search.addClass('active');
+		trackReadonlyDisabledState();
+	});
+	origInput.blur(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		if (typeof(origInput.attr('data-transferring-focus')) != 'undefined') {
+			origInput.removeAttr('data-transferring-focus');
+		}
+		search.removeClass('active');
+		trackReadonlyDisabledState();
+	});
+	origInput.keypress(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+			origInput.attr('data-transferring-focus', true);
+			search.val(String.fromCharCode(evt.which)).trigger('change');
+			search.attr('data-manually-entered', true);
+			search.focus();
+		}
+		evt.preventDefault();
+		evt.defaultPrevented = true;
+		trackReadonlyDisabledState();
+		return false;
+	});
+	origInput.change(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		origInputChanged();
+		trackReadonlyDisabledState();
+	});
+	origInput.on('lookupDescription', function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		origInputChanged();
+		trackReadonlyDisabledState();
+	});
+
+	search.focus(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		search.removeClass('active');
+		trackReadonlyDisabledState();
+	});
+	search.blur(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		var oldval = search.val();
+		var isManuallyEntered = (typeof(search.attr('data-manually-entered')) != 'undefined');
+		if (isManuallyEntered) search.removeAttr('data-manually-entered');
+		if ((oldval != '') && isManuallyEntered) {
+			// If we lose focus on the search input when its value is not empty, plug that value into the original
+			// input and search for its label.
+			origInput.val(search.val()).trigger('change');
+		} else {
+			// If we lose focus on the search input when its value is empty, restore the current label as its value.
+			search.val((typeof(search.attr('data-current-label')) != 'undefined') ? search.attr('data-current-label') : '').trigger('change');
+		}
+		trackReadonlyDisabledState();
+	});
+	search.keypress(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		// As the value in the search box changes, show or hide the clear button.
+		setTimeout(getIdValue, 1);
+		search.attr('data-manually-entered', true);
+		trackReadonlyDisabledState();
+	});
+	search.mousedown(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		if (!origInput.is('[disabled]')) origInput.focus();
+		evt.stopPropagation();
+		return false;
+	});
+
+	chevronDown.mousedown(function(evt) {
+		if (!$.contains(document, search[0])) {
+			origInput.off(this);
+			return;
+		}
+		if (!origInput.is('[disabled]')) origInput.focus();
+		evt.stopPropagation();
+		return false;
+	});
+
+	search.autocomplete({
+		minLength:minimumInputLength,
+   		source:url,
+		autoFocus:false,
+   		select:function(event, ui) {
+			setLabel(ui.item.label);
+       		origInput.val(ui.item.value).trigger('change');
+			getIdValue();
+			if (!origInput.is('[disabled]')) origInput.focus();
+			trackReadonlyDisabledState();
+			return false;
+   		},
+		focus:function(event, ui) {
+			return false; 
+		}
+	});
+
+	// Set up the initial state for the value in the original input.
+	origInputChanged();
 } // hookAutocompleteSingleRowSelectorToInput()
 
 // Hook an autocomplete drop-down list for a related table to an input element.
