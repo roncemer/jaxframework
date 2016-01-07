@@ -7,303 +7,184 @@
 // This file is part of the Jax Framework.
 // If you edit this file, your changes will be lost when framework updates are applied.
 
-var __specialFieldFeatures_lastFocusField__ = null;
-function __specialFieldFeatures_selectAllOnFocus() {
-	if (__specialFieldFeatures_lastFocusField__ !== this) {
-		__specialFieldFeatures_lastFocusField__ = this;
-		setTimeout('__specialFieldFeatures_lastFocusField__.select();', 1);
-	}
-} // __specialFieldFeatures_selectAllOnFocus()
-
-// Attach special field features to input elements based on their CSS classes.
-// Date pickers get attached to any input elements with class "date" or "datetime" which
-// don't already have date pickers attached and are not disabled or readonly.
-// Date input filtering gets attached to any input elements with class "date" or "datetime"
-// which don't already have date filtering attached.
-// Numeric filtering gets attached to any input elements with class "numeric-scale0" through
-// "numeric-scale10" which don't already have numeric filtering attached.
-// If any arguments are passed to this function, each argument must be a jQuery collection
-// containing parents whose descendents will be filtered, or a DOM element whose descendents
-// will be filtered.
-// If no arguments are passed to this function, all applicable elements in the current
-// document will be filtered.
+// This is now a stub (deprecated) function.  It is no longer used.
 function attachSpecialFieldFeatures() {
-	if (typeof preAttachSpecialFieldFeatures == 'function') {
-		preAttachSpecialFieldFeatures();
-	}
+} // attachSpecialFieldFeatures()
 
-	var selector, elems;
+// This is now a stub (deprecated) function.  It is no longer used.
+function autoShowOrHideSpecialFieldFeatures(hideAll) {
+} // autoShowOrHideSpecialFieldFeatures()
 
+// This is now a stub (deprecated) function.  It is no longer used.
+function filterFieldsWithSpecialFeatures() {
 	var roots = (arguments.length > 0) ? arguments : [null];
 
 	for (var ri = 0; ri < roots.length; ri++) {
 		var root = (roots[ri] != null) ? $(roots[ri]) : null;
 
-		// Attach a date picker to all non-disabled, non-readonly date input fields.
-		selector = 'input.date:not(.hasDatepicker):not([disabled]):not([readonly])';
-		elems = (root != null) ? root.find(selector) : $(selector);
-		var arr = {
-			dateFormat:'yy-mm-dd',
-			constrainInput:false
-		};
-		if (typeof($.mobile) !== 'undefined') {
-			arr.showOn = 'focus';
-		} else {
-			arr.showOn = 'button';
-			arr.buttonImage = 'jax/images/calendar_19x16.png';
-			arr.buttonImageOnly = true;
+		elems = (root != null) ? root.find('input, textarea') : $('input, textarea');
+		filterSpecialFeatureValues(elems);
+	}
+} // filterFieldsWithSpecialFeatures()
+
+function filterSpecialFeatureValues(elems) {
+	elems.each(function(index, obj) {
+		var elem = $(obj);
+		var tagName = elem.prop('tagName');
+		if ((tagName === undefined) ||
+			((tagName != 'INPUT') && (tagName != 'TEXTAREA'))) {
+			return;
 		}
-		elems.datepicker(arr);
 
-		// Attach a date picker to all non-disabled datetime input fields,
-		// with time set to 00:00:00.
-		selector = 'input.datetime:not(.hasDatepicker):not([disabled]):not([readonly])';
-		elems = (root != null) ? root.find(selector) : $(selector);
-		elems.datepicker({
-			dateFormat:'yy-mm-dd 00:00:00',
-			showOn:'button',
-			buttonImage:'jax/images/calendar_19x16.png',
-			buttonImageOnly:true,
-			constrainInput:false
-		});
+		var val = elem.val();
+		var origval = val;
 
-		// When a date input field's value changes, filter and format the date and put it back.
-		selector = 'input.date:not(.hasDateFilter)';
-		elems = (root != null) ? root.find(selector) : $(selector);
-		elems.change(function() {
-			filterDateInput($(this));
-		});
-		elems.addClass('hasDateFilter');
+		// Handle trimming and case transformation.
+		if (elem.hasClass('trim')) {
+			val = $.trim(val);
+		}
+		if (elem.hasClass('upper') && (!elem.hasClass('lower'))) {
+			val = val.toUpperCase();
+		} else if (elem.hasClass('lower') && (!elem.hasClass('upper'))) {
+			val = val.toLowerCase();
+		}
 
-		// When a datetime input field's value changes, filter and format the datetime and
-		// put it back.
-		selector = 'input.datetime:not(.hasDatetimeFilter)';
-		elems = (root != null) ? root.find(selector) : $(selector);
-		elems.change(function() {
-			filterDatetimeInput($(this));
-		});
-		elems.addClass('hasDatetimeFilter');
+		// Handle date/time and date filtering.
+		if (elem.hasClass('datetime')) {
+			var dt = Date.parse(elem.val());
+			val = ((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
+		} else if (elem.hasClass('date')) {
+			var dt = Date.parse(elem.val());
+			val = ((dt != null) ? dt.toString('yyyy-MM-dd') : '');
+		}
 
-		// When the value of a numeric input field with scale 0 to 10 changes,
-		// filter and format the value and put it back.
+		// Handle numeric filtering.
 		for (var scale = 0; scale <= 10; scale++) {
-			selector = 'input.numeric-scale'+scale+':not(.hasNumericFilter)';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.change(function() {
-				$(this).each(function(idx, e) {
-					// Extract the numeric scale from the input element's numeric-scale* class,
-					// and then use that to filter the value to the correct scale.
-					var elem = $(e);
-					$(elem.attr('class').split(' ')).each(function() { 
-						if ((this !== '') && (this.match(/^numeric-scale[0-9]+$/) != null)) {
-							var scale = parseInt(this.replace(/^numeric-scale/, ''));
-							if ((!isNaN(scale)) && (scale >= 0)) {
-								filterNumericInput(elem, scale);
-							}
-						}
-					});
-				});
-			});
-			elems.addClass('hasNumericFilter');
+			if (elem.hasClass('numeric-scale'+scale)) {
+				val = (Number($.trim(val)) || 0.0).toFixed(scale);
+				break;
+			}
 		}
 
-		// When a text or password input element receives the focus, we want to select
-		// its entire text content.  There are some competing events in the mouse event
-		// handlers which seem to de-select the text when an input element is clicked,
-		// so we use a global variable to hold the instance and use setTimeout() with a
-		// callback to make the text selection occur after all other events have been
-		// handled.
-		selector = "input[type='text'], input[type='password']";
-		elems = (root != null) ? root.find(selector) : $(selector);
-		$.each(
-			elems,
-			function(index, value) {
-				var elem = $(value);
-				elem.unbind('focus', __specialFieldFeatures_selectAllOnFocus);
+		if (val !== origval) {
+			elem.val(val);
+		}
+	});
+} // filterSpecialFeatureValues()
+
+(function() {
+	var filteredClassesSelector = '.trim, .upper, .lower, .date, .datetime, .numeric-scale0, .numeric-scale1, .numeric-scale2, .numeric-scale3, .numeric-scale4, .numeric-scale5, .numeric-scale6, .numeric-scale7, .numeric-scale8, .numeric-scale9, .numeric-scale10';
+
+	function selectAllOnFocus() {
+		var elem = $(this);
+		setTimeout(
+			function() {
+				elem.select();
+			},
+			1
+		);
+	} // selectAllOnFocus()
+
+	function manageFieldFeatures(elems) {
+		elems.each(function(index, obj) {
+			var elem = $(obj);
+			var tagName = elem.prop('tagName');
+			if ((tagName === undefined) ||
+				((tagName != 'INPUT') && (tagName != 'TEXTAREA') && (tagName != 'PASSWORD'))) {
+				return;
+			}
+
+			if ((tagName == 'INPUT') || (tagName == 'PASSWORD')) {
+				elem.unbind('focus', selectAllOnFocus);
 				if (!elem.hasClass('combobox-search')) {
-					elem.focus(__specialFieldFeatures_selectAllOnFocus);
+					elem.focus(selectAllOnFocus);
 				}
 			}
-		);
-	}	// for (var ri = 0; ri < roots.length; ri++)
 
-	if (typeof postAttachSpecialFieldFeatures == 'function') {
-		postAttachSpecialFieldFeatures();
-	}
-} // attachSpecialFieldFeatures()
-
-// Show or hide special input field features, such as trigger buttons for pop-up
-// searches and date pickers, based on whether the form as a whole is editable,
-// and whether each individual input field is readonly or disabled.
-// If hideAll is true, it is assumed that the entire form is readonly, and all
-// applicable trigger buttons (and possibly other features) will be hidden.
-// If hideAll is omitted, it defaults to false.
-// If two or more arguments are passed to this function, each argument after the first (hideAll)
-// argument must be a jQuery collection containing parents whose descendents will be affected, or
-// a DOM element whose descendents will be affected.
-// If only the first (hideAll) argument is passed to this function, all applicable elements in the
-// current document will be affected.
-function autoShowOrHideSpecialFieldFeatures(hideAll) {
-	if (typeof(hideAll) == 'undefined') hideAll = false;
-
-	var selector, elems;
-
-	var roots;
-	if (arguments.length > 1) {
-		roots = Array.prototype.slice.call(arguments);
-		roots = roots.slice(1);
-	} else {
-		roots = [null];
-	}
-
-	for (var ri = 0; ri < roots.length; ri++) {
-		var root = (roots[ri] != null) ? $(roots[ri]) : null;
-
-		if (hideAll) {
-			// Hide date picker and pop-up search icons.
-			selector = '.popupSearchLink, .ui-datepicker-trigger';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.hide();
-
-			// Disable autocompletes.
-			selector = '';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems = (root != null) ?
-				root.find('input.ui-autocomplete-input[disabled], input.ui-autocomplete-input[readonly]') :
-				$('input.ui-autocomplete-input[disabled], input.ui-autocomplete-input[readonly]');
-			elems.autocomplete('option', 'disabled', true);
-		} else {	// if (hideAll)
-			// Show pop-up search icons for inputs which have them, when they are
-			// not readonly or disabled.
-			selector = 'input:not([disabled]):not([readonly])';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.each(function(index, elem) {
-				elem = $(elem);
-				if (elem.attr('data-combobox-seq') !== undefined) {
-					elem.parent().nextAll('.popupSearchLink').show();
-				} else {
-					elem.nextAll('.popupSearchLink').show();
-				}
-			});
-
-			// Hide pop-up search icons for inputs which have them, when they are
-			// readonly or disabled.
-			selector = 'input[disabled], input[readonly]';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.each(function(index, elem) {
-				elem = $(elem);
-				if (elem.attr('data-combobox-seq') !== undefined) {
-					elem.parent().nextAll('.popupSearchLink').hide();
-				} else {
-					elem.nextAll('.popupSearchLink').hide();
-				}
-			});
-
-			// Show date picker icons for inputs which have date pickers
-			// and are not readonly or disabled.
-			selector = 'input.date.hasDatepicker:not([disabled]):not([readonly]), input.datetime.hasDatepicker:not([disabled]):not([readonly])';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.datepicker(true);
-
-			// Hide date picker icons for elements which have date pickers
-			// but are readonly or disabled.
-			selector = 'input.date.hasDatepicker[readonly], input.datetime.hasDatepicker[readonly], input.date.hasDatepicker[disabled], input.datetime.hasDatepicker[disabled]';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.datepicker(false);
-
-			// Enable autocomplete for input elements which have it, when they
-			// are not readonly or disabled.
-			selector = 'input.ui-autocomplete-input:not([disabled]):not([readonly])';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.autocomplete('option', 'disabled', false);
-
-			// Disable autocomplete for input elements which have it, when they
-			// are readonly or disabled.
-			selector = 'input.ui-autocomplete-input[disabled], input.ui-autocomplete-input[readonly]';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.autocomplete('option', 'disabled', true);
-
-			// For all select2 containers, enable or disable the corresponding select2 based on
-			// whether its original input component is readonly or disabled.
-			selector = '.select2-container';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			elems.each(function(index) {
-				var elem = $(this).prev('input, textarea, select');
-				if (elem.length == 1) {
-					if ((typeof(elem.attr('readonly')) !== 'undefined') ||
-						(typeof(elem.attr('disabled')) !== 'undefined')) {
-						elem.select2('disable');
+			if ((tagName == 'INPUT') || (tagName == 'TEXTAREA')) {
+				// Enable or disable autocomplete for autocomplete inputs based on their readonly and disabled attributes.
+				// Show or hide popup search icons for inputs based on their readonly and disabled attributes.
+				if ((elem.attr('readonly') === undefined) && (elem.attr('disabled') === undefined)) {
+					if (elem.attr('data-combobox-seq') !== undefined) {
+						if (elem.hasClass('ui-autocomplete-input')) {
+							elems.autocomplete('option', 'disabled', false);
+						}
+						elem.parent().nextAll('.popupSearchLink').show();
 					} else {
-						elem.select2('enable');
+						if (elem.hasClass('ui-autocomplete-input')) {
+							elems.autocomplete('option', 'disabled', true);
+						}
+						elem.nextAll('.popupSearchLink').show();
+					}
+				} else {
+					if (elem.attr('data-combobox-seq') !== undefined) {
+						elem.parent().nextAll('.popupSearchLink').hide();
+					} else {
+						elem.nextAll('.popupSearchLink').hide();
+					}
+				}
+
+				// Attach or detach date pickers for datetime and date inputs based on their readonly and disabled attributes.
+				if (elem.hasClass('datetime') || elem.hasClass('date')) {
+					if ((elem.attr('readonly') === undefined) && (elem.attr('disabled') === undefined)) {
+						if (!elem.hasClass('hasDatepicker')) {
+							elem.datepicker({
+								dateFormat:elem.hasClass('datetime') ? 'yy-mm-dd 00:00:00' : 'yy-mm-dd',
+								showOn:'button',
+								buttonImage:'jax/images/calendar_19x16.png',
+								buttonImageOnly:true,
+								constrainInput:false
+							});
+						}
+					} else if (elem.hasClass('hasDatepicker')) {
+						elem.datepicker('destroy');
+					}
+				}
+			}
+		});
+	} // manageFieldFeatures()
+
+	// Filter existing elements, and manage their icons.
+	(function() {
+		var elems = $(filteredClassesSelector);
+		filterSpecialFeatureValues(elems);
+		manageFieldFeatures(elems);
+	})();
+
+	// Filter existing and future elements when their values change.
+	$(document).on('change', filteredClassesSelector, function() {
+		filterSpecialFeatureValues($(this));
+	});
+
+	// Filter future elements and manage their icons when they are added to the DOM tree.
+	// Handle showing and hiding of extra UI elements for existing and future elements when their attributes change.
+	(function() {
+		try {
+			var mutationObserver = new MutationObserver(function(mutations) {
+				for (var mi = 0; mi < mutations.length; mi++) {
+					var mutation = mutations[mi];
+					switch (mutation.type) {
+					case 'childList':
+						for (var ni = 0; ni < mutation.addedNodes.length; ni++) {
+							var elem = $(mutation.addedNodes[ni]);
+							filterSpecialFeatureValues(elem);
+							manageFieldFeatures(elem);
+						}
+						break;
+					case 'attributes':
+						if (mutation.attributeName == 'class') {
+							filterSpecialFeatureValues($(mutation.target));
+						} else if ((mutation.attributeName == 'readonly') || (mutation.attributeName == 'disabled')) {
+							manageFieldFeatures($(mutation.target));
+						}
+						break;
 					}
 				}
 			});
-		}	// if (hideAll) ... else
-	}	// for (var ri = 0; ri < roots.length; ri++)
-} // autoShowOrHideSpecialFieldFeatures()
-
-// Filter every field which has a special-feature filter attached to it.
-// If any arguments are passed to this function, each argument must be a jQuery collection
-// containing parents whose descendents will be filtered, or a DOM element whose descendents
-// will be filtered.
-// If no arguments are passed to this function, all applicable elements in the current
-// document will be filtered.
-function filterFieldsWithSpecialFeatures() {
-	var selector, elems;
-
-	var roots = (arguments.length > 0) ? arguments : [null];
-
-	for (var ri = 0; ri < roots.length; ri++) {
-		var root = (roots[ri] != null) ? $(roots[ri]) : null;
-
-		selector = 'input.date.hasDateFilter';
-		elems = (root != null) ? root.find(selector) : $(selector);
-		filterDateInput(elems);
-
-		selector = 'input.datetime.hasDatetimeFilter';
-		elems = (root != null) ? root.find(selector) : $(selector);
-		filterDatetimeInput(elems);
-
-		for (var scale = 0; scale <= 10; scale++) {
-			selector = 'input.numeric-scale'+scale+'.hasNumericFilter';
-			elems = (root != null) ? root.find(selector) : $(selector);
-			filterNumericInput(elems, scale);
-		}
-	}	// for (var ri = 0; ri < roots.length; ri++)
-} // filterFieldsWithSpecialFeatures()
-
-// Filter a date input field.
-// jqFieldSet is a jQuery instance containing one or more date fields to filter.
-function filterDateInput(jqFieldSet) {
-	$.each(jqFieldSet, function(index) {
-		var elem = $(this);
-		var dt = Date.parse(elem.val());
-		elem.val((dt != null) ? dt.toString('yyyy-MM-dd') : '');
-	});
-} // filterDateInput()
-
-// Filter a datetime input field.
-// jqFieldSet is a jQuery instance containing one or more date fields to filter.
-function filterDatetimeInput(jqFieldSet) {
-	$.each(jqFieldSet, function(index) {
-		var elem = $(this);
-		var dt = Date.parse(elem.val());
-		elem.val((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
-	});
-} // filterDatetimeInput()
-
-// Filter a numeric input field.
-// jqFieldSet is a jQuery instance containing one or more date fields to filter.
-// scale is the number of fractional digits.
-function filterNumericInput(jqFieldSet, scale) {
-	$.each(jqFieldSet, function(index) {
-		var elem = $(this);
-		var val = Number($.trim(elem.val()));
-		if (isNaN(val)) val = 0.0;
-		val = val.toFixed(scale);
-		elem.val(val);
-	});
-} // filterNumericInput()
+		mutationObserver.observe(document, { attributes: true, childList: true, subtree: true, characterData: false });
+		} catch (ex) {}
+	})();
+})();
 
 // Hook a single row selector with autocomplete for a related table to an input element.
 // The input element would typically be a text input.

@@ -192,7 +192,6 @@ $(document).ready(function() {
 
 {{autocompleteInitJS}}
 
-	attachSpecialFieldFeatures();
 	installPageHelp();
 
 	$('body').keydown(function(evt) {
@@ -457,13 +456,6 @@ function load{{uTableName}}IntoForm(id, newMode) {
 		if (typeof postLoadFormHook == 'function') {
 			postLoadFormHook(id, newMode, allowEditing, row);
 		}
-
-		// Attach any special input field features which have not yet been attached.
-		attachSpecialFieldFeatures();
-		// Filter any input fields which have special filters attached.
-		filterFieldsWithSpecialFeatures();
-		// Show or hide special features, such as pop-up query and date picker triggers.
-		autoShowOrHideSpecialFieldFeatures(!allowEditing);
 
 {{hookAutocompleteSingleRowSelectorsToInputsJS}}
 

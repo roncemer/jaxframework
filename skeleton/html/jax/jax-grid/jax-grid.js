@@ -1,4 +1,4 @@
-// Copyright (c) 2014 Ronald B. Cemer
+// Copyright (c) 2014-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -292,14 +292,6 @@ angular.module('JaxGridApp', [])
 
 	// Functions to interface to specialFieldFeatures.js.
 
-	$scope.attachSpecialFieldFeatures = function() {
-		if (($scope.containerElement !== null) &&
-			(typeof($scope.containerElement) == 'object') &&
-			(typeof(window.attachSpecialFieldFeatures) == 'function')) {
-			window.attachSpecialFieldFeatures($scope.containerElement);
-		}
-	}
-
 	$scope.filterFieldsWithSpecialFeatures = function() {
 		if (($scope.containerElement !== null) &&
 			(typeof($scope.containerElement) == 'object') &&
@@ -403,7 +395,6 @@ angular.module('JaxGridApp', [])
 			setTimeout(
 				function() {
 					$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-					$scope.attachSpecialFieldFeatures();
 					$scope.filterFieldsWithSpecialFeatures();
 				},
 				1
@@ -420,7 +411,6 @@ angular.module('JaxGridApp', [])
 			setTimeout(
 				function() {
 					$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-					$scope.attachSpecialFieldFeatures();
 					$scope.filterFieldsWithSpecialFeatures();
 				},
 				1
@@ -435,7 +425,6 @@ angular.module('JaxGridApp', [])
 		// Automatically attach any class-driven input field features/filtering when the page changes.
 		setTimeout(function() {
 			$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-			$scope.attachSpecialFieldFeatures();
 			$scope.filterFieldsWithSpecialFeatures();
 		}, 1);
 	});
@@ -444,7 +433,6 @@ angular.module('JaxGridApp', [])
 		// Automatically attach any class-driven input field features/filtering when the page changes.
 		setTimeout(function() {
 			$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-			$scope.attachSpecialFieldFeatures();
 			$scope.filterFieldsWithSpecialFeatures();
 		}, 1);
 	}, true);
