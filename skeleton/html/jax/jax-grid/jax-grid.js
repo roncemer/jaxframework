@@ -292,14 +292,6 @@ angular.module('JaxGridApp', [])
 
 	// Functions to interface to specialFieldFeatures.js.
 
-	$scope.filterFieldsWithSpecialFeatures = function() {
-		if (($scope.containerElement !== null) &&
-			(typeof($scope.containerElement) == 'object') &&
-			(typeof(window.filterFieldsWithSpecialFeatures) == 'function')) {
-			window.filterFieldsWithSpecialFeatures($scope.containerElement);
-		}
-	}
-
 	$scope.syncAutocompleteSingleRowSelectorValuesFromInputs = function() {
 		if (($scope.containerElement !== null) && (typeof($scope.containerElement) == 'object')) {
 			// Update combobox values which don't match the values of their input elements.
@@ -395,7 +387,6 @@ angular.module('JaxGridApp', [])
 			setTimeout(
 				function() {
 					$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-					$scope.filterFieldsWithSpecialFeatures();
 				},
 				1
 			);
@@ -411,7 +402,6 @@ angular.module('JaxGridApp', [])
 			setTimeout(
 				function() {
 					$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-					$scope.filterFieldsWithSpecialFeatures();
 				},
 				1
 			);
@@ -425,7 +415,6 @@ angular.module('JaxGridApp', [])
 		// Automatically attach any class-driven input field features/filtering when the page changes.
 		setTimeout(function() {
 			$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-			$scope.filterFieldsWithSpecialFeatures();
 		}, 1);
 	});
 
@@ -433,7 +422,6 @@ angular.module('JaxGridApp', [])
 		// Automatically attach any class-driven input field features/filtering when the page changes.
 		setTimeout(function() {
 			$scope.syncAutocompleteSingleRowSelectorValuesFromInputs();
-			$scope.filterFieldsWithSpecialFeatures();
 		}, 1);
 	}, true);
 

@@ -17,14 +17,6 @@ function autoShowOrHideSpecialFieldFeatures(hideAll) {
 
 // This is now a stub (deprecated) function.  It is no longer used.
 function filterFieldsWithSpecialFeatures() {
-	var roots = (arguments.length > 0) ? arguments : [null];
-
-	for (var ri = 0; ri < roots.length; ri++) {
-		var root = (roots[ri] != null) ? $(roots[ri]) : null;
-
-		elems = (root != null) ? root.find('input, textarea') : $('input, textarea');
-		filterSpecialFeatureValues(elems);
-	}
 } // filterFieldsWithSpecialFeatures()
 
 function filterSpecialFeatureValues(elems) {
@@ -84,6 +76,35 @@ function filterSpecialFeatureValues(elems) {
 			1
 		);
 	} // selectAllOnFocus()
+
+	(function($) {
+		var orig_val = $.fn.val, valDepth = 0;
+		$.fn.val = function(value) {
+			valDepth++;
+			try {
+				if (!arguments.length) {
+					var result = orig_val.call(this);
+					valDepth--;
+					return result;
+				}
+
+				var result = this.each(function(i, obj) {
+					var elem = $(obj);
+					orig_val.call(elem, value);
+					if ((valDepth == 1) &&
+						((obj.tagName == 'INPUT') || (obj.tagName == 'TEXTAREA')) &&
+						(!elem.is(':focus'))) {
+						filterSpecialFeatureValues(elem);
+					}
+				});
+				valDepth--;
+				return result;
+			} catch (ex) {
+				valDepth--;
+				throw ex;
+			}
+		};
+	})(jQuery);
 
 	function manageFieldFeatures(elems) {
 		elems.each(function(index, obj) {
