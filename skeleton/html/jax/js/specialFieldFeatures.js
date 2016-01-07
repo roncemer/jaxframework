@@ -181,7 +181,7 @@ function filterSpecialFeatureValues(elems) {
 					}
 				}
 			});
-		mutationObserver.observe(document, { attributes: true, childList: true, subtree: true, characterData: false });
+			mutationObserver.observe(document, { attributes: true, childList: true, subtree: true, characterData: false });
 		} catch (ex) {}
 	})();
 })();
