@@ -31,13 +31,6 @@ function preInitHook() {
 			id
 		);
 	});
-
-	$('#state_or_province').change(function() {
-		if ((!formLoading) || formLoadingAddMode) {
-			var fld = $(this);
-			fld.val($.trim(fld.val().toUpperCase()));
-		}
-	});
 }
 
 function canDeleteRow(id, rowData) {
