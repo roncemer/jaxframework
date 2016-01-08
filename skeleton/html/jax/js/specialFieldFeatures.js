@@ -65,7 +65,8 @@ function filterSpecialFeatureValues(elems) {
 } // filterSpecialFeatureValues()
 
 (function() {
-	var filteredClassesSelector = '.trim, .upper, .lower, .date, .datetime, .numeric-scale0, .numeric-scale1, .numeric-scale2, .numeric-scale3, .numeric-scale4, .numeric-scale5, .numeric-scale6, .numeric-scale7, .numeric-scale8, .numeric-scale9, .numeric-scale10';
+	var filteredClasses = [ 'trim', 'upper', 'lower', 'date', 'datetime', 'numeric-scale0', 'numeric-scale1', 'numeric-scale2', 'numeric-scale3', 'numeric-scale4', 'numeric-scale5', 'numeric-scale6', 'numeric-scale7', 'numeric-scale8', 'numeric-scale9', 'numeric-scale10' ];
+	var filteredClassesSelector = '.'+(filteredClasses.join(', .'));
 
 	function selectAllOnFocus() {
 		var elem = $(this);
@@ -91,10 +92,20 @@ function filterSpecialFeatureValues(elems) {
 				var result = this.each(function(i, obj) {
 					var elem = $(obj);
 					orig_val.call(elem, value);
+
+					// If we're not in a recursive call to val(), and this is an input or textarea element,
+					// and it does NOT have the focus, and it has any of the filtered classes, filter the
+					// field after setting its value.
 					if ((valDepth == 1) &&
 						((obj.tagName == 'INPUT') || (obj.tagName == 'TEXTAREA')) &&
 						(!elem.is(':focus'))) {
-						filterSpecialFeatureValues(elem);
+						var classes = elem.attr('class');
+						classes = classes ?
+							classes.split(' ').filter(function(s) { return ((s != '') && (filteredClasses.indexOf(s) >= 0)); }) :
+							[];
+						if (classes.length > 0) {
+							filterSpecialFeatureValues(elem);
+						}
 					}
 				});
 				valDepth--;
@@ -193,16 +204,45 @@ function filterSpecialFeatureValues(elems) {
 						}
 						break;
 					case 'attributes':
-						if (mutation.attributeName == 'class') {
-							filterSpecialFeatureValues($(mutation.target));
-						} else if ((mutation.attributeName == 'readonly') || (mutation.attributeName == 'disabled')) {
-							manageFieldFeatures($(mutation.target));
+						// Look for class, readonly, or disabled attribute mutations on input or textarea elements.
+						if (mutation.target &&
+							mutation.target.tagName &&
+							((mutation.target.tagName == 'INPUT') || (mutation.target.tagName == 'TEXTAREA'))) {
+							if (mutation.attributeName == 'class') {
+								// The class changed.  If one of the filtered classes was added or removed, filter the value.
+								var elem = $(mutation.target);
+								var oldClasses = mutation.oldValue;
+								oldClasses = oldClasses ? oldClasses.split(' ').filter(function(s) { return (s != ''); }) : [];
+								var newClasses = elem.attr('class');
+								newClasses = newClasses ? newClasses.split(' ').filter(function(s) { return (s != ''); }) : [];
+								var removedClasses = oldClasses.filter(function(s) { return (newClasses.indexOf(s) < 0); });
+								var addedClasses = newClasses.filter(function(s) { return (oldClasses.indexOf(s) < 0); });
+								var removedRelevantClasses = removedClasses.filter(function(s) { return (filteredClasses.indexOf(s) >= 0); });
+								var addedRelevantClasses = addedClasses.filter(function(s) { return (filteredClasses.indexOf(s) >= 0); });
+								if ((removedRelevantClasses.length > 0) || (addedRelevantClasses.length > 0)) {
+									filterSpecialFeatureValues($(mutation.target));
+								}
+							} else if ((mutation.attributeName == 'readonly') || (mutation.attributeName == 'disabled')) {
+								// The readonly or disabled attribute changed.  Manage field features such as popup
+								// search icons and date picker icons.
+								manageFieldFeatures($(mutation.target));
+							}
 						}
 						break;
 					}
 				}
 			});
-			mutationObserver.observe(document, { attributes: true, childList: true, subtree: true, characterData: false });
+			mutationObserver.observe(
+				document,
+				{
+					attributes: true,
+					childList: true,
+					subtree: true,
+					characterData: false,
+					attributeOldValue: true,
+					attributeFilter: ['class', 'readonly', 'disabled']
+				}
+			);
 		} catch (ex) {}
 	})();
 })();
