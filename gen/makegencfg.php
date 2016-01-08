@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2014 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -501,7 +501,7 @@ EOF
         title: %s
         inputType: text
         size: 40
-        autocompleteSingleRowSelector:
+        ajaxCombobox:
           autocompleteCommand: autocomplete%s
           idColumn: %s
           idIsString: %s

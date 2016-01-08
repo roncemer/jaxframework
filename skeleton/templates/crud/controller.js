@@ -190,7 +190,7 @@ $(document).ready(function() {
 	{{tableName}}sSearchGrid.$scope.getSearchActionColumnHTML = __getSearchActionColumnHTML;
 {{/if_searchPresentation_AJAXSearchGrid}}
 
-{{autocompleteInitJS}}
+{{ajaxAutocompleteInitJS}}
 
 	installPageHelp();
 
@@ -457,7 +457,7 @@ function load{{uTableName}}IntoForm(id, newMode) {
 			postLoadFormHook(id, newMode, allowEditing, row);
 		}
 
-{{hookAutocompleteSingleRowSelectorsToInputsJS}}
+{{ajaxComboboxInitJS}}
 
 		setMode(newMode);
 	} // loadRow()

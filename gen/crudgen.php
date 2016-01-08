@@ -262,8 +262,8 @@ EOF;
 			}
 		}
 
-		$autocompleteInitJS = '';
-		$hookAutocompleteSingleRowSelectorsToInputsJS = '';
+		$ajaxAutocompleteInitJS = '';
+		$ajaxComboboxInitJS = '';
 
 		$openContainers = array();
 
@@ -725,31 +725,27 @@ EOF;
 				if ($ajaxAutocompleteMinLength <= 0) $ajaxAutocompleteMinLength = 2;
 
 				if ($ajaxAutocompleteCommand != '') {
-					$autocompleteInitJS .= sprintf(<<<EOF
-	hookAutocompleteToInput({
-		inputElement:$("#%sForm %s[name='%s']"),
+					$ajaxAutocompleteInitJS .= sprintf(<<<EOF
+	$('#%s').ajaxAutocomplete({
 		autocompleteCommand:'%s',
 		minimumInputLength:%d
 	});
 
 EOF
 						,
-						$table->tableName,
-						($inputType == 'textarea') ? 'textarea' : 'input',
-						$fieldName,
+						$id,
 						$ajaxAutocompleteCommand,
 						$ajaxAutocompleteMinLength
 					);
 				}	// if ($ajaxAutocompleteCommand != '')
 
-				if (isset($field['autocompleteSingleRowSelector']) &&
-					is_array($field['autocompleteSingleRowSelector'])) {
+				if (isset($field['ajaxCombobox']) &&
+					is_array($field['ajaxCombobox'])) {
 
-					$arr = $field['autocompleteSingleRowSelector'];
+					$arr = $field['ajaxCombobox'];
 					unset($arr['rowFetcher']);
-					$arr['inputElement'] = '#'.$id;
 
-					$hookAutocompleteSingleRowSelectorsToInputsJS .= "\thookAutocompleteSingleRowSelectorToInput(".json_encode($arr).");\n";
+					$ajaxComboboxInitJS .= "\t\$('#".$id."').ajaxCombobox(".json_encode($arr).");\n";
 				}
 			}	// if (($inputType == 'text') || ($inputType == 'textarea'))
 
@@ -964,7 +960,8 @@ EOF
 			'{{crudSearchExtraQueryParamsJSON}}',
 			'{{crudSearchDefaultSortsJSON}}',
 			'{{crudSearchTableCallbacks}}',
-			'{{autocompleteInitJS}}',
+			'{{ajaxAutocompleteInitJS}}',
+			'{{ajaxComboboxInitJS}}',
 			'{{crudLoadCommand}}',
 			'{{hiddenFormFields}}',
 			'{{formFields}}',
@@ -978,7 +975,6 @@ EOF
 			'{{cssFiles}}',
 			'{{allowAddSimilar}}',
 			'{{viewInclude}}',
-			'{{hookAutocompleteSingleRowSelectorsToInputsJS}}',
 		);
 		$replaceWith = array(
 			$generatedFileMessage,
@@ -1012,7 +1008,8 @@ EOF
 			json_encode($crudSearchExtraQueryParams),
 			json_encode($crudSearchDefaultSorts),
 			$crudSearchTableCallbacks,
-			$autocompleteInitJS,
+			$ajaxAutocompleteInitJS,
+			$ajaxComboboxInitJS,
 			$crudLoadCommand,
 			$hiddenFormFields,
 			$formFields,
@@ -1026,7 +1023,6 @@ EOF
 			$cssFiles,
 			$allowAddSimilar ? 'true' : 'false',
 			$viewInclude,
-			$hookAutocompleteSingleRowSelectorsToInputsJS,
 		);
 
 		$content = str_replace(
