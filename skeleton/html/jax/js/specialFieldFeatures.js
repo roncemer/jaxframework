@@ -96,7 +96,38 @@ function hookAutocompleteToInput(options) {
 	var filteredClasses = [ 'trim', 'upper', 'lower', 'date', 'datetime', 'numeric-scale0', 'numeric-scale1', 'numeric-scale2', 'numeric-scale3', 'numeric-scale4', 'numeric-scale5', 'numeric-scale6', 'numeric-scale7', 'numeric-scale8', 'numeric-scale9', 'numeric-scale10' ];
 	var filteredClassesSelector = '.'+(filteredClasses.join(', .'));
 
-	function filterSpecialFeatureValues(elems) {
+	function filterValueForElement(elem, val) {
+		// Handle trimming and case transformation.
+		if (elem.hasClass('trim')) {
+			val = $.trim(val);
+		}
+		if (elem.hasClass('upper') && (!elem.hasClass('lower'))) {
+			val = val.toUpperCase();
+		} else if (elem.hasClass('lower') && (!elem.hasClass('upper'))) {
+			val = val.toLowerCase();
+		}
+
+		// Handle date/time and date filtering.
+		if (elem.hasClass('datetime')) {
+			var dt = Date.parse(val);
+			val = ((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
+		} else if (elem.hasClass('date')) {
+			var dt = Date.parse(val);
+			val = ((dt != null) ? dt.toString('yyyy-MM-dd') : '');
+		}
+
+		// Handle numeric filtering.
+		for (var scale = 0; scale <= 10; scale++) {
+		if (elem.hasClass('numeric-scale'+scale)) {
+				val = (Number($.trim(val)) || 0.0).toFixed(scale);
+				break;
+			}
+		}
+
+		return val;
+	} // filterValueForElement()
+
+	function filterElementValues(elems) {
 		elems.each(function(index, obj) {
 			var elem = $(obj);
 			var tagName = elem.prop('tagName');
@@ -105,41 +136,14 @@ function hookAutocompleteToInput(options) {
 				return;
 			}
 
-			var val = elem.val();
-			var origval = val;
-
-			// Handle trimming and case transformation.
-			if (elem.hasClass('trim')) {
-				val = $.trim(val);
-			}
-			if (elem.hasClass('upper') && (!elem.hasClass('lower'))) {
-				val = val.toUpperCase();
-			} else if (elem.hasClass('lower') && (!elem.hasClass('upper'))) {
-				val = val.toLowerCase();
-			}
-
-			// Handle date/time and date filtering.
-			if (elem.hasClass('datetime')) {
-				var dt = Date.parse(elem.val());
-				val = ((dt != null) ? dt.toString('yyyy-MM-dd HH:mm:ss') : '');
-			} else if (elem.hasClass('date')) {
-				var dt = Date.parse(elem.val());
-				val = ((dt != null) ? dt.toString('yyyy-MM-dd') : '');
-			}
-
-			// Handle numeric filtering.
-			for (var scale = 0; scale <= 10; scale++) {
-				if (elem.hasClass('numeric-scale'+scale)) {
-					val = (Number($.trim(val)) || 0.0).toFixed(scale);
-					break;
-				}
-			}
+			var origval = elem.val();
+			var val = filterValueForElement(elem, origval);
 
 			if (val !== origval) {
 				elem.val(val);
 			}
 		});
-	} // filterSpecialFeatureValues()
+	} // filterElementValues()
 
 	function selectAllOnFocus() {
 		var elem = $(this);
@@ -156,14 +160,12 @@ function hookAutocompleteToInput(options) {
 	(function($) {
 		var orig_val = $.fn.val, valDepth = 0;
 		$.fn.val = function(value) {
+			if (!arguments.length) {
+				return orig_val.call(this);
+			}
+
 			valDepth++;
 			try {
-				if (!arguments.length) {
-					var result = orig_val.call(this);
-					valDepth--;
-					return result;
-				}
-
 				var result = this.each(function(i, obj) {
 					var elem = $(obj);
 					orig_val.call(elem, value);
@@ -179,7 +181,7 @@ function hookAutocompleteToInput(options) {
 							classes.split(' ').filter(function(s) { return ((s != '') && (filteredClasses.indexOf(s) >= 0)); }) :
 							[];
 						if (classes.length > 0) {
-							filterSpecialFeatureValues(elem);
+							filterElementValues(elem);
 						}
 					}
 				});
@@ -254,13 +256,13 @@ function hookAutocompleteToInput(options) {
 	// Filter existing elements, and manage their icons.
 	(function() {
 		var elems = $(filteredClassesSelector);
-		filterSpecialFeatureValues(elems);
+		filterElementValues(elems);
 		manageFieldFeatures(elems);
 	})();
 
 	// Filter existing and future elements when their values change.
 	$(document).on('change', filteredClassesSelector, function() {
-		filterSpecialFeatureValues($(this));
+		filterElementValues($(this));
 	});
 
 	// Filter future elements and manage their icons when they are added to the DOM tree.
@@ -274,7 +276,7 @@ function hookAutocompleteToInput(options) {
 					case 'childList':
 						for (var ni = 0; ni < mutation.addedNodes.length; ni++) {
 							var elem = $(mutation.addedNodes[ni]);
-							filterSpecialFeatureValues(elem);
+							filterElementValues(elem);
 							manageFieldFeatures(elem);
 						}
 						break;
@@ -295,7 +297,7 @@ function hookAutocompleteToInput(options) {
 								var removedRelevantClasses = removedClasses.filter(function(s) { return (filteredClasses.indexOf(s) >= 0); });
 								var addedRelevantClasses = addedClasses.filter(function(s) { return (filteredClasses.indexOf(s) >= 0); });
 								if ((removedRelevantClasses.length > 0) || (addedRelevantClasses.length > 0)) {
-									filterSpecialFeatureValues($(mutation.target));
+									filterElementValues($(mutation.target));
 								}
 							} else if ((mutation.attributeName == 'readonly') || (mutation.attributeName == 'disabled')) {
 								// The readonly or disabled attribute changed.  Manage field features such as popup
