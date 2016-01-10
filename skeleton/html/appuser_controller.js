@@ -16,7 +16,6 @@ function preInitHook() {
 		var fieldName = fld.attr('name');
 		var descfld = $('#'+(fieldName.replace(/_id$/, '_full_name')));
 		var id = parseInt($.trim(fld.val())) || 0;
-		if (isNaN(id)) id = 0;
 		var row = rowFetcher.getRowForId('loadAppuser', 'id', id);
 		rowFetcher.getRowForId(
 			function(row) {

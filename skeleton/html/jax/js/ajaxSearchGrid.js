@@ -106,58 +106,47 @@ function AJAXSearchGrid(container, params, tableHTML) {
 			return _t(((parseInt(val) || 0) != 0) ? 'system.yes' : 'system.no');
 		}
 		,numscale0:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(0);
 		}
 		,numscale1:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(1);
 		}
 		,numscale2:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(2);
 		}
 		,numscale3:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(3);
 		}
 		,numscale4:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(4);
 		}
 		,numscale5:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(5);
 		}
 		,numscale6:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(6);
 		}
 		,numscale7:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(7);
 		}
 		,numscale8:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(8);
 		}
 		,numscale9:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(9);
 		}
 		,numscale10:function(val, row, rowIdx) {
-			var num = Number(val);
-			if (isNaN(num)) num = 0.0;
+			var num = Number(val) || 0.0;
 			return num.toFixed(10);
 		}
 	}
