@@ -443,10 +443,10 @@ function load{{uTableName}}IntoForm(id, newMode) {
 		}
 
 		// Set all fields readonly/disabled if not editable, not readonly/disabled if editable.
-		$('#{{tableName}}Form input').attr('readOnly', !allowEditing);
+		$('#{{tableName}}Form input').attr('readonly', !allowEditing);
 		$("#{{tableName}}Form input[type='checkbox'], #{{tableName}}Form input[type='file'], #{{tableName}}Form input[type='radio'], #{{tableName}}Form select").attr('disabled', !allowEditing);
 		// The id field is never editable.
-		$("#{{tableName}}Form input[name='{{idCol}}']").attr('readOnly', true);
+		$("#{{tableName}}Form input[name='{{idCol}}']").attr('readonly', true);
 
 		// These id field and its label should not be visible in add mode.
 		if (newMode != ADD_MODE) $('#{{idCol}}TR').show(); else $('#{{idCol}}TR').hide();
