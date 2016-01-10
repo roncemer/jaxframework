@@ -340,3 +340,7 @@ Usage:
 .has-errors i.glyphicon-exclamation-sign {
 	color: #ff0000;
 }
+
+/* The autocomplete drop-down needs the maximum possible z-index in order to show on top of certain components.
+   One such component is a bootbox modal, such as a bootbox dialog. */
+.ui-autocomplete { z-index:2147483647; }
