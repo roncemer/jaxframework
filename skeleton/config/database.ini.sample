@@ -3,6 +3,7 @@
 ; If you're using MySQL on the local machine with the default user and password,
 ; there will be no need to edit this file.
 
+[default]
 ; This controls which connection class to use.
 ; The connection class must match the database type (vendor) you're running.
 ; Uncomment only one connectionClass value.

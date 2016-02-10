@@ -1,56 +1,55 @@
-; Multiple-database connection configuration file.
-; To use this, you ConnectionFactory class needs to be a subclass of AbstractINIMultiDatabaseConnectionFactory.
-; If you're using URI prefixes to determine which database to connect to, you need to follow the README.txt
-; found in extras/urlAliasToMultipleDatabases off the root of the jaxframework project.
-
 ; This configuration file controls the database connection type
 ; (which in turn controls the database vendor), and connection parameters.
-; If you're using MySQL on the local machine with the default user and password,
-; there will be no need to edit this file.
+; If you're using MySQL on the local machine with the default user and password
+; and a single branch, there will be no need to edit this file.
 
 ; This controls which connection class to use.
 ; The connection class must match the database type (vendor) you're running.
 ; Uncomment only one connectionClass value.
 
-; Connection parameters for default database connection.
+; Named connections follow.
+; Each named connection can optionally get its default parameters from a specified "template"
+; connectino which is defined somewhere above it, so it only needs to override the parameters
+; which are not the same as those of its template connection.
+
+; Connection parameters for the first (default) database connection.
+[erp]
 connectionClass=MySQLiConnection
 server=localhost
-username=jax
-password=123jAx321
-database=jax
-description=Corporate Office
+username=erp
+password=123eRp321
+database=erp
+description="Corporate Office"
 showInList=Yes
 vhost=*
-uriPrefix=/jax/corp
-tableToDatabaseMap=group:security:jax_common,appuserrole:,group:bank:jax_common,group:gl:jax_common,group:ap:jax_common,group:ar:jax_common
+uriPrefix=/erp/corp
+tableToDatabaseMap=group:securitycommon:erp_common,group:basecommon:erp_common,group:bank:erp_common,group:gl:erp_common,group:ap:erp_common,group:ar:erp_common,group:hardware:erp_common,group:invcommon:erp_common,group:purcommon:erp_common,group:salescommon:erp_common
 
-; Named connections follow.
-; Each named connection gets its default parameters from the default connection,
-; so it only needs to override the parameters which are not the same as those of
-; the default connection.
+; Connection parameters for other database connections.
+;[erp_store1]
+;template=erp
+;database=erp_store1
+;description="Store #1"
+;uriPrefix=/erp/store1
 
-; Connection parameters for common database connection.
+;[erp_store2]
+;template=erp
+;database=erp_store2
+;description="Store #2"
+;uriPrefix=/erp/store2
+
+; Connection parameters for the common database connection.
 ; This database will contain table groups which are shared by other databases.
 ; Note that uriPrefix is set to a string which cannot be matched at the
 ; beginning of a URI.  This is because this database does not contain all of
 ; the table groups (only the shared ones).
 ; Also note that showInList=No.  This prevents this database from showing up
 ; in the list of databases in which the user can select to work.
-[jax_common]
-database=jax_common
+[erp_common]
+template=erp
+database=erp_common
 description="Common Area"
 showInList=No
 uriPrefix=--never match--
-# This must exist, and must be empty, in order to override the table-to-database mapping for the default connection.
+; This must exist, and must be empty, in order to override the table-to-database mapping for the template connection.
 tableToDatabaseMap=
-
-; Connection parameters for other database connections.
-[jax_store1]
-database=jax_store1
-description="Store #1"
-uriPrefix=/jax/store1
-
-[jax_store2]
-database=jax_store2
-description="Store #2"
-uriPrefix=/jax/store2

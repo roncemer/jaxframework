@@ -10,7 +10,6 @@ ddldbdiff="$phpdaogenDir/ddldbdiff.php"
 ddltosql="$phpdaogenDir/ddltosql.php"
 
 . "$scriptDir/connection.include.sh"
-allConnectionNames=",$ini_secondaryConnectionNames"
 
 connectionNames=""
 haveAllConnections=n
@@ -33,7 +32,7 @@ while [ "$#" -gt 0 ]; do
 			exit 99;
 		fi
 		haveAllConnections=y
-		connectionNames="$allConnectionNames"
+		connectionNames="$ini_allConnectionNames"
 		;;
 	*)
 		if [ "$haveAllConnections" = "y" ]; then
@@ -52,7 +51,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ "$connectionNames" = "" ]; then
-	connectionNames=","
+	connectionNames="$ini_connectionName"
 fi
 
 OIFS="$IFS"
