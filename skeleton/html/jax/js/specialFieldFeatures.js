@@ -7,6 +7,15 @@
 // This file is part of the Jax Framework.
 // If you edit this file, your changes will be lost when framework updates are applied.
 
+// The filterFieldsWithSpecialFeatures(topLevelElement) function is defined below,
+// inside an anonymous function.
+// It can be used after calling formHash() or setValue() [provided by the jQuery field plugin],
+// which don't trigger filtering, to force // filtering on all elements in the form.  If
+// topLevelElement is passed to filterFieldsWithSpecialFeatures(), it must be a jQuery instance
+// containing one or more top-level elements under which all fields with special features will
+// be filtered.  If topLevelElement is not passed, all fields with special features in the
+// entire document will be filtered.
+
 // This is now a stub (deprecated) function.  It is no longer used.
 function attachSpecialFieldFeatures() {
 } // attachSpecialFieldFeatures()
@@ -14,10 +23,6 @@ function attachSpecialFieldFeatures() {
 // This is now a stub (deprecated) function.  It is no longer used.
 function autoShowOrHideSpecialFieldFeatures(hideAll) {
 } // autoShowOrHideSpecialFieldFeatures()
-
-// This is now a stub (deprecated) function.  It is no longer used.
-function filterFieldsWithSpecialFeatures() {
-} // filterFieldsWithSpecialFeatures()
 
 // NOTE: This function delegates to the ajaxCombobox jQuery component, which is implemented below.
 //
@@ -322,6 +327,17 @@ function hookAutocompleteToInput(options) {
 			);
 		} catch (ex) {}
 	})();
+
+	window.filterFieldsWithSpecialFeatures = function(topLevelElement) {
+		var elems;
+		if (topLevelElement !== undefined) {
+			elems = $(filteredClassesSelector, topLevelElement);
+		} else {
+			elems = $(filteredClassesSelector);
+		}
+		filterElementValues(elems);
+		manageFieldFeatures(elems);
+	}
 })();
 
 

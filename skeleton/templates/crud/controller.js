@@ -459,6 +459,8 @@ function load{{uTableName}}IntoForm(id, newMode) {
 
 {{ajaxComboboxInitJS}}
 
+		filterFieldsWithSpecialFeatures($('#{{tableName}}Form'));
+
 		setMode(newMode);
 	} // loadRow()
 
