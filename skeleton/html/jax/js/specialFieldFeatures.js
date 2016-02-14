@@ -40,6 +40,17 @@ function autoShowOrHideSpecialFieldFeatures(hideAll) {
 //     idIsString: true if the primary key/unique identifying column is a string (character) column,
 //         false if it is an integer column.
 //         Optional.  Defaults to false.
+//     altIdColumn: The name of an optional non-primary-key unique identifying column for the table being searched.
+//         When provided, this functions as a unique identifier for values entered into the search box.  This is
+//         useful for when there is a "code" or other uniquely identifying column in addition to the normal integer
+//         primary key.  If present, when a value is entered into the search box but no match is selected from the
+//         autocomplete drop-down list, this column will be searched for the entered value instead of the column
+//         named in idColumn.  This allows direct entry of the human-readable, unique identifier in order to select
+//         a row by entering its code directly.  This is triggered when the search input loses focus.
+//         Optional.  Defaults to ''.
+//     altIdIsString: true if the non-primary-key unique identifying column is a string (character) column,
+//         false if it is an integer column.
+//         Optional.  Defaults to false.
 //     minimumInputLength: The minimum number of characters the user must enter in order to be able
 //         to search rows in the table.
 //         Optional.  Defaults to 1.
@@ -382,6 +393,10 @@ function hookAutocompleteToInput(options) {
 				// Optional parameters (defaulted if not specfied).
 				var idColumn = (typeof(options.idColumn) != 'undefined') ? options.idColumn : 'id';
 				var idIsString = (typeof(options.idIsString) != 'undefined') ? options.idIsString : false;
+
+				var altIdColumn = (typeof(options.altIdColumn) != 'undefined') ? options.altIdColumn : '';
+				var altIdIsString = (typeof(options.altIdIsString) != 'undefined') ? options.altIdIsString : false;
+
 				var minimumInputLength = (typeof(options.minimumInputLength) != 'undefined') ? options.minimumInputLength : 1;
 				var allowClear = (typeof(options.allowClear) != 'undefined') ? options.allowClear : false;
 				var selectPlaceholder = (typeof(options.selectPlaceholder) != 'undefined') ? options.selectPlaceholder : 'Select an item';
@@ -522,35 +537,43 @@ function hookAutocompleteToInput(options) {
 					search.removeAttr('data-manually-entered');
 				}
 
+				var suppressNextLabelLookup = false;
+
 				function origInputChanged() {
 					var idval = getIdValue();
 					origInput.attr('data-idval', idval);
 					if (idval === null) {
        					setLabel(selectPlaceholder);
 					} else {
-						var myRequestSeq = getNextRequestSeq();
-						function rowFetcherCallback(row, textStatus, jqXHR) {
-							// Prevent race conditions.  The last request to be issued wins.
-							if (requestSeq != myRequestSeq) return;
-							if (row !== null) {
-       							setLabel(row.label);
+						if (suppressNextLabelLookup) {
+							suppressNextLabelLookup = false;
+						} else {
+							var myRequestSeq = getNextRequestSeq();
+							function rowFetcherCallback(row, textStatus, jqXHR) {
+								// Prevent race conditions.  The last request to be issued wins.
+								if (requestSeq != myRequestSeq) return;
+								if (row !== null) {
+       								setLabel(row.label);
+								} else {
+       								setLabel(notFoundMessage);
+								}
+							}
+							if (idIsString) {
+								myRowFetcher.getRowForIdString(
+									rowFetcherCallback,
+									autocompleteCommand,
+									idColumn,
+									idval
+								);
 							} else {
-       							setLabel(notFoundMessage);
+								myRowFetcher.getRowForId(
+									rowFetcherCallback,
+									autocompleteCommand,
+									idColumn,
+									idval
+								);
 							}
 						}
-						var row = idIsString ?
-							myRowFetcher.getRowForIdString(
-								rowFetcherCallback,
-								autocompleteCommand,
-								idColumn,
-								idval
-							) :
-							myRowFetcher.getRowForId(
-								rowFetcherCallback,
-								autocompleteCommand,
-								idColumn,
-								idval
-							);
 					}
 				}
 
@@ -649,9 +672,39 @@ function hookAutocompleteToInput(options) {
 					var isManuallyEntered = (typeof(search.attr('data-manually-entered')) != 'undefined');
 					if (isManuallyEntered) search.removeAttr('data-manually-entered');
 					if ((oldval != '') && isManuallyEntered) {
-						// If we lose focus on the search input when its value is not empty, plug that value into the original
-						// input and search for its label.
-						origInput.val(search.val()).trigger('change');
+						// If we lose focus on the search input when its value is not empty, try to find
+						// the row by alternate id or by id.
+						if (altIdColumn != '') {
+							var myRequestSeq = getNextRequestSeq();
+							function rowFetcherCallback(row, textStatus, jqXHR) {
+								// Prevent race conditions.  The last request to be issued wins.
+								if (requestSeq != myRequestSeq) return;
+								if (row !== null) {
+									suppressNextLabelLookup = true;
+									origInput.val(row.value).trigger('change');
+       								setLabel(row.label);
+								} else {
+       								setLabel(notFoundMessage);
+								}
+							}
+							if (altIdIsString) {
+								myRowFetcher.getRowForIdString(
+									rowFetcherCallback,
+									autocompleteCommand,
+									altIdColumn,
+									oldval
+								)
+							} else {
+								myRowFetcher.getRowForId(
+									rowFetcherCallback,
+									autocompleteCommand,
+									altIdColumn,
+									oldval
+								);
+							}
+						} else {
+							origInput.val(search.val()).trigger('change');
+						}
 					} else {
 						// If we lose focus on the search input when its value is empty, restore the current label as its value.
 						search.val((typeof(search.attr('data-current-label')) != 'undefined') ? search.attr('data-current-label') : '').trigger('change');

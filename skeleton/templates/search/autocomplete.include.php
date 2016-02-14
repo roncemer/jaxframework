@@ -5,6 +5,9 @@ if (isset($command) && ($command == '{{searchCommand}}')) {
 	header('Content-Type: application/json');
 	$db = ConnectionFactory::getConnection();
 	$query = isset($params['term']) ? trim($params['term']) : '';
+{{if_haveAltIdColumn}}
+{{getAltIdParam}}
+{{/if_haveAltIdColumn}}
 	if ($query != '') {
 		$canDoFulltextSearch = {{canDoFulltextSearchPHP}};
 {{if_haveAnyFulltextQueryOperators}}
@@ -67,6 +70,17 @@ EOF
 		$offset = isset($params['offset']) ? (int)$params['offset'] : 0;
 		$limit = isset($params['limit']) ? (int)$params['limit'] : 0;
 		if ( ($limit < 1) || ($limit > 100) ) $limit = 100;
+{{if_haveAltIdColumn}}
+	} else if (${{altIdCol}} !== null) {
+		$sqlTail = <<<EOF
+ from {{tableName}} pri
+ {{joins}}
+ where pri.{{altIdCol}} = ?{{andWhere}}
+EOF
+		;
+		$offset = 0;
+		$limit = 1;
+{{/if_haveAltIdColumn}}
 	} else {
 {{getIdParam}}
 		$sqlTail = <<<EOF
@@ -88,6 +102,10 @@ EOF
 	);
 	if ($query != '') {
 {{searchWhereAssignments}}
+{{if_haveAltIdColumn}}
+	} else if (${{altIdCol}} !== null) {
+		$ps->set{{uAltIdColumnPSType}}(${{altIdCol}});
+{{/if_haveAltIdColumn}}
 	} else {
 		$ps->set{{uIdColumnPSType}}(${{idCol}});
 	}

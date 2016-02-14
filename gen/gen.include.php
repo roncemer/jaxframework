@@ -90,6 +90,8 @@ $GENERATOR_CFG_VALIDATIONS = array(
 	new GenCfgValidation('autocompleteSearches/*/docRootPath', 'string'),
 	new GenCfgValidation('autocompleteSearches/*/idColumn', 'string'),
 	new GenCfgValidation('autocompleteSearches/*/idColumnPSType', 'string'),
+	new GenCfgValidation('autocompleteSearches/*/altIdColumn', 'string'),
+	new GenCfgValidation('autocompleteSearches/*/altIdColumnPSType', 'string'),
 	new GenCfgValidation('autocompleteSearches/*/searchCommand', 'string'),
 	new GenCfgValidation('autocompleteSearches/*/searchTemplate', 'string'),
 	new GenCfgValidation('autocompleteSearches/*/phpClasses', 'array'),
@@ -1172,6 +1174,16 @@ function filterFullTextSearchCode($template, $haveAnyFulltextQueryOperators) {
 	}
 	$template = preg_replace('/\{\{if_haveAnyFulltextQueryOperators\}\}/', '', $template);
 	$template = preg_replace('/\{\{\\/if_haveAnyFulltextQueryOperators\}\}/', '', $template);
+	return $template;
+}
+
+// This function is used for server-side autocompletes.
+function filterAltIdAutocompleteCode($template, $haveAltIdColumn) {
+	if (!$haveAltIdColumn) {
+		$template = preg_replace('/\{\{if_haveAltIdColumn\}\}.*?\{\{\\/if_haveAltIdColumn\}\}/s', '', $template);
+	}
+	$template = preg_replace('/\{\{if_haveAltIdColumn\}\}/', '', $template);
+	$template = preg_replace('/\{\{\\/if_haveAltIdColumn\}\}/', '', $template);
 	return $template;
 }
 

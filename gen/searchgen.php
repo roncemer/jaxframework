@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2015 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -235,38 +235,61 @@ EOF
 			$search['searchTemplate'] : '';
 		if ($searchTemplate == '') $searchTemplate = 'autocomplete.include.php';
 
-		$idColumn = ((isset($search['idColumn'])) && (is_string($search['idColumn']))) ?
-			$search['idColumn'] : $idCol;
-
+		$idColumn = ((isset($search['idColumn'])) && (is_string($search['idColumn']))) ? $search['idColumn'] : $idCol;
 		$idColumnPSType = ((isset($search['idColumnPSType'])) && (is_string($search['idColumnPSType']))) ?
 			$search['idColumnPSType'] : 'int';
-		if (!in_array($idColumnPSType, $ALLOWED_PS_TYPES)) $idColumnPSType = 'int';
-		$idparam = sprintf('$params[\'$s\']', $idColumn);
+		if (!in_array($idColumnPSType, $ALLOWED_PS_TYPES)) {
+			fprintf(STDERR, "Invalid idColumnPSType \"%s\" in autocompleteSearches.", $idColumnPSType);
+			return false;
+		}
 		switch ($idColumnPSType) {
 		case 'boolean':
 		case 'int':
 			$getIdParam = sprintf("\t\t\$%s = isset(\$params['%s']) ? (int)trim(\$params['%s']) : 0;", $idColumn, $idColumn, $idColumn);
-			if ($idColumnPSType == 'boolean') {
-				$emptyIdCheck = sprintf('($%s < 0)', $idColumn);
-			} else {
-				$emptyIdCheck = sprintf('($%s <= 0)', $idColumn);
-			}
 			break;
 		case 'float':
 			$getIdParam = sprintf("\t\t\$%s = isset(\$params['%s']) ? (float)trim(\$params['%s']) : 0;", $idColumn, $idColumn, $idColumn);
-			$emptyIdCheck = sprintf('($%s <= 0.0)', $idColumn);
 			break;
 		case 'double':
 			$getIdParam = sprintf("\t\t\$%s = isset(\$params['%s']) ? (double)trim(\$params['%s']) : 0;", $idColumn, $idColumn, $idColumn);
-			$emptyIdCheck = sprintf('($%s <= 0.0)', $idColumn);
 			break;
 		case 'string':
 		case 'match':
 		case 'binary':
 		default:
 			$getIdParam = sprintf("\t\t\$%s = isset(\$params['%s']) ? (string)\$params['%s'] : '';", $idColumn, $idColumn, $idColumn);
-			$emptyIdCheck = sprintf("($%s == '')", $idColumn);
 			break;
+		}
+
+		$altIdColumn = ((isset($search['altIdColumn'])) && (is_string($search['altIdColumn']))) ? $search['altIdColumn'] : '';
+		if ($altIdColumn != '') {
+			$altIdColumnPSType = ((isset($search['altIdColumnPSType'])) && (is_string($search['altIdColumnPSType']))) ?
+				$search['altIdColumnPSType'] : 'int';
+			if (!in_array($altIdColumnPSType, $ALLOWED_PS_TYPES)) {
+				fprintf(STDERR, "Invalid altIdColumnPSType \"%s\" in autocompleteSearches.", $altIdColumnPSType);
+				return false;
+			}
+			switch ($altIdColumnPSType) {
+			case 'boolean':
+			case 'int':
+				$getAltIdParam = sprintf("\t\$%s = isset(\$params['%s']) ? (int)trim(\$params['%s']) : null;", $altIdColumn, $altIdColumn, $altIdColumn);
+				break;
+			case 'float':
+				$getAltIdParam = sprintf("\t\$%s = isset(\$params['%s']) ? (float)trim(\$params['%s']) : null;", $altIdColumn, $altIdColumn, $altIdColumn);
+				break;
+			case 'double':
+				$getAltIdParam = sprintf("\t\$%s = isset(\$params['%s']) ? (double)trim(\$params['%s']) : null;", $altIdColumn, $altIdColumn, $altIdColumn);
+				break;
+			case 'string':
+			case 'match':
+			case 'binary':
+			default:
+				$getAltIdParam = sprintf("\t\$%s = isset(\$params['%s']) ? (string)\$params['%s'] : null;", $altIdColumn, $altIdColumn, $altIdColumn);
+				break;
+			}
+		} else {
+			$altIdColumnPSType = '';
+			$getAltIdParam = '';
 		}
 
 		$joins = '';
@@ -306,7 +329,11 @@ EOF
 			'{{idColumnPSType}}',
 			'{{uIdColumnPSType}}',
 			'{{getIdParam}}',
-			'{{emptyIdCheck}}',
+			'{{altIdCol}}',
+			'{{uAltIdCol}}',
+			'{{altIdColumnPSType}}',
+			'{{uAltIdColumnPSType}}',
+			'{{getAltIdParam}}',
 			'{{extraSelectColumns}}',
 			'{{joins}}',
 			'{{canDoFulltextSearchPHP}}',
@@ -334,7 +361,11 @@ EOF
 			$idColumnPSType,
 			ucfirst($idColumnPSType),
 			$getIdParam,
-			$emptyIdCheck,
+			$altIdColumn,
+			ucfirst($altIdColumn),
+			$altIdColumnPSType,
+			ucfirst($altIdColumnPSType),
+			$getAltIdParam,
 			($extraSelectColumns != '') ? (', '.$extraSelectColumns) : '',
 			($joins != '') ? (' '.$joins) : '',
 			$canDoFulltextSearchPHP,
@@ -348,9 +379,12 @@ EOF
 		$content = str_replace(
 			$searchFor,
 			$replaceWith,
-			filterFullTextSearchCode(
-				file_get_contents($templatesDir.'/'.$searchTemplate),
-				$haveAnyFulltextQueryOperators
+			filterAltIdAutocompleteCode(
+				filterFullTextSearchCode(
+					file_get_contents($templatesDir.'/'.$searchTemplate),
+					$haveAnyFulltextQueryOperators
+				),
+				($altIdColumn != '')
 			)
 		);
 		$fn = $outputDir.'/'.$searchName.'_autocomplete.include.php';
@@ -707,7 +741,6 @@ EOF
 		$idColumnPSType = ((isset($loader['idColumnPSType'])) && (is_string($loader['idColumnPSType']))) ?
 			$loader['idColumnPSType'] : 'int';
 		if (!in_array($idColumnPSType, $ALLOWED_PS_TYPES)) $idColumnPSType = 'int';
-		$idparam = sprintf('$params[\'$s\']', $idColumn);
 		switch ($idColumnPSType) {
 		case 'boolean':
 		case 'int':
