@@ -1,0 +1,1 @@
+DateValidator.class.errorMsg.malformedOrInvalidDate = Malformed or invalid Date. Must be in YYYY-MM-DD format.

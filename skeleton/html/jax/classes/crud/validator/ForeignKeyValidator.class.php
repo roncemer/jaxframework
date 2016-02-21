@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class ForeignKeyValidator extends Validator {
 	protected $foreignTable;
 	protected $foreignKeyMapping;
@@ -89,7 +91,7 @@ class ForeignKeyValidator extends Validator {
 
 		if (!$db->fetchObject($db->executeQuery($ps), true)) {
 			if ($this->errorMsg != '') return $this->errorMsg;
-			return 'Must match an existing entry.';
+			return _t('ForeignKeyValidator.class.errorMsg.mustMatchAnExistingEntry');
 		}
 		return '';
 	}

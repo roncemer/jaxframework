@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class RangeValidator extends Validator {
 	protected $type, $valueName;
 	protected $minVal, $maxVal, $caseInsensitive;
@@ -80,7 +82,7 @@ class RangeValidator extends Validator {
 			if ($this->minVal !== null) {
 				if ($this->maxVal !== null) {
 					return sprintf(
-						"Must be between %s%s%s and %s%s%s.",
+						_t('RangeValidator.class.errorMsg.mustBeBetween'),
 						$quote,
 						$this->minVal,
 						$quote,
@@ -90,14 +92,14 @@ class RangeValidator extends Validator {
 					);
 				}
 				return sprintf(
-					"Must be greater than or equal to %s%s%s.",
+					_t('RangeValidator.class.errorMsg.mustBeGreaterThanOrEqualTo'),
 					$quote,
 					$this->minVal,
 					$quote
 				);
 			} else if ($this->maxVal !== null) {
 				return sprintf(
-					"Must be less than or equal to %s%s%s.",
+					_t('RangeValidator.class.errorMsg.mustBeLessThanOrEqualTo'),
 					$quote,
 					$this->maxVal,
 					$quote

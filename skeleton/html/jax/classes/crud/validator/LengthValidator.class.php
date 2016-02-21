@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class LengthValidator extends Validator {
 	protected $valueName;
 	protected $minLength, $maxLength;
@@ -35,21 +37,11 @@ class LengthValidator extends Validator {
 			if ($this->errorMsg != '') return $this->errorMsg;
 			if ($this->minLength !== null) {
 				if ($this->maxLength !== null) {
-					return sprintf(
-						"Must be between %d and %d characters in length.",
-						$this->minLength,
-						$this->maxLength
-					);
+					return sprintf(_t('LengthValidator.class.errorMsg.mustBeBetweenLengths'), $this->minLength, $this->maxLength);
 				}
-				return sprintf(
-					"Must be at least %d characters in length.",
-					$this->minLength
-				);
+				return sprintf(_t('LengthValidator.class.errorMsg.mustBeAtLeastLength'), $this->minLength);
 			} else if ($this->maxLength !== null) {
-				return sprintf(
-					"Cannot exceed %d characters in length.",
-					$this->maxLength
-				);
+				return sprintf(_t('LengthValidator.class.errorMsg.cannotExceedLength'), $this->maxLength);
 			}
 		}
 		return '';

@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class NotEmptyValidator extends Validator {
 	protected $valueName;
 
@@ -26,7 +28,7 @@ class NotEmptyValidator extends Validator {
 		$outOfRange = false;
 		if ($val == '') {
 			if ($this->errorMsg != '') return $this->errorMsg;
-			return 'Cannot be empty.';
+			return _t('NotEmptyValidator.class.errorMsg.cannotBeEmpty');
 		}
 		return '';
 	}

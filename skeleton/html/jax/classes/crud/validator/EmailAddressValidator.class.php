@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class EmailAddressValidator extends Validator {
 	protected $valueName;
 
@@ -27,7 +29,7 @@ class EmailAddressValidator extends Validator {
 			"/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/",
 			$val)) {
 			if ($this->errorMsg != '') return $this->errorMsg;
-			return 'Malformed or invalid Email Address.';
+			return _t('EmailAddressValidator.class.errorMsg.malformedOrInvalidEmailAddress');
 		}
 		return '';
 	}

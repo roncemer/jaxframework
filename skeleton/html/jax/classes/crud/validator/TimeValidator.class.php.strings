@@ -1,0 +1,1 @@
+TimeValidator.class.errorMsg.malformedOrInvalidTime = Malformed or invalid Time. Must be in hh:mm:ss 24-hour format.

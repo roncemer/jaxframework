@@ -1,0 +1,3 @@
+LengthValidator.class.errorMsg.mustBeBetweenLengths = Must be between %d and %d characters in length.
+LengthValidator.class.errorMsg.mustBeAtLeastLength = Must be at least %d characters in length.
+LengthValidator.class.errorMsg.cannotExceedLength = Cannot exceed %d characters in length.

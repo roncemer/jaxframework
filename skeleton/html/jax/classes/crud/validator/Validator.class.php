@@ -1,10 +1,12 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
 
 // This file is part of the jaxframework project.
+
+if (!function_exists('loadResourceBundle')) include dirname(dirname(dirname(dirname(__FILE__)))).'/include/l10n.include.php';
 
 abstract class Validator {
 	public static $ALLOWED_QUERY_OPERATORS = array('=', '<>', '<', '<=', '>', '>=', 'beginsWith', 'contains', 'endsWith');

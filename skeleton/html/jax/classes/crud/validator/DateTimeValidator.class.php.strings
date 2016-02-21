@@ -1,0 +1,1 @@
+DateTimeValidator.class.errorMsg.malformedOrInvalidDateTime = Malformed or invalid Date/Time. Must be in YYYY-MM-DD hh:mm:ss 24-hour format.

@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class NotZeroValidator extends Validator {
 	protected $type, $valueName;
 
@@ -41,7 +43,7 @@ class NotZeroValidator extends Validator {
 		}
 		if ($isZero) {
 			if ($this->errorMsg != '') return $this->errorMsg;
-			return 'Cannot be zero.';
+			return _t('NotZeroValidator.class.errorMsg.cannotBeZero');
 		}
 		return '';
 	}

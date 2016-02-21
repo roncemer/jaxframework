@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2012 Ronald B. Cemer
+// Copyright (c) 2011-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -7,6 +7,8 @@
 // This file is part of the jaxframework project.
 
 if (!class_exists('Validator', false)) include dirname(__FILE__).'/Validator.class.php';
+loadResourceBundle(__FILE__);
+
 class TimeValidator extends Validator {
 	protected $valueName;
 
@@ -53,7 +55,7 @@ class TimeValidator extends Validator {
 
 		if (!$isValid) {
 			if ($this->errorMsg != '') return $this->errorMsg;
-			return 'Malformed or invalid Time. Must be in hh:mm:ss 24-hour format.';
+			return _t('TimeValidator.class.errorMsg.malformedOrInvalidTime');
 		}
 		return '';
 	}
