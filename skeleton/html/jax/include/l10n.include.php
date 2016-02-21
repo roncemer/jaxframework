@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2012 Ronald B. Cemer
+// Copyright (c) 2012-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -35,8 +35,9 @@ function loadResourceBundle($pageName) {
 	foreach ($langs as $lang) {
 		$pieces = explode('_', $lang);
 		$suffixes = array('');
+		// Generate language-specific suffixes in order of least- to most-specific.
 		for ($i = 0; $i < count($pieces); $i++) {
-			$suffixes[] = '.'.implode('_', array_slice($pieces, 0, $i+1));
+			$suffixes[] = '-'.implode('_', array_slice($pieces, 0, $i+1)).'-translated';
 		}
 		foreach ($suffixes as $suffix) {
 			$fn = $pageName.$suffix.'.strings';
