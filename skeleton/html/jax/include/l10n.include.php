@@ -1,6 +1,7 @@
 <?php
-// Copyright (c) 2012-2016 Ronald B. Cemer
+// Copyright (c) 2010-2016 Ronald B. Cemer
 // All rights reserved.
+//
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
 
@@ -19,7 +20,10 @@ function loadResourceBundle($pageName) {
 			if (($semiidx = strpos($lng, ';')) !== false) {
 				$lng = trim(substr($lng, 0, $semiidx));
 			}
-			$langs[$i] = $lng;
+			if ($lng != '') {
+				$lng = str_replace('-', '_', $lng);
+				$langs[$i] = $lng;
+			}
 		}
 		unset($seimiidx);
 		unset($lng);
