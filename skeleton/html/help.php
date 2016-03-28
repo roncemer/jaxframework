@@ -151,8 +151,10 @@ function replaceIdNodes($node) {
 		}
 	}
 
-	foreach ($node->childNodes as $child) {
-		replaceIdNodes($child);
+	if ($node->hasChildNodes()) {
+		foreach ($node->childNodes as $child) {
+			replaceIdNodes($child);
+		}
 	}
 } // replaceIdNodes()
 
