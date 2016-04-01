@@ -749,12 +749,14 @@ function hookAutocompleteToInput(options) {
 						return;
 					}
 					if (!origInput.is('[disabled]')) origInput.focus();
-					if (search.autocomplete('widget').is(':visible')) {
-						search.autocomplete('close');
-					} else {
-						search.autocomplete('option', 'minLength', 0);
-						search.autocomplete('search', '');
-						search.autocomplete('option', 'minLength', minimumInputLength);
+					if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
+						if (search.autocomplete('widget').is(':visible')) {
+							search.autocomplete('close');
+						} else {
+							search.autocomplete('option', 'minLength', 0);
+							search.autocomplete('search', '');
+							search.autocomplete('option', 'minLength', minimumInputLength);
+						}
 					}
 					evt.stopPropagation();
 					return false;
