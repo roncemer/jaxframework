@@ -293,8 +293,10 @@ Usage:
 	padding: 0;
 }
 .combobox-search {
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
+	padding-right: 20px;
+}
+.combobox-search.has-clear {
+	padding-right: 40px;
 }
 /* This simulates the default border styles from bootstrap for focused inputs which don't have the form-control class. */
 .combobox-search:not(.form-control).active {
@@ -313,7 +315,7 @@ Usage:
 	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 }
-.combobox-chevron-down {
+/*.combobox-chevron-down {
 	margin: 0;
 	padding: 2px 6px;
 	display: inline-block;
@@ -322,14 +324,20 @@ Usage:
 	border-radius: 3px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
-}
-.combobox-clear {
+}*/
+.combobox-chevron-down {
 	position: relative;
 	left: -20px;
 	width: 0px;
 	max-width: 0px;
 }
-.combobox-clear i {
+.combobox-clear {
+	position: relative;
+	left: -40px;
+	width: 0px;
+	max-width: 0px;
+}
+.combobox-chevron-down i, .combobox-clear i {
 	width: 0px;
 	max-width: 0px;
 }

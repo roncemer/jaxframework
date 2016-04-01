@@ -4,11 +4,11 @@
 if (isset($command) && ($command == '{{searchCommand}}')) {
 	header('Content-Type: application/json');
 	$db = ConnectionFactory::getConnection();
-	$query = isset($params['term']) ? trim($params['term']) : '';
+	$query = isset($params['term']) ? trim($params['term']) : null;
 {{if_haveAltIdColumn}}
 {{getAltIdParam}}
 {{/if_haveAltIdColumn}}
-	if ($query != '') {
+	if ($query !== null) {
 		$canDoFulltextSearch = {{canDoFulltextSearchPHP}};
 {{if_haveAnyFulltextQueryOperators}}
 		$ftquery = $query;
@@ -100,7 +100,7 @@ EOF
 		$offset,
 		$limit
 	);
-	if ($query != '') {
+	if ($query !== null) {
 {{searchWhereAssignments}}
 {{if_haveAltIdColumn}}
 	} else if (${{altIdCol}} !== null) {

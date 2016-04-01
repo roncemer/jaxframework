@@ -455,7 +455,7 @@ function hookAutocompleteToInput(options) {
 				// Remove any old components which were inserted after the original input.
 				origInput.nextAll("input.combobox-search[data-combobox-seq='"+comboboxSeq+"']").remove();
 				origInput.nextAll("a.combobox-clear[data-combobox-seq='"+comboboxSeq+"']").remove();
-				origInput.nextAll("div.combobox-chevron-down[data-combobox-seq='"+comboboxSeq+"']").remove();
+				origInput.nextAll("a.combobox-chevron-down[data-combobox-seq='"+comboboxSeq+"']").remove();
 
 				// Create a search input after the original input.
 				var search = origInput.clone();
@@ -494,9 +494,9 @@ function hookAutocompleteToInput(options) {
 					});
 				}
 
-				var chevronDown = $('<div class="combobox-chevron-down"><i class="glyphicon glyphicon-chevron-down" tabindex="-1"></i></div>');
-				chevronDown.insertAfter(allowClear ? clearLink : search);
-				chevronDown.attr('data-combobox-seq', comboboxSeq);
+				var chevronDownLink = $('<a class="btn-default combobox-chevron-down" href="#" onclick="return false;" tabindex="-1"><i class="glyphicon glyphicon-chevron-down"></i></a>');
+				chevronDownLink.insertAfter(allowClear ? clearLink : search);
+				chevronDownLink.attr('data-combobox-seq', comboboxSeq);
 
 				function isClearLinkVisible() {
 					if (!allowClear) return false;
@@ -512,20 +512,32 @@ function hookAutocompleteToInput(options) {
 						var idvalstr = ''+idvalint;
 						if (idvalstr != idval) origInput.val(idvalstr).trigger('change');
 						if (idvalint == 0) {
-							if (allowClear && isClearLinkVisible()) clearLink.hide();
+							if (allowClear && isClearLinkVisible()) {
+								clearLink.hide();
+								search.removeClass('has-clear');
+							}
 							return null;
 						}
 					} else {
 						if (idval == '') {
-							if (allowClear && isClearLinkVisible()) clearLink.hide();
+							if (allowClear && isClearLinkVisible()) {
+								clearLink.hide();
+								search.removeClass('has-clear');
+							}
 							return null;
 						}
 					}
 					if (allowClear) {
 						if ((!origInput.is('[readonly]')) && (!origInput.is('[disabled]'))) {
-							if (!isClearLinkVisible()) clearLink.show();
+							if (!isClearLinkVisible()) {
+								clearLink.show();
+								search.addClass('has-clear');
+							}
 						} else {
-							if (isClearLinkVisible()) clearLink.hide();
+							if (isClearLinkVisible()) {
+								clearLink.hide();
+								search.removeClass('has-clear');
+							}
 						}
 					}
 					return idval;
@@ -731,12 +743,19 @@ function hookAutocompleteToInput(options) {
 					return false;
 				});
 
-				chevronDown.mousedown(function(evt) {
+				chevronDownLink.mousedown(function(evt) {
 					if (!$.contains(document, search[0])) {
 						origInput.off(this);
 						return;
 					}
 					if (!origInput.is('[disabled]')) origInput.focus();
+					if (search.autocomplete('widget').is(':visible')) {
+						search.autocomplete('close');
+					} else {
+						search.autocomplete('option', 'minLength', 0);
+						search.autocomplete('search', '');
+						search.autocomplete('option', 'minLength', minimumInputLength);
+					}
 					evt.stopPropagation();
 					return false;
 				});
