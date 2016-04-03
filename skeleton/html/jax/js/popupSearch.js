@@ -472,7 +472,6 @@ PopupSearch.prototype.addFilterColSelectFromBackendSearchableColumns = function(
 			url:url,
 			async:false,
 			cache:false,
-			global:false,
 			processData:false,
 		}).responseText;
 		var searchableColumns = [];

@@ -395,7 +395,6 @@ function load{{uTableName}}IntoForm(id, newMode) {
 		url:url,
 		async:true,
 		cache:false,
-		global:false,
 		processData:false,
 		success:function(rows, textStatus, jqXHR) {
 			try {
@@ -420,7 +419,6 @@ function load{{uTableName}}IntoForm(id, newMode) {
 		url:url,
 		async:false,
 		cache:false,
-		global:false,
 		processData:false
 	}).responseText;
 	var rows = JSON.parse(json);
@@ -524,7 +522,6 @@ function save{{uTableName}}() {
 					url:url,
 					async:true,
 					cache:false,
-					global:false,
 					processData:true,
 					data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").val()},
 					success:function(data, textStatus, jqXHR) {
@@ -543,7 +540,6 @@ function save{{uTableName}}() {
 					url:url,
 					async:false,
 					cache:false,
-					global:false,
 					processData:true,
 					data:{command:'delete{{uTableName}}', {{idCol}}:$("#{{tableName}}Form input[name='{{idCol}}']").val()}
 				}).responseText;

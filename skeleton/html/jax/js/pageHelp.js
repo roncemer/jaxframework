@@ -2,7 +2,7 @@
 // This file is part of the Jax Framework.
 // If you edit this file, your changes will be lost when framework updates are applied.
 
-// Copyright (c) 2010-2015 Ronald B. Cemer
+// Copyright (c) 2010-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -31,7 +31,6 @@ function installPageHelp(pageURL) {
 		url:url,
 		async:true,
 		cache:false,
-		global:false,
 		processData:false,
 		success:function(data) {
 			// When we convert the HTML document into a jQuery object, what we get back is

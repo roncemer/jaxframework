@@ -80,7 +80,6 @@ RowFetcher.prototype.getRowArrayForURL = function(url) {
 			url:url,
 			async:true,
 			cache:false,
-			global:false,
 			processData:false,
 			success:function(data, textStatus, jqXHR) {
 				if (typeof(data) != 'object') data = [];
@@ -105,7 +104,6 @@ RowFetcher.prototype.getRowArrayForURL = function(url) {
 			url:url,
 			async:false,
 			cache:false,
-			global:false,
 			processData:false,
 		}).responseText;
 		rows = (json != '') ? JSON.parse(json) : [];
