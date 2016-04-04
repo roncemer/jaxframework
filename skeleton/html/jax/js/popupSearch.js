@@ -531,8 +531,6 @@ $(document).keydown(function(evt) {
 		var link = null;
 		if (elem.hasClass('popupSearchLink')) {
 			link = elem;
-		} else if ((elem.hasClass('select2-focusser')) || (elem.hasClass('select2-offscreen'))) {
-			link = $(evt.target.parentElement).nextAll('.popupSearchLink:first');
 		} else {
 			link = elem.nextAll('.popupSearchLink:first');
 		}

@@ -239,6 +239,10 @@ $(document).ready(function() {
 	});
 {{/if_searchPresentation_AJAXSearchGrid}}
 
+	if (typeof($(document).tabCollapse) == 'function') {
+		$('ul.nav-tabs').tabCollapse();
+	}
+
 	if (typeof postInitHook == 'function') {
 		postInitHook();
 	}

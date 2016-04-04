@@ -382,7 +382,7 @@ EOF
 	// If the column has a foreign key consisting of exactly one field,
 	// store that foreign key away, indexed by column name.
 	// We'll use this to automatically include searches, autocomplates and popup searches,
-	// and to create select2-based row selection components an popup search icons.
+	// and to create ajaxComboBox row selection components and popup search icons.
 	$relationColFKsByColName = array();
 	$relatedTableNames = array();
 	foreach ($table->columns as $column) {
@@ -491,7 +491,7 @@ EOF
 		$cn = $column->name;
 
 		// If the column has a foreign key consisting of exactly one field,
-		// create a select2 component which the user can use to select the related row's id,
+		// create an ajaxComboBox component which the user can use to select the related row's id,
 		// along with a pop-up search which the user can use for more detailed searching.
 		if (isset($relationColFKsByColName[$cn])) {
 			$fk = $relationColFKsByColName[$cn];

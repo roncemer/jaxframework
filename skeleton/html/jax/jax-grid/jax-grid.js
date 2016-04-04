@@ -302,11 +302,6 @@ angular.module('JaxGridApp', [])
 					elem.trigger('lookupDescription');
 				}
 			});
-			// Update select2 values which don't match the values of their input elements.
-			$('input.select2-offscreen', $scope.containerElement).each(function(idx, el) {
-				var elem = $(el);
-				if (elem.select2('data') != elem.val()) elem.select2('val', elem.val());
-			});
 		}
 	}
 
