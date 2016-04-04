@@ -83,7 +83,6 @@ Third-party packages included in Jax Framework ™ include:</p>
 <li><a class="reference external" href="http://datatables.net/">jQuery DataTables</a> [DEPRECATED]</li>
 <li><a class="reference external" href="http://www.jacklmoore.com/colorbox/">jQuery ColorBox</a></li>
 <li><a class="reference external" href="http://www.pengoworks.com/workshop/jquery/field/field.plugin.htm">jQuery Field</a></li>
-<li><a class="reference external" href="http://ivaynberg.github.com/select2/">jQuery Select2</a></li>
 <li><a class="reference external" href="http://www.datejs.com/">Datejs</a></li>
 <li><a class="reference external" href="https://code.google.com/p/spyc/">Spyc</a></li>
 <li><a class="reference external" href="http://phpdaogen.sourceforge.net/">phpdaogen</a></li>
@@ -230,8 +229,6 @@ components, and uses Bootstrap as its CSS foundation:</p>
 </dl>
 </li>
 <li><p class="first"><a class="reference external" href="http://www.pengoworks.com/workshop/jquery/field/field.plugin.htm">jQuery Field</a>: Provides some convenience functions for dealing with forms and fields.</p>
-</li>
-<li><p class="first"><a class="reference external" href="http://ivaynberg.github.com/select2/">jQuery Select2</a></p>
 </li>
 </ul>
 <p>It is recommended that the reader have at last a cursory understanding of what each of these components
@@ -398,14 +395,14 @@ appear on the normal site navigation and also within pop-up windows or dialogs, 
 pages which always appear within pop-up windows or dialogs.</p>
 </div>
 </div>
-<div class="section" id="id13">
-<h1>Phpdaogen<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id12">
+<h1>Phpdaogen<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h1>
 <p>In this chapter, we will introduce you to the concept of Data Access Objects (DAO), and phpdaogen.
 We will also cover database schemas, and how phpdaogen handles them.</p>
 <div class="section" id="connection-and-preparedstatement">
 <h2>Connection and PreparedStatement<a class="headerlink" href="#connection-and-preparedstatement" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id14">
-<h3>Introduction<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>Introduction<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>One of the problems with plain PHP is that it has a different set of functions, some of which work
 differently than others, for accessing different Relational Database Management Systems (RDMS).
 There is one set of functions for accessing MySQL, another set of functions for accessing
@@ -594,8 +591,8 @@ instance away so it can use it to access the database.</p>
 </div>
 <div class="section" id="database-schema">
 <h2>Database Schema<a class="headerlink" href="#database-schema" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id15">
-<h3>Introduction<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id14">
+<h3>Introduction<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <p>In an RDBMS, the database schema is created and altered using Data Definition Language (DDL) SQL
 statements.  In phpdaogen, the database schema can be created directly in the database using DDL SQL
 statements, or (preferably) expressed in one or more YAML or XML files.  When the schema is
@@ -793,8 +790,8 @@ This DTD file can be used to validate an XML DDL file.</p>
 </div>
 <div class="section" id="data-access-objects">
 <h2>Data Access Objects<a class="headerlink" href="#data-access-objects" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id17">
-<h3>Introduction<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id16">
+<h3>Introduction<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p>Data Access Objects (DAO) bridge the gap between a relational data model and an object-oriented
 programming language such as PHP.</p>
 <p>Phpdaogen provides a code generator which generates classes for each table it finds in the schema.
@@ -1146,10 +1143,10 @@ result in using up all available memory leading to an out of memory error.</p>
 </div>
 </div>
 </div>
+<div class="section" id="id17">
+<h1>Search and CRUD Generators<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id18">
-<h1>Search and CRUD Generators<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id19">
-<h2>Introduction<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
 <p>In database-driven applications, one of the most important tasks is the creation, retrieval, update
 and deletion of rows in the database tables.  This is called CRUD, which stands for
 Create/Retrieve/Update/Delete.</p>
@@ -1638,8 +1635,8 @@ the file under include/customSearch to keep it separate from generated searches 
                (typically inputType text) to behave as a searchable, drop-down list with
                server-side autocomplete functionality, for the puprose of selecting a row from a
                related table and submitting its id or primary key to the server when the form is
-               submitted.  This functionality is implemented using a combination of the jQuery
-               Select2 component and a server-side autocomplete include (generated by the
+               submitted.  This functionality is implemented using a combination of the included
+               ajaxComboBox component and a server-side autocomplete include (generated by the
                autocompletes section in the YAML file).  The options here are passed into the
                hookAutocompleteSingleRowSelectorToInput(options) function in
                html/jax/js/specialFieldFeatures.js.  Refer to that file for more details.
@@ -1855,10 +1852,10 @@ help for more information.</p>
 of the Jax Framework ™ root directory, you can use the -docroot command-line option to change
 the document root for the CRUD generator, causing it to output its files into a different directory.</p>
 </div>
+<div class="section" id="id19">
+<h2>CRUD Callbacks<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id20">
-<h2>CRUD Callbacks<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id21">
-<h3>Introduction<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<h3>Introduction<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <p>Once generated, the CRUD pages can be further customized by either tweaking the YAML file and
 re-generating, or creating special PHP (server-side model and view) and/or JavaScript (client-side
 controller) files which follow a specific naming convention, and defining certain callback functions
@@ -2184,8 +2181,8 @@ function fixupAJAXURL(url) {
 </div>
 <div class="section" id="filters-and-validators-for-forms">
 <h1>Filters and Validators for Forms<a class="headerlink" href="#filters-and-validators-for-forms" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id22">
-<h2>Introduction<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id21">
+<h2>Introduction<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
 <p>When a row is saved in add mode or update mode, the form is posted back to the server-side PHP page
 (the main page, part of the model).  A special, hidden form field named &#8220;command&#8221; is first populated
 with a command telling the PHP page to save a database row.  Because the data which is coming in is
@@ -2689,8 +2686,8 @@ boolean, string or binary.</td>
 </div>
 <div class="section" id="permission-system">
 <h1>Permission System<a class="headerlink" href="#permission-system" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id23">
-<h2>Introduction<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id22">
+<h2>Introduction<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h2>
 <p>The permission system in Jax Framework ™ is a role-based system which consists of users, roles
 and permissions.  One or more permissions are assigned to a role, and one or more roles are assigned
 to a user.  By using roles, we can group related permissions together and manage things much better.
@@ -2875,22 +2872,22 @@ these subsystems, or replace them entirely.  They are only provided as a startin
 <li><a class="reference internal" href="#page-layout-and-templates">Page Layout and Templates</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">Phpdaogen</a><ul>
+<li><a class="reference internal" href="#id12">Phpdaogen</a><ul>
 <li><a class="reference internal" href="#connection-and-preparedstatement">Connection and PreparedStatement</a><ul>
-<li><a class="reference internal" href="#id14">Introduction</a></li>
+<li><a class="reference internal" href="#id13">Introduction</a></li>
 <li><a class="reference internal" href="#connection">Connection</a></li>
 <li><a class="reference internal" href="#preparedstatement">PreparedStatement</a></li>
 <li><a class="reference internal" href="#how-it-all-works-together">How it All Works Together</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#database-schema">Database Schema</a><ul>
-<li><a class="reference internal" href="#id15">Introduction</a></li>
+<li><a class="reference internal" href="#id14">Introduction</a></li>
 <li><a class="reference internal" href="#yaml-ddl-file-format">YAML DDL File Format</a></li>
 <li><a class="reference internal" href="#xml-ddl-file-format">XML DDL File Format</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#data-access-objects">Data Access Objects</a><ul>
-<li><a class="reference internal" href="#id17">Introduction</a></li>
+<li><a class="reference internal" href="#id16">Introduction</a></li>
 <li><a class="reference internal" href="#the-insert-update-delete-and-load-functions">The insert(), update(), delete() and load() Functions</a><ul>
 <li><a class="reference internal" href="#insert">insert()</a></li>
 <li><a class="reference internal" href="#update">update()</a></li>
@@ -2903,8 +2900,8 @@ these subsystems, or replace them entirely.  They are only provided as a startin
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18">Search and CRUD Generators</a><ul>
-<li><a class="reference internal" href="#id19">Introduction</a></li>
+<li><a class="reference internal" href="#id17">Search and CRUD Generators</a><ul>
+<li><a class="reference internal" href="#id18">Introduction</a></li>
 <li><a class="reference internal" href="#generator-configuration-yaml-file-format">Generator Configuration YAML File Format</a><ul>
 <li><a class="reference internal" href="#top-level-entries">Top-Level Entries</a></li>
 <li><a class="reference internal" href="#searches">Searches</a></li>
@@ -2924,8 +2921,8 @@ these subsystems, or replace them entirely.  They are only provided as a startin
 <li><a class="reference internal" href="#default-generator-configuration-file">Default Generator Configuration File</a></li>
 <li><a class="reference internal" href="#search-generator">Search Generator</a></li>
 <li><a class="reference internal" href="#crud-generator">CRUD Generator</a></li>
-<li><a class="reference internal" href="#id20">CRUD Callbacks</a><ul>
-<li><a class="reference internal" href="#id21">Introduction</a></li>
+<li><a class="reference internal" href="#id19">CRUD Callbacks</a><ul>
+<li><a class="reference internal" href="#id20">Introduction</a></li>
 <li><a class="reference internal" href="#model-callbacks">Model Callbacks</a></li>
 <li><a class="reference internal" href="#view-callbacks">View Callbacks</a></li>
 <li><a class="reference internal" href="#controller-callbacks">Controller Callbacks</a></li>
@@ -2934,7 +2931,7 @@ these subsystems, or replace them entirely.  They are only provided as a startin
 </ul>
 </li>
 <li><a class="reference internal" href="#filters-and-validators-for-forms">Filters and Validators for Forms</a><ul>
-<li><a class="reference internal" href="#id22">Introduction</a></li>
+<li><a class="reference internal" href="#id21">Introduction</a></li>
 <li><a class="reference internal" href="#filters">Filters</a><ul>
 <li><a class="reference internal" href="#the-filter-abstract-class">The Filter Abstract Class</a></li>
 <li><a class="reference internal" href="#filters-and-their-parameters">Filters and their Parameters</a><ul>
@@ -2965,7 +2962,7 @@ these subsystems, or replace them entirely.  They are only provided as a startin
 </ul>
 </li>
 <li><a class="reference internal" href="#permission-system">Permission System</a><ul>
-<li><a class="reference internal" href="#id23">Introduction</a></li>
+<li><a class="reference internal" href="#id22">Introduction</a></li>
 <li><a class="reference internal" href="#sessions-and-the-login-logout-process">Sessions and the Login/Logout Process</a></li>
 <li><a class="reference internal" href="#the-permissions-class">The Permissions Class</a></li>
 <li><a class="reference internal" href="#other-files-in-the-permission-system">Other Files in the Permission System</a><ul>
