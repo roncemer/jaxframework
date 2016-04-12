@@ -1,1 +1,1 @@
-EmailAddressValidator.class.errorMsg.malformedOrInvalidEmailAddress = Dạng sai hoặc không hợp lệ Địa chỉ Email.
+EmailAddressValidator.class.errorMsg.malformedOrInvalidEmailAddress = Địa chỉ Email định dạng sai hoặc không hợp lệ.
