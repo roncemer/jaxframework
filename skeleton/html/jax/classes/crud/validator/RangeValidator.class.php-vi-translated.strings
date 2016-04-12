@@ -1,0 +1,3 @@
+RangeValidator.class.errorMsg.mustBeBetween = Phải nằm giữa %s%s%s và %s%s%s.
+RangeValidator.class.errorMsg.mustBeGreaterThanOrEqualTo = Phải lớn hơn hoặc bằng %s%s%s.
+RangeValidator.class.errorMsg.mustBeLessThanOrEqualTo = Phải bé hơn hoặc bằng %s%s%s.

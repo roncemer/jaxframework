@@ -1,0 +1,12 @@
+crud.approle.search.id.heading = Id
+crud.approle.search.role_name.heading = Tên vai trò
+crud.approle.search.description.heading = Mô tả
+crud.approle.search.when_added.heading = Được thêm
+crud.approle.form.input.id.label = Id
+crud.approle.form.input.when_added.label = Được thêm
+crud.approle.form.input.role_name.label = Tên vai trò
+crud.approle.form.input.description.label = Mô tả
+crud.approle.validator.role_name.NoDuplicatesValidator.errorMsg = Tên Vai Trò được chọn đã được dùng.
+crud.approle.validator.role_name.specialCharsNotAllowed.errorMsg = Tên Vai trò chỉ có thể chứa kí tự là chữ cái, con số, dấu trừ (-) và gạch dưới (_).
+crud.approle.validator.description.NoDuplicatesValidator.errorMsg = Mô tả được chọn đã được dùng.
+crud.approle.form.input.rolePermissions.label = RolePermissions

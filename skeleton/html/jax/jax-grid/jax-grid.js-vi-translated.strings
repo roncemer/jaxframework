@@ -1,0 +1,6 @@
+jax.grid.pager.page_number_rows_per_page.page.label = Trang
+jax.grid.pager.page_number_rows_per_page.num_pages.label = của
+jax.grid.pager.page_number_rows_per_page.rows_per_page.label = dòng/trang
+jax.grid.pager.search_text_input.label = Tìm kiếm
+jax.grid.pager.search_by_select.label = bởi
+jax.grid.pager.search_by_select.any_option.label = (bất kì)

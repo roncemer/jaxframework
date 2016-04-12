@@ -1,0 +1,3 @@
+LengthValidator.class.errorMsg.mustBeBetweenLengths = Phải nằm giữa độ dài %d và %d kí tự.
+LengthValidator.class.errorMsg.mustBeAtLeastLength = Phải có độ dài ít nhất %d kí tự.
+LengthValidator.class.errorMsg.cannotExceedLength = Không thể vượt quá độ dài %d kí tự.

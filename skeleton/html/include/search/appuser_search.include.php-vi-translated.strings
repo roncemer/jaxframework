@@ -1,0 +1,5 @@
+appuser_search.searchableColumn.id.title = Id
+appuser_search.searchableColumn.user_name.title = Tên người dùng
+appuser_search.searchableColumn.email_addr.title = Địa chỉ Email
+appuser_search.searchableColumn.first_name.title = Tên
+appuser_search.searchableColumn.last_name.title = Họ

@@ -1,0 +1,5 @@
+reportbase.form.input.outputFormat.label = Định dạng đầu ra
+reportbase.form.input.displayHTMLReportInline.label = Hiển thị ở trang (bỏ chọn để tải xuống)
+reportbase.form.input.pdfPageFormat.label = Định dạng trang PDF
+reportbase.form.input.pdfPageOrientation.label = Định hướng trang PDF
+reportbase.form.input.generateReportButton.label = Tạo báo cáo

@@ -1,0 +1,1 @@
+DateValidator.class.errorMsg.malformedOrInvalidDate = Ngày/Giờ Định dạng sai hoặc không hợp lệ. Phải ở dạng YYYY-MM-DD hh:mm:ss 24 giờ.

@@ -1,0 +1,9 @@
+# Jax Framework System Strings
+
+popupSearch.actions = Các thao tác
+popupSearch.titleFmt = Tìm kiếm %s
+popupSearch.filterCol.title = bởi
+popupSearch.filterCol.option.any.title = (bất kì)
+
+system.yes = Có
+system.no = Không

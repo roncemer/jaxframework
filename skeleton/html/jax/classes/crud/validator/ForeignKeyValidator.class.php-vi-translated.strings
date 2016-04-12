@@ -1,0 +1,1 @@
+ForeignKeyValidator.class.errorMsg.mustMatchAnExistingEntry = Phải khớp với một sự nhập đã tồn tại.

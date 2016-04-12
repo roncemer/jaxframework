@@ -1,0 +1,65 @@
+# Jax Framework CRUD Strings
+
+# Mode display messages.
+crud.crudSearchModeTitleBase = Đang tồn tại
+crud.crudAddModeTitleBase = Thêm một cái mới
+crud.crudEditModeTitleBase = Chỉnh sửa một cái đang tồn tài
+crud.crudDeleteModeTitleBase = Xoá một cái đang tồn tại
+crud.crudViewModeTitleBase = Xem một cái đang tồn tại
+
+# Search-mode messages.
+crud.crudSearchActionsHeader = Các thao tác
+crud.crudAddLinkTitleBase = Thêm một cái mới
+crud.crudAddShortLinkTitle = Thêm
+crud.crudEditLinkTitle = Sửa
+crud.crudAddSimilarLinkTitle = Thêm tương tự
+crud.crudDeleteLinkTitle = Xoá
+crud.crudViewLinkTitle = Xem
+
+# Save/abandon action messages.
+# Each of these whose name ends with 'Base' gets a space and the
+# table description appended to it when it's being displayed.
+crud.addSaveLinkTitleBase = Lưu cái mới
+crud.addAbandonLinkTitleBase = Bỏ cái mới
+crud.editSaveLinkTitleBase = Lưu thay đổi với
+crud.editAbandonLinkTitleBase = Bỏ thay đổi với
+crud.deleteSaveLinkTitleBase = Xoá
+crud.deleteAbandonLinkTitleBase = Giữ
+crud.viewDoneLinkTitle = Xem xong
+crud.deleteConfirmMsgBase = Bạn có CHẮC là bạn muốn xoá Bảng Mô Tả này?\
+Lệnh này không thể hoàn tác!
+crud.abandonConfirmMsgBase = Bạn có CHẮC là bạn muốn bỏ mọi thay đổi bạn vừa tạo ra với Bảng Mô Tả này?\
+Lệnh này không thể hoàn tác!
+
+# Server-side validation messages
+crud.idNotFoundChangesNotSaved = %s Id %d không tìm thấy; các thay đổi KHÔNG ĐƯỢC lưu.
+crud.idUpdated = %s Id %d đã cập nhật.
+crud.rowCouldNotBeUpdated = %s này đã không thể được cập nhật. Vui lòng kiểm tra lại tất cả các trường cần chỉnh sửa.
+crud.newRowAdded = Một %s mới được thêm vào.
+crud.rowCouldNotBeAdded = %s này đã không thể được thêm vào. Vui lòng kiểm tra lại tất cả các trường cần chỉnh sửa.
+crud.idNotFoundRowNotDeleted = %s Id %d không tìm thấy; CHƯA ĐƯỢC xoá.
+crud.rowDeleted = %s Id %d được xoá.
+crud.rowCouldNotBeDeleted = %s này đã không thể bị xoá. Có khả năng nó được trích xuất bởi một hoặc nhiều đối tượng ở một bảng khác.
+
+# Miscellaneous
+crud.searchRelevantEntries = Tìm kiếm các sự nhập vào liên quan
+
+# Hot key names
+crud.hotkey.enter = Enter
+crud.hotkey.esc = Esc
+crud.hotkey.ins = Ins
+crud.hotkey.alt_ins = Alt+Ins
+crud.hotkey.del = Del
+crud.hotkey.alt_v = Alt+V
+crud.hotkey.f1 = F1
+crud.hotkey.f2 = F2
+crud.hotkey.f3 = F3
+crud.hotkey.f4 = F4
+crud.hotkey.f5 = F5
+crud.hotkey.f6 = F6
+crud.hotkey.f7 = F7
+crud.hotkey.f8 = F8
+crud.hotkey.f9 = F9
+crud.hotkey.f10 = F10
+crud.hotkey.f11 = F11
+crud.hotkey.f12 = F12

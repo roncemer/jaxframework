@@ -1,0 +1,13 @@
+popupSearch.appuserPopupSearch.tableDescription = Người dùng
+popupSearch.appuserPopupSearch.tableDescriptions = Các người dùng
+popupSearch.appuserPopupSearch.search.id.heading = Id
+popupSearch.appuserPopupSearch.search.user_name.heading = Tên người dùng
+popupSearch.appuserPopupSearch.search.email_addr.heading = Địa chỉ Email
+popupSearch.appuserPopupSearch.search.first_name.heading = Tên
+popupSearch.appuserPopupSearch.search.last_name.heading = Họ
+popupSearch.appuserPopupSearch.search.when_added.heading = Được thêm
+popupSearch.appuserPopupSearch.actions = Các thao tác
+popupSearch.appuserPopupSearch.select = Chọn
+popupSearch.appuserPopupSearch.search.login_failures.heading = Các lần đăng nhập thất bại
+popupSearch.appuserPopupSearch.search.last_login_failure.heading = Lần đăng nhập thất bại cuối
+popupSearch.appuserPopupSearch.search.last_login.heading = Lần đăng nhập cuối

@@ -1,0 +1,5 @@
+loginForm.loginRequired = Yêu cầu đăng nhập
+loginForm.loginUserName.label = Tên người dùng
+loginForm.loginPassword.label = Mật khẩu
+loginForm.keepMeLoggedIn.label = Giữ cho tôi đăng nhập
+loginForm.loginSubmit.label = Đăng nhập

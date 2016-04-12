@@ -1,0 +1,1 @@
+TimeValidator.class.errorMsg.malformedOrInvalidTime = Thời gian định dạng sai hoặc không hợp lệ. Phải ở dạng hh:mm:ss 24 giờ.
