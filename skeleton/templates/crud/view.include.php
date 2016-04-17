@@ -33,16 +33,16 @@ include {{docRootPath}}.'/include/header.include.php';
 
 <?php if (function_exists('afterHeaderViewHook')) afterHeaderViewHook(); ?>
 
-<h2 id="{{tableName}}TableDescriptionHeading"><?php _e('tableDescription', '{{tableDescriptions}}'); ?></h2>
+<h2 id="{{tableName}}TableDescriptionHeading"><?php _e('crud.{{crudName}}.tableDescriptions', '{{tableDescriptions}}'); ?></h2>
 
 <div id="errorMsg" class="errorMsg"></div>
 <div id="successMsg" class="successMsg"></div>
 
 <div id="existing{{uTableName}}sCont">
 <?php if (function_exists('searchBlock1ViewHook')) searchBlock1ViewHook(); ?>
- <h3 id="{{tableName}}SearchModeHeading"><?php echo _t('crud.crudSearchModeTitleBase').' '._t('tableDescriptions', '{{tableDescriptions}}'); ?></h3>
+ <h3 id="{{tableName}}SearchModeHeading"><?php echo _t('crud.crudSearchModeTitleBase').' '._t('crud.{{crudName}}.tableDescriptions', '{{tableDescriptions}}'); ?></h3>
 <?php if (function_exists('searchBlock2ViewHook')) searchBlock2ViewHook(); ?>
- <a id="add{{uTableName}}Link" href="#" title="<?php echo _t('crud.crudAddLinkTitleBase').' '._t('tableDescription', '{{tableDescription}}'); ?>" class="btn btn-default" onclick="add{{uTableName}}(); return false;"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo _t('crud.crudAddLinkTitleBase').' '._t('tableDescription', '{{tableDescription}}'); ?></a><br/>
+ <a id="add{{uTableName}}Link" href="#" title="<?php echo _t('crud.crudAddLinkTitleBase').' '._t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'); ?>" class="btn btn-default" onclick="add{{uTableName}}(); return false;"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo _t('crud.crudAddLinkTitleBase').' '._t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'); ?></a><br/>
 <?php if (function_exists('searchBlock3ViewHook')) searchBlock3ViewHook(); ?>
 {{if_searchPresentation_dataTables}}
 <script type="text/javascript">

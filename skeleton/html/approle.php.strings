@@ -1,3 +1,5 @@
+crud.approle.tableDescription = Role
+crud.approle.tableDescriptions = Roles
 crud.approle.search.id.heading = Id
 crud.approle.search.role_name.heading = Role Name
 crud.approle.search.description.heading = Description

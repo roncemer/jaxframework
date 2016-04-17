@@ -1,3 +1,5 @@
+crud.appuser.tableDescription = Người dùng
+crud.appuser.tableDescriptions = Các người dùng
 crud.appuser.search.id.heading = Id
 crud.appuser.search.user_name.heading = Tên người dùng
 crud.appuser.search.email_addr.heading = Địa chỉ Email

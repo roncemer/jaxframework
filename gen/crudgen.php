@@ -95,6 +95,9 @@ EOF;
 
 		$langKeys = array();
 
+		if (array_key_exists('tableDescription', $cfg)) $langKeys['crud.'.$crudName.'.tableDescription'] = $cfg['tableDescription'];
+		if (array_key_exists('tableDescriptions', $cfg)) $langKeys['crud.'.$crudName.'.tableDescriptions'] = $cfg['tableDescriptions'];
+
 		$outputPath = (isset($crud['outputPath']) && is_string($crud['outputPath'])) ?
 			$crud['outputPath'] : '';
 		$outputDir = $docroot.'/'.$outputPath;

@@ -287,20 +287,20 @@ function setMode(newMode) {
 			$('#existing{{uTableName}}sCont').hide('fast');
 			$('#{{tableName}}FormCont').show('fast');
 			$('#crudFormButtons').show();
-			saveButton.attr('value', _t('crud.addSaveLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')).addClass('btn btn-success').show();
-			abandonButton.attr('value', _t('crud.addAbandonLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')).addClass('btn btn-warning').show();
+			saveButton.attr('value', _t('crud.addSaveLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')).addClass('btn btn-success').show();
+			abandonButton.attr('value', _t('crud.addAbandonLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')).addClass('btn btn-warning').show();
 			hotKeyHelp +=
-				' <strong>'+_t('crud.hotkey.esc')+'</strong>:'+_t('crud.addAbandonLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}');
+				' <strong>'+_t('crud.hotkey.esc')+'</strong>:'+_t('crud.addAbandonLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}');
 {{addFocusJS}}
 			break;
 		case EDIT_MODE:
 			$('#existing{{uTableName}}sCont').hide('fast');
 			$('#{{tableName}}FormCont').show('fast');
 			$('#crudFormButtons').show();
-			saveButton.attr('value', _t('crud.editSaveLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')).addClass('btn btn-success').show();
-			abandonButton.attr('value', _t('crud.editAbandonLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')).addClass('btn btn-warning').show();
+			saveButton.attr('value', _t('crud.editSaveLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')).addClass('btn btn-success').show();
+			abandonButton.attr('value', _t('crud.editAbandonLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')).addClass('btn btn-warning').show();
 			hotKeyHelp +=
-				' <strong>'+_t('crud.hotkey.esc')+'</strong>:'+_t('crud.editAbandonLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')+
+				' <strong>'+_t('crud.hotkey.esc')+'</strong>:'+_t('crud.editAbandonLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')+
 				' <strong>'+_t('crud.hotkey.f7')+'</strong>:'+_t('crud.searchRelevantEntries');
 {{editFocusJS}}
 			break;
@@ -308,10 +308,10 @@ function setMode(newMode) {
 			$('#existing{{uTableName}}sCont').hide('fast');
 			$('#{{tableName}}FormCont').show('fast');
 			$('#crudFormButtons').show();
-			saveButton.attr('value', _t('crud.deleteSaveLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')).addClass('btn btn-danger').show();
-			abandonButton.attr('value', _t('crud.deleteAbandonLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}')).addClass('btn btn-primary').show();
+			saveButton.attr('value', _t('crud.deleteSaveLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')).addClass('btn btn-danger').show();
+			abandonButton.attr('value', _t('crud.deleteAbandonLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')).addClass('btn btn-primary').show();
 			hotKeyHelp +=
-				' <strong>'+_t('crud.hotkey.esc')+'</strong>:'+_t('crud.deleteAbandonLinkTitleBase')+' '+_t('tableDescription', '{{tableDescription}}');
+				' <strong>'+_t('crud.hotkey.esc')+'</strong>:'+_t('crud.deleteAbandonLinkTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}');
 {{editFocusJS}}
 			break;
 		case VIEW_MODE:
@@ -345,27 +345,27 @@ function {{tableName}}sUpdateTable() {
 } // {{tableName}}sUpdateTable()
 
 function add{{uTableName}}() {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
 	load{{uTableName}}IntoForm(0, ADD_MODE);
 } // add{{uTableName}}()
 
 function edit{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudEditModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudEditModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
 	load{{uTableName}}IntoForm(id, EDIT_MODE);
 } // edit{{uTableName}}()
 
 function addSimilar{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
 	load{{uTableName}}IntoForm(id, ADD_MODE);
 } // addSimilar{{uTableName}}()
 
 function delete{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudDeleteModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudDeleteModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
 	load{{uTableName}}IntoForm(id, DELETE_MODE);
 } // delete{{uTableName}}()
 
 function view{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudViewModeTitleBase')+' '+_t('tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudViewModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
 	load{{uTableName}}IntoForm(id, VIEW_MODE);
 } // view{{uTableName}}()
 
@@ -512,7 +512,7 @@ function save{{uTableName}}() {
 		break;
 	case DELETE_MODE:
 		bootbox.confirm(
-			_t('crud.deleteConfirmMsgBase').replace('tableDescription', _t('tableDescription', '{{tableDescription}}')),
+			_t('crud.deleteConfirmMsgBase').replace('tableDescription', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')),
 			function(result) {
 				if (!result) return;
 				var url = getBaseURL();
@@ -563,7 +563,7 @@ function save{{uTableName}}() {
 function abandon{{uTableName}}() {
 	if ((mode == ADD_MODE) || (mode == EDIT_MODE)) {
 		bootbox.confirm(
-			_t('crud.abandonConfirmMsgBase').replace('tableDescription', _t('tableDescription', '{{tableDescription}}')),
+			_t('crud.abandonConfirmMsgBase').replace('tableDescription', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')),
 			function(result) {
 				if (result) {
 					setMode(SEARCH_MODE);

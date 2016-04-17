@@ -1,3 +1,5 @@
+crud.appuser.tableDescription = User
+crud.appuser.tableDescriptions = Users
 crud.appuser.search.id.heading = Id
 crud.appuser.search.user_name.heading = Username
 crud.appuser.search.email_addr.heading = Email Address

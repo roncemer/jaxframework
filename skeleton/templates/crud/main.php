@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				if (($oldRow = ${{tableName}}DAO->load($row->{{idCol}})) === false) {
 					$result->errorMsg .= sprintf(
 						_t('crud.idNotFoundChangesNotSaved'),
-						_t('tableDescription', '{{tableDescription}}'),
+						_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'),
 						$row->{{idCol}}
 					)."\n";
 				} else {
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 								$committed = true;
 								$result->successMsg .= sprintf(
 									_t('crud.idUpdated'),
-									_t('tableDescription', '{{tableDescription}}'),
+									_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'),
 									$row->{{idCol}}
 								)."\n";
 							}
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 							if (($result->errorMsg == '') && (empty($result->fieldErrors))) {
 								$result->errorMsg .= sprintf(
 									_t('crud.rowCouldNotBeUpdated'),
-									_t('tableDescription', '{{tableDescription}}')
+									_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')
 								)."\n";
 							}
 						}
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						$committed = true;
 						$result->successMsg .= sprintf(
 							_t('crud.newRowAdded'),
-							_t('tableDescription', '{{tableDescription}}')
+							_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')
 						)."\n";
 					}
 				}
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					if (($result->errorMsg == '') && (empty($result->fieldErrors))) {
 						$result->errorMsg .= sprintf(
 							_t('crud.rowCouldNotBeAdded'),
-							_t('tableDescription', '{{tableDescription}}')
+							_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')
 						)."\n";
 					}
 				}
@@ -182,7 +182,7 @@ if (returnToSearchMode) {
 		if (${{tableName}}DAO->load($id) === false) {
 			$result->errorMsg .= sprintf(
 				_t('crud.idNotFoundRowNotDeleted'),
-				_t('tableDescription', '{{tableDescription}}'),
+				_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'),
 				$id
 			)."\n";
 		} else {
@@ -206,13 +206,13 @@ if (returnToSearchMode) {
 					$committed = true;
 					$result->successMsg .= sprintf(
 						_t('crud.rowDeleted'),
-						_t('tableDescription', '{{tableDescription}}'),
+						_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'),
 						$id
 					)."\n";
 				} else {
 					$result->errorMsg .= sprintf(
 						_t('crud.rowCouldNotBeDeleted'),
-						_t('tableDescription', '{{tableDescription}}')
+						_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')
 					)."\n";
 				}
 			}

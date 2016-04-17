@@ -1,3 +1,5 @@
+crud.approle.tableDescription = Vai trò
+crud.approle.tableDescriptions = Các vai trò
 crud.approle.search.id.heading = Id
 crud.approle.search.role_name.heading = Tên vai trò
 crud.approle.search.description.heading = Mô tả
