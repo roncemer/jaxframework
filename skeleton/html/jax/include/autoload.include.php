@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2012-2013 Ronald B. Cemer
+// Copyright (c) 2012-2016 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -21,14 +21,19 @@ function __jax__loadClass($class_name) {
 	global $__CLASS_AUTO_LOAD_CLASS_PATHS, $__CLASS_AUTO_LOAD_PATH_CACHE_TIMEOUT;
 
 	$cacheKey = 'classAutoload:'.sha1($_SERVER['DOCUMENT_ROOT']).':'.$class_name;
-	$path = @apc_fetch($cacheKey, $success);
+	if (function_exists('apc_fetch')) {
+		$path = @apc_fetch($cacheKey, $success);
+	} else {
+		$path = null;
+		$success = false;
+	}
 	if (!$success) {
 		foreach ($__CLASS_AUTO_LOAD_CLASS_PATHS as $dir) {
 			$path = __jax__classAutoloadFindClassFile($class_name, $dir);
 			if ($path !== false) {
 				if (function_exists('apc_add')) {
 					@apc_add($cacheKey, $path, $__CLASS_AUTO_LOAD_PATH_CACHE_TIMEOUT);
-				} else {
+				} else if (function_exists('apc_store')) {
 					@apc_store($cacheKey, $path, $__CLASS_AUTO_LOAD_PATH_CACHE_TIMEOUT);
 				}
 				break;
