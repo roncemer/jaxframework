@@ -1,15 +1,15 @@
 # Jax Framework CRUD Strings
 
 # Mode display messages.
-crud.crudSearchModeTitleBase = Đang tồn tại
-crud.crudAddModeTitleBase = Thêm một cái mới
-crud.crudEditModeTitleBase = Chỉnh sửa một cái đang tồn tài
-crud.crudDeleteModeTitleBase = Xoá một cái đang tồn tại
-crud.crudViewModeTitleBase = Xem một cái đang tồn tại
+crud.crudSearchModeTitleBase = Đang tồn tại {tableDescriptionsPlaceholder}
+crud.crudAddModeTitleBase = Thêm một cái {tableDescriptionPlaceholder} mới
+crud.crudEditModeTitleBase = Chỉnh sửa một cái đang tồn tài {tableDescriptionPlaceholder}
+crud.crudDeleteModeTitleBase = Xoá một cái đang tồn tại {tableDescriptionPlaceholder}
+crud.crudViewModeTitleBase = Xem một cái đang tồn tại {tableDescriptionPlaceholder}
 
 # Search-mode messages.
 crud.crudSearchActionsHeader = Các thao tác
-crud.crudAddLinkTitleBase = Thêm một cái mới
+crud.crudAddLinkTitleBase = Thêm một cái {tableDescriptionPlaceholder} mới
 crud.crudAddShortLinkTitle = Thêm
 crud.crudEditLinkTitle = Sửa
 crud.crudAddSimilarLinkTitle = Thêm tương tự

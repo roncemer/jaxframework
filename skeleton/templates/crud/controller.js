@@ -345,27 +345,27 @@ function {{tableName}}sUpdateTable() {
 } // {{tableName}}sUpdateTable()
 
 function add{{uTableName}}() {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase').replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')));
 	load{{uTableName}}IntoForm(0, ADD_MODE);
 } // add{{uTableName}}()
 
 function edit{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudEditModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudEditModeTitleBase').replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')));
 	load{{uTableName}}IntoForm(id, EDIT_MODE);
 } // edit{{uTableName}}()
 
 function addSimilar{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudAddModeTitleBase').replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')));
 	load{{uTableName}}IntoForm(id, ADD_MODE);
 } // addSimilar{{uTableName}}()
 
 function delete{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudDeleteModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudDeleteModeTitleBase').replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')));
 	load{{uTableName}}IntoForm(id, DELETE_MODE);
 } // delete{{uTableName}}()
 
 function view{{uTableName}}(id) {
-	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudViewModeTitleBase')+' '+_t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'));
+	$('#{{tableName}}FormModeDisplay').text(_t('crud.crudViewModeTitleBase').replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}')));
 	load{{uTableName}}IntoForm(id, VIEW_MODE);
 } // view{{uTableName}}()
 

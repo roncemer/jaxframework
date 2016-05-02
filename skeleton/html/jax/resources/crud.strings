@@ -1,15 +1,15 @@
 # Jax Framework CRUD Strings
 
 # Mode display messages.
-crud.crudSearchModeTitleBase = Existing
-crud.crudAddModeTitleBase = Adding a New
-crud.crudEditModeTitleBase = Editing an Existing
-crud.crudDeleteModeTitleBase = Deleting an Existing
-crud.crudViewModeTitleBase = Viewing an Existing
+crud.crudSearchModeTitleBase = Existing {tableDescriptionsPlaceholder}
+crud.crudAddModeTitleBase = Adding a New {tableDescriptionPlaceholder}
+crud.crudEditModeTitleBase = Editing an Existing {tableDescriptionPlaceholder}
+crud.crudDeleteModeTitleBase = Deleting an Existing {tableDescriptionPlaceholder}
+crud.crudViewModeTitleBase = Viewing an Existing {tableDescriptionPlaceholder}
 
 # Search-mode messages.
 crud.crudSearchActionsHeader = Actions
-crud.crudAddLinkTitleBase = Add a New
+crud.crudAddLinkTitleBase = Add a New {tableDescriptionPlaceholder}
 crud.crudAddShortLinkTitle = Add
 crud.crudEditLinkTitle = Edit
 crud.crudAddSimilarLinkTitle = Add Similar

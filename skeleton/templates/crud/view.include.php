@@ -40,9 +40,9 @@ include {{docRootPath}}.'/include/header.include.php';
 
 <div id="existing{{uTableName}}sCont">
 <?php if (function_exists('searchBlock1ViewHook')) searchBlock1ViewHook(); ?>
- <h3 id="{{tableName}}SearchModeHeading"><?php echo _t('crud.crudSearchModeTitleBase').' '._t('crud.{{crudName}}.tableDescriptions', '{{tableDescriptions}}'); ?></h3>
+ <h3 id="{{tableName}}SearchModeHeading"><?php echo str_replace('{tableDescriptionsPlaceholder}', _t('crud.{{crudName}}.tableDescriptions', '{{tableDescriptions}}'), _t('crud.crudSearchModeTitleBase')); ?></h3>
 <?php if (function_exists('searchBlock2ViewHook')) searchBlock2ViewHook(); ?>
- <a id="add{{uTableName}}Link" href="#" title="<?php echo _t('crud.crudAddLinkTitleBase').' '._t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'); ?>" class="btn btn-default" onclick="add{{uTableName}}(); return false;"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo _t('crud.crudAddLinkTitleBase').' '._t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'); ?></a><br/>
+ <a id="add{{uTableName}}Link" href="#" title="<?php echo str_replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'), _t('crud.crudAddLinkTitleBase')); ?>" class="btn btn-default" onclick="add{{uTableName}}(); return false;"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo str_replace('{tableDescriptionPlaceholder}', _t('crud.{{crudName}}.tableDescription', '{{tableDescription}}'), _t('crud.crudAddLinkTitleBase')); ?></a><br/>
 <?php if (function_exists('searchBlock3ViewHook')) searchBlock3ViewHook(); ?>
 {{if_searchPresentation_dataTables}}
 <script type="text/javascript">
