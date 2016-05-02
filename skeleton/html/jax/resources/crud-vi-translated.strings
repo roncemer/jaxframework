@@ -2,14 +2,14 @@
 
 # Mode display messages.
 crud.crudSearchModeTitleBase = Đang tồn tại {tableDescriptionsPlaceholder}
-crud.crudAddModeTitleBase = Thêm một cái {tableDescriptionPlaceholder} mới
+crud.crudAddModeTitleBase = Thêm một {tableDescriptionPlaceholder} mới
 crud.crudEditModeTitleBase = Chỉnh sửa một cái đang tồn tài {tableDescriptionPlaceholder}
 crud.crudDeleteModeTitleBase = Xoá một cái đang tồn tại {tableDescriptionPlaceholder}
 crud.crudViewModeTitleBase = Xem một cái đang tồn tại {tableDescriptionPlaceholder}
 
 # Search-mode messages.
 crud.crudSearchActionsHeader = Các thao tác
-crud.crudAddLinkTitleBase = Thêm một cái {tableDescriptionPlaceholder} mới
+crud.crudAddLinkTitleBase = Thêm một {tableDescriptionPlaceholder} mới
 crud.crudAddShortLinkTitle = Thêm
 crud.crudEditLinkTitle = Sửa
 crud.crudAddSimilarLinkTitle = Thêm tương tự
