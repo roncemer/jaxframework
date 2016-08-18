@@ -298,14 +298,12 @@ EOF;
 				$placeholderExpr = '';
 			}
 
-			$onclickTag = (isset($field['onclick']) && ($field['onclick'] != '')) ?
-				' onclick="'.$field['onclick'].'"' : '';
-			$onchangeTag = (isset($field['onchange']) && ($field['onchange'] != '')) ?
-				' onchange="'.$field['onchange'].'"' : '';
-			$cssClass = (isset($field['cssClass']) && ($field['cssClass'] != '')) ?
-				trim($field['cssClass']) : '';
-			$helpTopic = (isset($field['helpTopic']) && ($field['helpTopic'] != '')) ?
-				trim($field['helpTopic']) : '';
+			$onclickTag = (isset($field['onclick']) && ($field['onclick'] != '')) ? ' onclick="'.$field['onclick'].'"' : '';
+			$onchangeTag = (isset($field['onchange']) && ($field['onchange'] != '')) ? ' onchange="'.$field['onchange'].'"' : '';
+			$containerCSSClass = (isset($field['containerCSSClass']) && ($field['containerCSSClass'] != '')) ?
+				trim($field['containerCSSClass']) : '';
+			$cssClass = (isset($field['cssClass']) && ($field['cssClass'] != '')) ? trim($field['cssClass']) : '';
+			$helpTopic = (isset($field['helpTopic']) && ($field['helpTopic'] != '')) ? trim($field['helpTopic']) : '';
 
 			$onPopupSearch = isset($field['onPopupSearch']) ? trim($field['onPopupSearch']) : '';
 			$descriptionField = isset($field['descriptionField']) ? $field['descriptionField'] : '';
@@ -347,15 +345,17 @@ EOF;
 			case 'select':
 			case 'file':
 			case 'radio':
+				$containerCSSClass = trim('form-group '.$containerCSSClass);
 				$thisFormField .=
-					'<div class="form-group" id="'.$id.'TR">'.
+					'<div class="'.$containerCSSClass.'" id="'.$id.'TR">'.
 					'<label for="'.$id.'" class="col-sm-2 control-label"><?php echo '.$titleExpr.'; ?>:</label>'.
 					'<div class="col-sm-10">'.
 					'<div id="fieldErrorMsg_'.$id.'" class="fieldErrorMsg"></div>';
 				break;
 			case 'checkbox':
+				$containerCSSClass = trim('form-group '.$containerCSSClass);
 				$thisFormField .=
-					'<div class="form-group" id="'.$id.'TR">'.
+					'<div class="'.$containerCSSClass.'" id="'.$id.'TR">'.
 					'<label class="col-sm-2 control-label"></label>'.
 					'<div class="col-sm-10">'.
 					'<div id="fieldErrorMsg_'.$id.'" class="fieldErrorMsg"></div>'.
@@ -365,8 +365,7 @@ EOF;
 
 			switch ($inputType) {
 			case 'hidden':
-				$hiddenFormFields .=
-					'<input type="hidden" name="'.$fieldName.'" id="'.$id.'"/>'."\n";
+				$hiddenFormFields .= '<input type="hidden" name="'.$fieldName.'" id="'.$id.'"/>'."\n";
 				break;
 			case 'text':
 			case 'password':
@@ -374,10 +373,8 @@ EOF;
 				$maxlength = isset($field['maxlength']) ? (int)$field['maxlength'] : 0;
 				$cssClass = trim('form-control '.$cssClass);
 				$cssClass = mergeSizeClass($cssClass, getBootstrapTextInputSizeClass($size));
-				$readonlyTag = (isset($field['readonly']) && ($field['readonly'])) ?
-					' readonly="readonly"' : '';
-				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ?
-					' disabled="disabled"' : '';
+				$readonlyTag = (isset($field['readonly']) && ($field['readonly'])) ? ' readonly="readonly"' : '';
+				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ? ' disabled="disabled"' : '';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
 				$thisFormField .=
@@ -394,10 +391,8 @@ EOF;
 				$cols = isset($field['cols']) ? (int)$field['cols'] : 20;
 				$cssClass = trim('form-control '.$cssClass);
 				$cssClass = mergeSizeClass($cssClass, getBootstrapTextInputSizeClass($cols));
-				$readonlyTag = (isset($field['readonly']) && ($field['readonly'])) ?
-					' readonly="readonly"' : '';
-				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ?
-					' disabled="disabled"' : '';
+				$readonlyTag = (isset($field['readonly']) && ($field['readonly'])) ? ' readonly="readonly"' : '';
+				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ? ' disabled="disabled"' : '';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
 
@@ -450,10 +445,8 @@ EOF;
 				break;
 			case 'file':
 				$cssClass = trim('form-control '.$cssClass);
-				$readonlyTag = (isset($field['readonly']) && ($field['readonly'])) ?
-					' readonly="readonly"' : '';
-				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ?
-					' disabled="disabled"' : '';
+				$readonlyTag = (isset($field['readonly']) && ($field['readonly'])) ? ' readonly="readonly"' : '';
+				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ? ' disabled="disabled"' : '';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
 
@@ -468,8 +461,7 @@ EOF;
 					$readonlyTag.$disabledTag.$onclickTag.$onchangeTag.'/>'.$searchDescHTML;
 				break;
 			case 'checkbox':
-				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ?
-					' disabled="disabled"' : '';
+				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ? ' disabled="disabled"' : '';
 				$value = isset($field['value']) ? $field['value'] : '1';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
@@ -483,8 +475,7 @@ EOF;
 					$searchDescHTML;
 				break;
 			case 'radio':
-				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ?
-					' disabled="disabled"' : '';
+				$disabledTag = (isset($field['disabled']) && ($field['disabled'])) ? ' disabled="disabled"' : '';
 				// Disabling the id field causes updates to become inserts.  Don't allow that.
 				if ($fieldName == $idCol) $disabledTag = '';
 
