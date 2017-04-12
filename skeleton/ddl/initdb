@@ -91,7 +91,7 @@ for pass in 1 2; do
 set foreign_key_checks = 0;
 drop database if exists $ini_database;
 set foreign_key_checks = 1;
-create database $ini_database default character set utf8 default collate utf8_general_ci;
+create database $ini_database default character set utf8mb4 default collate utf8mb4_general_ci;
 
 -- -----------------------------------------------
 -- Create user; grant permissions.
