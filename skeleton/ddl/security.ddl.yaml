@@ -235,7 +235,7 @@ tables:
     columns:
       id: { type: integer, null: No, autoIncrement: Yes }
       when_added: { type: datetime, useTimeZone: Yes, null: No, sysVarDefault: CURRENT_TIMESTAMP }
-      page_uri: { type: varchar, size: 250, null: No, default: "" }
+      page_uri: { type: varchar, size: 100, null: No, default: "" }
     primaryKey:
       columns: [ id ]
     indexes:
