@@ -268,7 +268,7 @@ tables:
   apppageuriperm:
     columns:
       id: { type: integer, null: No, autoIncrement: Yes }
-      page_uri: { type: varchar, size: 250, null: No, default: "" }
+      page_uri: { type: varchar, size: 100, null: No, default: "" }
       perm_name: { type: varchar, size: 40, null: No }
     primaryKey:
       columns: [ id ]
