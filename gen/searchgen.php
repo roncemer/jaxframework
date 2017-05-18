@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2011-2016 Ronald B. Cemer
+// Copyright (c) 2011-2017 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -1045,6 +1045,8 @@ function getWhereClauseParams($table, $searchName, $search, $searchType, &$langK
 			$pfx = isset($column['tableAlias']) ? $column['tableAlias'] : 'pri';
 			if ($pfx != '') $pfx = $pfx .= '.';
 
+			$tableColName = $pfx.$colName;
+
 			$title = isset($column['title']) ? $column['title'] : '';
 			if ($title == '') $title = identifierToHumanReadable($colName);
 
@@ -1062,12 +1064,12 @@ function getWhereClauseParams($table, $searchName, $search, $searchType, &$langK
 				}
 				if (isset($column['unsignedSearch']) && ($column['unsignedSearch'])) {
 					if ($searchType == 'search') {
-						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.'(? <> 0 and abs('.$pfx.$colName.') '.$queryOperator.' ?)', true);
+						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.'(? <> 0 and abs('.$tableColName.') '.$queryOperator.' ?)', true);
 						if ($searchWhereClauseOr == '') $searchWhereClauseOr = ' or ';
 						if ($searchWhereClauseConcat == '') $searchWhereClauseConcat = '.';
-						$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setInt(((\$queryCol == '') || (\$queryCol == ".var_export_normal_precision($pfx.$colName, true).")) ? 1 : 0);";
+						$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setInt(((\$queryCol == '') || (\$queryCol == ".var_export_normal_precision($tableColName, true).")) ? 1 : 0);";
 					} else {
-						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.'abs('.$pfx.$colName.') '.$queryOperator.' ?', true);
+						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.'abs('.$tableColName.') '.$queryOperator.' ?', true);
 						if ($searchWhereClauseOr == '') $searchWhereClauseOr = ' or ';
 						if ($searchWhereClauseConcat == '') $searchWhereClauseConcat = '.';
 					}
@@ -1078,12 +1080,12 @@ function getWhereClauseParams($table, $searchName, $search, $searchType, &$langK
 					}
 				} else {
 					if ($searchType == 'search') {
-						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.'(? <> 0 and '.$pfx.$colName.' '.$queryOperator.' ?)', true);
+						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.'(? <> 0 and '.$tableColName.' '.$queryOperator.' ?)', true);
 						if ($searchWhereClauseOr == '') $searchWhereClauseOr = ' or ';
 						if ($searchWhereClauseConcat == '') $searchWhereClauseConcat = '.';
-						$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setInt(((\$queryCol == '') || (\$queryCol == ".var_export_normal_precision($pfx.$colName, true).")) ? 1 : 0);";
+						$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setInt(((\$queryCol == '') || (\$queryCol == ".var_export_normal_precision($tableColName, true).")) ? 1 : 0);";
 					} else {
-						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.$pfx.$colName.' '.$queryOperator.' ?', true);
+						$searchWhereClausePHP .= $searchWhereClauseIndent.$searchWhereClauseConcat.var_export_normal_precision($searchWhereClauseOr.$tableColName.' '.$queryOperator.' ?', true);
 						if ($searchWhereClauseOr == '') $searchWhereClauseOr = ' or ';
 						if ($searchWhereClauseConcat == '') $searchWhereClauseConcat = '.';
 					}
@@ -1094,7 +1096,7 @@ function getWhereClauseParams($table, $searchName, $search, $searchType, &$langK
 					}
 				}
 
-				$langKey = $searchName.'_search.searchableColumn.'.$colName.'.title';
+				$langKey = $searchName.'_search.searchableColumn.'.$tableColName.'.title';
 				if (is_array($langKeys)) $langKeys[$langKey] = $title;
 				$searchableColumnsPHPArray .= sprintf(<<<EOF
 %s\t\t(object)array(
@@ -1137,13 +1139,13 @@ EOF
 					if ($queryOperator == 'fulltext') {
 						$searchWhereClausePHP .=
 							'($canDoFulltextSearch ? ('.
-							var_export_normal_precision('? = \'\' or match('.$pfx.$colName.') against (? in boolean mode)', true).
+							var_export_normal_precision('? = \'\' or match('.$tableColName.') against (? in boolean mode)', true).
 							') : (';
 					}
 					$searchWhereClausePHP .=
-						'($db->hasCaseInsensitiveLike ? '.var_export_normal_precision($pfx.$colName, true).
+						'($db->hasCaseInsensitiveLike ? '.var_export_normal_precision($tableColName, true).
 						' : '.
-						var_export_normal_precision('lower('.$pfx.$colName.')', true).')'.
+						var_export_normal_precision('lower('.$tableColName.')', true).')'.
 						'.\' \'.$db->likeOperator.\' \'.'.
 						'($db->hasCaseInsensitiveLike ? \'?\' : \'lower(?)\')';
 					if ($queryOperator == 'fulltext') {
@@ -1153,12 +1155,12 @@ EOF
 					if ($searchWhereClauseOr == '') $searchWhereClauseOr = ' or ';
 					if ($searchWhereClauseConcat == '') $searchWhereClauseConcat = '.';
 				} else {
-					$searchWhereClausePHP .= $searchWhereClauseOr.'(? <> 0 and '.$pfx.$colName.' '.$queryOperator.' ?)';
+					$searchWhereClausePHP .= $searchWhereClauseOr.'(? <> 0 and '.$tableColName.' '.$queryOperator.' ?)';
 					if ($searchWhereClauseOr == '') $searchWhereClauseOr = ' or ';
 					if ($searchWhereClauseConcat == '') $searchWhereClauseConcat = '.';
 				}
 				if ($searchType == 'search') {
-					$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setInt(((\$queryCol == '') || (\$queryCol == ".var_export_normal_precision($pfx.$colName, true).")) ? 1 : 0);";
+					$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setInt(((\$queryCol == '') || (\$queryCol == ".var_export_normal_precision($tableColName, true).")) ? 1 : 0);";
 				}
 				if ($queryOperator == 'beginsWith') {
 					$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setString(\$query.'%');";
@@ -1172,7 +1174,7 @@ EOF
 					$searchWhereAssignments[] = $searchWhereAssignmentsIndent."\$ps->setString(\$query);";
 				}
 
-				$langKey = $searchName.'_search.searchableColumn.'.$colName.'.title';
+				$langKey = $searchName.'_search.searchableColumn.'.$tableColName.'.title';
 				if (is_array($langKeys)) $langKeys[$langKey] = $title;
 				$searchableColumnsPHPArray .= sprintf(<<<EOF
 %s\t\t(object)array(
@@ -1194,7 +1196,7 @@ EOF
 				if ($searchableColumnsPHPArraySep == '') $searchableColumnsPHPArraySep = "\n";
 				break;
 			default:
-				fprintf(STDERR, "WARNING: Invalid sqlType \"%s\" in searchable column \"%s\" in \"%s\" %s in %s table YAML file.\n", $sqlType, $colName, $searchName, $searchType, $table->tableName);
+				fprintf(STDERR, "WARNING: Invalid sqlType \"%s\" in searchable column \"%s\" in \"%s\" %s in %s table YAML file.\n", $sqlType, $tableColName, $searchName, $searchType, $table->tableName);
 			}
 		}
 	}
