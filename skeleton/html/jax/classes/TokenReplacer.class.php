@@ -9,7 +9,7 @@ class TokenReplacer {
 	public $tokenEndMarker = '}';
 	protected $firstFilter = null;
 
-	public function TokenReplacer($firstFilter = null) {
+	public function __construct($firstFilter = null) {
 		if ( ($firstFilter !== null) && ($firstFilter !== false) ) {
 			$this->firstFilter = $firstFilter;
 		}
