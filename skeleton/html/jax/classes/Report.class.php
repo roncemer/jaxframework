@@ -86,7 +86,7 @@ class ReportColumn {
 	//     NOTE: The parameters to the callback function are NOT passed by reference, according
 	//     to the PHP documentation.  If this is true, this means that changes made to these
 	//     objects within the callback function will NOT affect the original objects.
-	public function ReportColumn($params) {
+	public function __construct($params) {
 		$this->name = isset($params['name']) ? (string)$params['name'] : '';
 		$this->heading = isset($params['heading']) ? (string)$params['heading'] : '';
 		$this->align = isset($params['align']) ? (string)$params['align'] : 'left';
@@ -135,7 +135,7 @@ class ReportCustomColumn {
 	//     Optional.  Defaults to 'left'.
 	// columnSpan: The number of actual columns to occupy within the report grid.
 	//     Optional.  Defaults to 1.
-	public function ReportCustomColumn($params) {
+	public function __construct($params) {
 		$this->align = isset($params['align']) ? (string)$params['align'] : 'left';
 		if (($this->align != 'left') && ($this->align != 'center') && ($this->align != 'right')) {
 			$this->align = 'left';
@@ -179,7 +179,7 @@ class ReportLevel {
 	// reOutputHeadingAfterEachLevelTotal: true to re-output the headings before outputting
 	//     the next row following any totals which are output for this level.
 	//     Optional.  Defaults to false.
-	public function ReportLevel($params) {
+	public function __construct($params) {
 		$this->name = isset($params['name']) ? (string)$params['name'] : '';
 		$this->uniqueIdColumnNames = isset($params['uniqueIdColumnNames']) ?
 			$params['uniqueIdColumnNames'] : array();
@@ -323,7 +323,7 @@ class Report {
 	//     is always the top level (the level at which grand totals would be printed).
 	// $outputter: A ReportOutputter instance which will handle the output functionality.
 	// $title: The title of the report.  Optional.  Only applies to certain output types.
-	public function Report(&$columns, &$levels, &$outputter, $title = '') {
+	public function __construct(&$columns, &$levels, &$outputter, $title = '') {
 		$this->columns = &$columns;
 		$this->levels = &$levels;
 		$this->outputter = &$outputter;

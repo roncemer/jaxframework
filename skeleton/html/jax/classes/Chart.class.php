@@ -17,7 +17,7 @@ class ReportFont
 	public $fontAngle	= 0;					// Angle of font
 	
 	// Create an instance of the Font
-	public function ReportFont($params) {
+	public function __construct($params) {
 		$this->textColor 	= isset($params['textColor']) ? (string)$params['textColor']	: $this->textColor;
 		$this->textFont		= isset($params['textFont']) ? (string)$params['textFont'] 		: $this->textFont;
 		$this->fontSize 	= isset($params['fontSize']) ? (integer)$params['fontSize'] 	: $this->fontSize;
@@ -45,7 +45,7 @@ class ReportImage
 	public $img;
 	
 	// Create an instance of the Image
-	public function ReportImage($params) 
+	public function __construct($params) 
 	{
 	
 		$this->imgFile			= isset($params['imgFile']) 		? (string)$params['imgFile'] : 			$this->$imgFile;
@@ -124,7 +124,7 @@ class ReportChartOutputter
 
 	// $ReportChartOutputter: A ReportChartOutputter instance which will handle the output functionality.
 	// Each of the passed objects are components needed to complete the chart
-	public function ReportChartOutputter(&$chartImage, &$fontText, &$fontLabel, &$fontGroup) {
+	public function __construct(&$chartImage, &$fontText, &$fontLabel, &$fontGroup) {
 		$this->chartImage 	= &$chartImage;
 		$this->fontText 	= &$fontText;
 		$this->fontLabel 	= &$fontLabel;
