@@ -40,7 +40,7 @@ tables:
         updateIfExists: No
         id: { value: 1 }
         added_by_user_id: { value: 1 }
-        last_updated: { value: "0001-01-01 00:00:00", quoted: Yes }
+        last_updated: { value: "2018-01-01 00:00:00", quoted: Yes }
         last_updated_by_user_id: { value: 1 }
         user_name: { value: "admin", quoted: Yes }
         email_addr: { value: "a@b.com", quoted: Yes }
