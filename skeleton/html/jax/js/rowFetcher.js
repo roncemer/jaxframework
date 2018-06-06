@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2016 Ronald B. Cemer
+// Copyright (c) 2010-2018 Ronald B. Cemer
 // All rights reserved.
 // This software is released under the BSD license.
 // Please see the accompanying LICENSE.txt for details.
@@ -176,10 +176,10 @@ RowFetcher.prototype.parseQueryStringToMap = function(queryStringOrURL, isURIOrU
 		var piece = pieces[i];
 		var eqidx = piece.indexOf('=');
 		if (eqidx >= 0) {
-			key = decodeURIComponent(piece.substr(0, eqidx));
-			val = decodeURIComponent(piece.substr(eqidx+1));
+			key = decodeURIComponent(piece.substr(0, eqidx).replace('+', '%20'));
+			val = decodeURIComponent(piece.substr(eqidx+1).replace('+', '%20'));
 		} else {
-			key = decodeURIComponent(piece);
+			key = decodeURIComponent(piece.replace('+', '%20'));
 			val = "";
 		}
 		if ((typeof(paramsMap[key]) == 'undefined') || keepLastParamValueOnDupe) {
