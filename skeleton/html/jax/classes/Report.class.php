@@ -649,10 +649,11 @@ class Report {
 					$cns[] = $colName;
 				}
 			}
-			if (!$allowSuppression) break;
-			foreach ($cns as $colName) {
-				if (!in_array($colName, $colNamesToSuppress)) {
-					$colNamesToSuppress[] = $colName;
+			if ($allowSuppression) {
+				foreach ($cns as $colName) {
+					if (!in_array($colName, $colNamesToSuppress)) {
+						$colNamesToSuppress[] = $colName;
+					}
 				}
 			}
 		}
